@@ -22,102 +22,17 @@ plugins {
   id 'com.github.kt3k.coveralls' version '2.0.1'
 }
 
-apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/index.gradle'
+apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/index/index.gradle'
 apply plugin: 'forge'
 apply plugin: 'curseforge'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'jacoco'
 
-ext.buildProps = file "build.properties"
-
-println "Current Minecraft version = " + minecraft.apiVersion
-
-def currentJvm = org.gradle.internal.jvm.Jvm.current()
-println "Current Java version = " + currentJvm
-
-buildProps.withReader {
-    def prop = new Properties()
-    prop.load(it)
-    ext.config = new ConfigSlurper().parse prop
-}
-
-if (project.getProperty("bambooshortPlanName") == "BBM-Dev") {
-    group = "dev.builtbroken.cardboardboxes"
-    archivesBaseName = "CardboardBoxes"
-} else {
-    group = "com.builtbroken.cardboardboxes"
-    archivesBaseName = "CardboardBoxes"
-}
-
-println archivesBaseName 
-
-version = "${project.minecraft.version}-${config.version.mod.major}.${config.version.mod.minor}.${config.version.mod.revis}b"
-
-// This is used to set the local version
-if (project.hasProperty("bambooBuildNumber"))
-    version += project.bambooBuildNumber
-else
-    version += getDate()
-
-println "version = "+ version
-
-minecraft {
-	replace "@MAJOR@", config.version.mod.major
-	replace "@MINOR@", config.version.mod.minor
-	replace "@REVIS@", config.version.mod.revis
-	
-	if (project.hasProperty("bambooBuildNumber")) {
-		replace "@BUILD@", project.bambooBuildNumber
-	}
-	else {
-		replace "@BUILD@", getDate()
-	}
-}
-processResources {
-	from(sourceSets.main.resources.srcDirs) {
-		//include '**/*.lang'
-		include '**/*.info'
-		include '**/*.properties'
-
-		expand 'version': project.version, 'mcversion': project.minecraft.version
-		// replace version and MCVersion
-	}
-
-	// copy everything else, thats not text
-	from(sourceSets.main.resources.srcDirs) {
-		exclude '**/*.info'
-		exclude '**/*.properties'
-	}
-}
-
-archivesBaseName = "ColoredChests"
-
-repositories {
-    maven {
-        name "BuiltBroken"
-        url "http://ci.builtbroken.com/maven/"
-    }
-}
-
-jar {
-    manifest.mainAttributes(
-            "Built-By": System.getProperty('user.name'),
-            "Created-By": currentJvm,
-            "Implementation-Title": archivesBaseName,
-            "Implementation-Version": project.version,
-    )
-}
 
 dependencies 
 {
     testCompile 'junit:junit:4.11'
     compile "dev.builtbroken.voltzengine:VoltzEngine:1.7.10-0.+:deobf-dev"
-}
-
-def getDate() {
-    def date = new Date()
-    def formattedDate = date.format('yyyyMMddHHmmss')
-    return formattedDate
 }
 
 jacocoTestReport {
@@ -126,5 +41,3 @@ jacocoTestReport {
         html.enabled = true
     }
 }
-
-file("Cardboard-Boxes.txt").text = version;
