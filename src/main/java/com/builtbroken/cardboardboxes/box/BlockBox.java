@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -22,6 +23,8 @@ import net.minecraft.world.World;
  */
 public class BlockBox extends BlockContainer
 {
+    public static final String STORE_ITEM_TAG = "storedItem";
+    public static final String TILE_DATA_TAG = "tileData";
     public static IIcon top;
 
     public BlockBox()
@@ -46,41 +49,45 @@ public class BlockBox extends BlockContainer
     public IIcon getIcon(int side, int meta)
     {
         if (side == 1)
+        {
             return top;
+        }
         return this.blockIcon;
     }
 
     @Override
     public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player)
     {
-        if (world.isRemote)
+        if (!world.isRemote)
         {
-            return;
-        }
-        //TODO remove box and place tile back down
-        TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile instanceof TileBox && ((TileBox) tile).storedItem != null)
-        {
-            Block block = Block.getBlockFromItem(((TileBox) tile).storedItem.getItem());
-            int meta = ((TileBox) tile).storedItem.getItemDamage();
-            if (block != null && world.setBlock(x, y, z, block, meta, 3))
+            //TODO remove box and place tile back down
+            TileEntity tile = world.getTileEntity(x, y, z);
+            if (tile instanceof TileBox && ((TileBox) tile).storedItem != null)
             {
-                if (((TileBox) tile).storedItem.getTagCompound() != null && ((TileBox) tile).storedItem.getTagCompound().hasKey("tileData"))
+                Block block = Block.getBlockFromItem(((TileBox) tile).storedItem.getItem());
+                int meta = ((TileBox) tile).storedItem.getItemDamage();
+                if (block != null && world.setBlock(x, y, z, block, meta, 3))
                 {
-                    NBTTagCompound nbt = ((TileBox) tile).storedItem.getTagCompound().getCompoundTag("tileData");
-                    TileEntity tileEntity = world.getTileEntity(x, y, z);
-                    if (tileEntity != null)
+                    NBTTagCompound nbt = ((TileBox) tile).tileData;
+                    if (((TileBox) tile).tileData != null)
                     {
-                        tileEntity.readFromNBT(nbt);
-                        tileEntity.xCoord = x;
-                        tileEntity.yCoord = y;
-                        tileEntity.zCoord = z;
+                        TileEntity tileEntity = world.getTileEntity(x, y, z);
+                        if (tileEntity != null)
+                        {
+                            tileEntity.readFromNBT(nbt);
+                            tileEntity.xCoord = x;
+                            tileEntity.yCoord = y;
+                            tileEntity.zCoord = z;
+                        }
                     }
-                }
-                ItemStack stack = new ItemStack(this);
-                if (player.inventory.addItemStackToInventory(stack))
-                {
-                    player.entityDropItem(stack, 0f);
+                    if(!player.capabilities.isCreativeMode)
+                    {
+                        ItemStack stack = new ItemStack(this);
+                        if (player.inventory.addItemStackToInventory(stack))
+                        {
+                            player.entityDropItem(stack, 0f);
+                        }
+                    }
                 }
             }
         }
@@ -95,35 +102,59 @@ public class BlockBox extends BlockContainer
         }
         if (player.isSneaking())
         {
-            ItemStack stack = new ItemStack(Cardboardboxes.blockBox, 1, 0);
-
-            TileEntity tile = world.getTileEntity(x, y, z);
-            if (tile instanceof TileBox)
+            ItemStack stack = toItemStack(world, x, y, z);
+            if(stack != null)
             {
-                if (((TileBox) tile).storedItem != null)
+                if (player.inventory.addItemStackToInventory(stack))
                 {
-                    stack.setTagCompound(new NBTTagCompound());
-                    stack.getTagCompound().setTag("storedItem", ((TileBox) tile).storedItem.writeToNBT(new NBTTagCompound()));
+                    player.inventoryContainer.detectAndSendChanges();
+                    world.setBlockToAir(x, y, z);
+                    return true;
                 }
                 else
                 {
-                    System.out.println("Error tile does not have an itemstack");
+                    player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal(getUnlocalizedName() + ".inventoryFull.name")));
+                    return true;
                 }
-            }
-
-            if (player.inventory.addItemStackToInventory(stack))
-            {
-                player.inventoryContainer.detectAndSendChanges();
-                world.setBlockToAir(x, y, z);
-                return true;
             }
             else
             {
-                player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal(getUnlocalizedName() + ".inventoryFull.name")));
+                player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal(getUnlocalizedName() + ".error.stack.null")));
                 return true;
             }
         }
         return false;
+    }
+
+    public ItemStack toItemStack(World world, int x, int y, int z)
+    {
+        ItemStack stack = new ItemStack(Cardboardboxes.blockBox);
+
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile instanceof TileBox)
+        {
+            if (((TileBox) tile).storedItem != null)
+            {
+                stack.setTagCompound(new NBTTagCompound());
+
+                stack.getTagCompound().setTag(STORE_ITEM_TAG, ((TileBox) tile).storedItem.writeToNBT(new NBTTagCompound()));
+                if (((TileBox) tile).tileData != null)
+                {
+                    stack.getTagCompound().setTag(TILE_DATA_TAG, ((TileBox) tile).tileData);
+                }
+            }
+            else
+            {
+                System.out.println("Error tile does not have an ItemStack");
+            }
+        }
+        return stack;
+    }
+
+    @Override
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
+    {
+        return toItemStack(world, x, y, z);
     }
 
     @Override

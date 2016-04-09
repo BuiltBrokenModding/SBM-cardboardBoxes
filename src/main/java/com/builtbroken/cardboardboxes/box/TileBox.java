@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 public class TileBox extends TileEntity
 {
     ItemStack storedItem;
+    NBTTagCompound tileData;
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
@@ -18,6 +19,10 @@ public class TileBox extends TileEntity
         if (nbt.hasKey("storedTile"))
         {
             storedItem = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("storedTile"));
+            if (nbt.hasKey("tileData"))
+            {
+                tileData = nbt.getCompoundTag("tileData");
+            }
         }
     }
 
@@ -28,6 +33,10 @@ public class TileBox extends TileEntity
         if (storedItem != null)
         {
             nbt.setTag("storedTile", storedItem.writeToNBT(new NBTTagCompound()));
+            if (tileData != null)
+            {
+                nbt.setTag("tileData", tileData);
+            }
         }
     }
 
