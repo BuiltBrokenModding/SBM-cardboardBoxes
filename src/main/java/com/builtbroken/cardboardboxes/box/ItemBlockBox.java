@@ -52,7 +52,7 @@ public class ItemBlockBox extends ItemBlock
     @Override
     public int getItemStackLimit(ItemStack stack)
     {
-        return stack.hasTagCompound() ? 1 : this.getItemStackLimit(stack);
+        return stack.hasTagCompound() ? 1 : 64;
     }
 
     public ItemStack getStoredBlock(ItemStack stack)
