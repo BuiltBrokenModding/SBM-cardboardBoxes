@@ -7,8 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by Dark on 7/28/2015.
  */
-public class Handler
-{
+public class Handler {
     /**
      * Called to handle special saving and loading for a
      * tile. Including stripping NBT data that shouldn't
@@ -19,8 +18,7 @@ public class Handler
      *            already called
      * @return save data, never should return null
      */
-    public NBTTagCompound save(NBTTagCompound tag)
-    {
+    public NBTTagCompound save(NBTTagCompound tag) {
         return tag;
     }
 
@@ -30,8 +28,7 @@ public class Handler
      * @param tile
      * @param tag
      */
-    public void loadData(TileEntity tile, NBTTagCompound tag)
-    {
+    public void loadData(TileEntity tile, NBTTagCompound tag) {
 
     }
 
@@ -41,8 +38,7 @@ public class Handler
      * @param stack
      * @param saveData
      */
-    public void placeBlock(ItemStack stack, NBTTagCompound saveData)
-    {
+    public void placeBlock(ItemStack stack, NBTTagCompound saveData) {
 
     }
 }
