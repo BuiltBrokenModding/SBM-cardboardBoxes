@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -39,6 +40,12 @@ public class BlockBox extends BlockContainer
         this.setCreativeTab(CreativeTabs.DECORATIONS);
         this.setHardness(2f);
         this.setResistance(2f);
+    }
+
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state)
+    {
+        return EnumBlockRenderType.MODEL; // this is default invisible... mojang pls
     }
 
     @SideOnly(Side.CLIENT)
