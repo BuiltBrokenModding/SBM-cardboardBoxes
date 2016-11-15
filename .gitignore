@@ -37,3 +37,5 @@ libs/industrialcraft-2-2.2.817-experimental-api.jar
 libs/industrialcraft-2-2.2.817-experimental-dev.jar
 SBM-CardboardBoxes.txt
 setup.bat
+build.bat
+src/main/java/com/builtbroken/cardboardboxes/Cardboardboxes.java
