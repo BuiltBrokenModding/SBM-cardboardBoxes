@@ -38,7 +38,7 @@ public class Cardboardboxes
     public static final String DOMAIN = "cardboardboxes";
     public static final String PREFIX = DOMAIN + ":";
 
-    @SidedProxy(clientSide = "com.builtbroken.cardboardboxes.ClientProxy", serverSide = "com.builtbroken.cardboardboxes.CommonProxy")
+    @SidedProxy(clientSide = "com.builtbroken.cardboardboxes.CommonProxy", serverSide = "com.builtbroken.cardboardboxes.CommonProxy")
     public static CommonProxy proxy;
 
     public static Configuration config;

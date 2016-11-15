@@ -3,12 +3,11 @@ package com.builtbroken.cardboardboxes.box;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ITickable;
 
 /**
  * Created by Dark on 7/28/2015.
  */
-public class TileBox extends TileEntity implements ITickable
+public class TileBox extends TileEntity
 {
     ItemStack storedItem;
     NBTTagCompound tileData;
@@ -39,12 +38,6 @@ public class TileBox extends TileEntity implements ITickable
                 nbt.setTag("tileData", tileData);
             }
         }
-		return nbt;
+        return nbt;
     }
-
-	@Override
-	public void update() 
-	{
-				
-	}
 }
