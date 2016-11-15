@@ -1,22 +1,19 @@
 package com.builtbroken.cardboardboxes.box;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by Dark on 7/28/2015.
@@ -29,9 +26,9 @@ public class BlockBox extends BlockContainer
 
     public BlockBox()
     {
-        super(Material.wood);
-        this.setBlockName(Cardboardboxes.PREFIX + "cardboardBox");
-        this.setCreativeTab(CreativeTabs.tabDecorations);
+        super(Material.WOOD);
+        this.setRegistryName(Cardboardboxes.PREFIX + "cardboardBox");
+        this.setCreativeTab(CreativeTabs.DECORATIONS);
         this.setHardness(2f);
         this.setResistance(2f);
     }
@@ -46,7 +43,7 @@ public class BlockBox extends BlockContainer
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta)
+    public IIcon getIcon(int side, int)
     {
         if (side == 1)
         {
@@ -61,17 +58,19 @@ public class BlockBox extends BlockContainer
         if (!world.isRemote)
         {
             //TODO remove box and place tile back down
-            TileEntity tile = world.getTileEntity(x, y, z);
+            TileEntity tile = world.getTileEntity(null);
             if (tile instanceof TileBox && ((TileBox) tile).storedItem != null)
             {
                 Block block = Block.getBlockFromItem(((TileBox) tile).storedItem.getItem());
                 int meta = ((TileBox) tile).storedItem.getItemDamage();
-                if (block != null && world.setBlock(x, y, z, block, meta, 3))
-                {
+                if (block != null)
+                		{
                     NBTTagCompound nbt = ((TileBox) tile).tileData;
                     if (((TileBox) tile).tileData != null)
                     {
-                        TileEntity tileEntity = world.getTileEntity(x, y, z);
+                        TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+                        int meta = ((TileBox) tile).storedItem.getItemDamage();
+                        if (block != null);
                         if (tileEntity != null)
                         {
                             tileEntity.readFromNBT(nbt);

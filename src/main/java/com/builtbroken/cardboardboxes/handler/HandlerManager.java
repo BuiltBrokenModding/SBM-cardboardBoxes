@@ -3,6 +3,7 @@ package com.builtbroken.cardboardboxes.handler;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -42,10 +43,10 @@ public class HandlerManager
 
     public CanPickUpResult canPickUp(World world, int x, int y, int z)
     {
-        Block block = world.getBlock(x, y, z);
+        Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
         if (!blackListedBlocks.contains(block))
         {
-            TileEntity tile = world.getTileEntity(x, y, z);
+            TileEntity tile = world.getTileEntity(null);
             if (tile != null)
             {
                 if (!blackListedTiles.contains(tile.getClass()))

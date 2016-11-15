@@ -1,33 +1,47 @@
 package com.builtbroken.cardboardboxes;
 
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.builtbroken.cardboardboxes.box.BlockBox;
 import com.builtbroken.cardboardboxes.box.ItemBlockBox;
 import com.builtbroken.cardboardboxes.box.TileBox;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
 import com.builtbroken.cardboardboxes.mods.IC2Handler;
-import com.builtbroken.cardboardboxes.mods.buildcraft.BuildCraftEnergyHandler;
-import com.builtbroken.cardboardboxes.mods.buildcraft.BuildCraftFactoryHandler;
 import com.builtbroken.cardboardboxes.mods.ModSupportHandler;
 import com.builtbroken.cardboardboxes.mods.TinkersConstructHandler;
+import com.builtbroken.cardboardboxes.mods.buildcraft.BuildCraftEnergyHandler;
+import com.builtbroken.cardboardboxes.mods.buildcraft.BuildCraftFactoryHandler;
 import com.builtbroken.cardboardboxes.mods.buildcraft.BuildCraftTransportHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.*;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityBeacon;
+import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraft.tileentity.TileEntityComparator;
+import net.minecraft.tileentity.TileEntityDaylightDetector;
+import net.minecraft.tileentity.TileEntityEnchantmentTable;
+import net.minecraft.tileentity.TileEntityEndPortal;
+import net.minecraft.tileentity.TileEntityEnderChest;
+import net.minecraft.tileentity.TileEntityFlowerPot;
+import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.tileentity.TileEntityNote;
+import net.minecraft.tileentity.TileEntityPiston;
+import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraftforge.common.config.Configuration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * Created by Dark on 7/25/2015.
@@ -51,7 +65,7 @@ public class Cardboardboxes
     public static HashMap<String, Class<? extends ModSupportHandler>> modSupportHandlerMap = new HashMap();
 
     @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event)
+    public void preInit(net.minecraftforge.fml.common.event.FMLPreInitializationEvent event)
     {
         LOGGER = LogManager.getLogger("CardboardBoxes");
         boxHandler = new HandlerManager();
@@ -76,41 +90,41 @@ public class Cardboardboxes
     {
         if (config.getBoolean("BlackListMobSpawners", "BlackListSettings", true, "Prevents mobs spawners from being placed into cardboard boxes"))
         {
-            boxHandler.banBlock(Blocks.mob_spawner);
+            boxHandler.banBlock(Blocks.MOB_SPAWNER);
             boxHandler.banTile(TileEntityMobSpawner.class);
         }
 
         //Remove unwanted interaction
-        boxHandler.banBlock(Blocks.beacon);
+        boxHandler.banBlock(Blocks.BEACON);
         boxHandler.banTile(TileEntityBeacon.class);
-        boxHandler.banBlock(Blocks.piston);
-        boxHandler.banBlock(Blocks.piston_extension);
-        boxHandler.banBlock(Blocks.piston_head);
-        boxHandler.banBlock(Blocks.sticky_piston);
+        boxHandler.banBlock(Blocks.PISTON);
+        boxHandler.banBlock(Blocks.PISTON_EXTENSION);
+        boxHandler.banBlock(Blocks.PISTON_HEAD);
+        boxHandler.banBlock(Blocks.STICKY_PISTON);
         boxHandler.banTile(TileEntityPiston.class);
-        boxHandler.banBlock(Blocks.daylight_detector);
+        boxHandler.banBlock(Blocks.DAYLIGHT_DETECTOR);
         boxHandler.banTile(TileEntityDaylightDetector.class);
-        boxHandler.banBlock(Blocks.ender_chest);
+        boxHandler.banBlock(Blocks.ENDER_CHEST);
         boxHandler.banTile(TileEntityEnderChest.class);
-        boxHandler.banBlock(Blocks.powered_comparator);
-        boxHandler.banBlock(Blocks.unpowered_comparator);
+        boxHandler.banBlock(Blocks.POWERED_COMPARATOR);
+        boxHandler.banBlock(Blocks.UNPOWERED_COMPARATOR);
         boxHandler.banTile(TileEntityComparator.class);
-        boxHandler.banBlock(Blocks.command_block);
+        boxHandler.banBlock(Blocks.COMMAND_BLOCK);
         boxHandler.banTile(TileEntityCommandBlock.class);
-        boxHandler.banBlock(Blocks.end_portal);
-        boxHandler.banBlock(Blocks.end_portal_frame);
+        boxHandler.banBlock(Blocks.END_PORTAL);
+        boxHandler.banBlock(Blocks.END_PORTAL_FRAME);
         boxHandler.banTile(TileEntityEndPortal.class);
-        boxHandler.banBlock(Blocks.noteblock);
+        boxHandler.banBlock(Blocks.NOTEBLOCK);
         boxHandler.banTile(TileEntityNote.class);
-        boxHandler.banBlock(Blocks.enchanting_table);
+        boxHandler.banBlock(Blocks.ENCHANTING_TABLE);
         boxHandler.banTile(TileEntityEnchantmentTable.class);
-        boxHandler.banBlock(Blocks.standing_sign);
-        boxHandler.banBlock(Blocks.wall_sign);
+        boxHandler.banBlock(Blocks.STANDING_SIGN);
+        boxHandler.banBlock(Blocks.WALL_SIGN);
         boxHandler.banTile(TileEntitySign.class);
-        boxHandler.banBlock(Blocks.skull);
+        boxHandler.banBlock(Blocks.SKULL);
         boxHandler.banTile(TileEntitySkull.class);
-        boxHandler.banBlock(Blocks.cauldron);
-        boxHandler.banBlock(Blocks.flower_pot);
+        boxHandler.banBlock(Blocks.CAULDRON);
+        boxHandler.banBlock(Blocks.FLOWER_POT);
         boxHandler.banTile(TileEntityFlowerPot.class);
 
         //Ban our own tile :P

@@ -1,9 +1,10 @@
 package com.builtbroken.cardboardboxes.box;
 
+import java.util.List;
+
 import com.builtbroken.cardboardboxes.Cardboardboxes;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -11,13 +12,9 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-
-import java.util.List;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by Dark on 7/28/2015.
@@ -77,11 +74,11 @@ public class ItemBlockBox extends ItemBlock
                 return true;
             }
 
-            if (block == Blocks.snow_layer && (world.getBlockMetadata(x, y, z) & 7) < 1)
+            if (block == Blocks.SNOW_LAYER && (world.getBlockMetadata(x, y, z) & 7) < 1)
             {
                 side = 1;
             }
-            else if (block != Blocks.vine && block != Blocks.tallgrass && block != Blocks.deadbush && !block.isReplaceable(world, x, y, z))
+            else if (block != Blocks.VINE && block != Blocks.TALLGRASS && block != Blocks.DEADBUSH && !block.isReplaceable(world, x, y, z))
             {
                 if (side == 0)
                 {
