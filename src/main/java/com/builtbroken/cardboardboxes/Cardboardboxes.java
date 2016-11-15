@@ -1,13 +1,5 @@
 package com.builtbroken.cardboardboxes;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.builtbroken.cardboardboxes.box.BlockBox;
 import com.builtbroken.cardboardboxes.box.ItemBlockBox;
 import com.builtbroken.cardboardboxes.box.TileBox;
@@ -18,30 +10,24 @@ import com.builtbroken.cardboardboxes.mods.TinkersConstructHandler;
 import com.builtbroken.cardboardboxes.mods.buildcraft.BuildCraftEnergyHandler;
 import com.builtbroken.cardboardboxes.mods.buildcraft.BuildCraftFactoryHandler;
 import com.builtbroken.cardboardboxes.mods.buildcraft.BuildCraftTransportHandler;
-
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityBeacon;
-import net.minecraft.tileentity.TileEntityCommandBlock;
-import net.minecraft.tileentity.TileEntityComparator;
-import net.minecraft.tileentity.TileEntityDaylightDetector;
-import net.minecraft.tileentity.TileEntityEnchantmentTable;
-import net.minecraft.tileentity.TileEntityEndPortal;
-import net.minecraft.tileentity.TileEntityEnderChest;
-import net.minecraft.tileentity.TileEntityFlowerPot;
-import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.tileentity.TileEntityNote;
-import net.minecraft.tileentity.TileEntityPiston;
-import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.tileentity.TileEntitySkull;
+import net.minecraft.tileentity.*;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Dark on 7/25/2015.
@@ -58,14 +44,14 @@ public class Cardboardboxes
     public static Configuration config;
     public static Logger LOGGER;
 
-    public static Block blockBox;
+    public static BlockBox blockBox;
 
     public static HandlerManager boxHandler;
 
     public static HashMap<String, Class<? extends ModSupportHandler>> modSupportHandlerMap = new HashMap();
 
     @Mod.EventHandler
-    public void preInit(net.minecraftforge.fml.common.event.FMLPreInitializationEvent event)
+    public void preInit(FMLPreInitializationEvent event)
     {
         LOGGER = LogManager.getLogger("CardboardBoxes");
         boxHandler = new HandlerManager();
@@ -74,7 +60,12 @@ public class Cardboardboxes
 
         //Create block
         blockBox = new BlockBox();
-        GameRegistry.registerBlock(blockBox, ItemBlockBox.class, "cbCardboardBox");
+        GameRegistry.register(blockBox);
+        GameRegistry.register(new ItemBlockBox(blockBox), blockBox.getRegistryName());
+        if (event.getSide() == Side.CLIENT)
+        {
+            blockBox.registerModel();
+        }
         GameRegistry.registerTileEntity(TileBox.class, "cbCardboardBox");
         proxy.preInit();
     }
@@ -187,8 +178,7 @@ public class Cardboardboxes
                             if (config.getBoolean("" + clazz, "BlackListTilesByName", shouldBan, "Prevents the cardboard box from picking up this tile[" + name + "]"))
                             {
                                 boxHandler.banTile(clazz);
-                            }
-                            else if (shouldBan && boxHandler.blackListedTiles.contains(clazz))
+                            } else if (shouldBan && boxHandler.blackListedTiles.contains(clazz))
                             {
                                 //If original was banned but someone unbanned it in the config
                                 boxHandler.blackListedTiles.remove(clazz);

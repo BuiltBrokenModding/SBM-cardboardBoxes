@@ -41,12 +41,12 @@ public class HandlerManager
         }
     }
 
-    public CanPickUpResult canPickUp(World world, int x, int y, int z)
+    public CanPickUpResult canPickUp(World world, BlockPos pos)
     {
-        Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
+        Block block = world.getBlockState(pos).getBlock();
         if (!blackListedBlocks.contains(block))
         {
-            TileEntity tile = world.getTileEntity(null);
+            TileEntity tile = world.getTileEntity(pos);
             if (tile != null)
             {
                 if (!blackListedTiles.contains(tile.getClass()))
