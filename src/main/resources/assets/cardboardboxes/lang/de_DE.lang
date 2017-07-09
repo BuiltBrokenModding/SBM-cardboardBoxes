@@ -1,0 +1,5 @@
+tile.cardboardboxes:cardboardBox.name=Kiste
+tile.cardboardboxes:cardboardBox.inventoryFull.name=Dein Inventar scheint voll zu sein
+tile.cardboardboxes:cardboardBox.banned.block.name=Ich denke nicht, dass ich diesen Block aufnehmen kann
+tile.cardboardboxes:cardboardBox.banned.tile.name=Ich denke nicht, dass ich diesen Block aufnehmen kann
+tile.cardboardboxes:cardboardBox.noData.name=Das ergibt nicht allzu viel Sinn
