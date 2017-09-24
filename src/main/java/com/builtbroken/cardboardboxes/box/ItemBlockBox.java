@@ -3,9 +3,9 @@ package com.builtbroken.cardboardboxes.box;
 import com.builtbroken.cardboardboxes.Cardboardboxes;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -46,55 +46,42 @@ public class ItemBlockBox extends ItemBlock
         ItemStack storedStack = getStoredBlock(stack);
         if (storedStack != null)
         {
+            //TODO check if required
             if (worldIn.isRemote)
             {
                 return EnumActionResult.PASS;
             }
-            if (block == Blocks.SNOW_LAYER)
+
+            //Offset block
+            if (!block.isReplaceable(worldIn, pos))
             {
-                pos = pos.up();
-            } else if (block != Blocks.VINE && block != Blocks.TALLGRASS && block != Blocks.DEADBUSH && !block.isReplaceable(worldIn, pos))
-            {
-                switch (facing)
-                {
-                    case DOWN:
-                        pos = pos.down();
-                        break;
-                    case UP:
-                        pos = pos.up();
-                        break;
-                    case NORTH:
-                        pos = pos.north();
-                        break;
-                    case WEST:
-                        pos = pos.west();
-                        break;
-                    case SOUTH:
-                        pos = pos.south();
-                        break;
-                    case EAST:
-                        pos = pos.east();
-                        break;
-                }
+                pos = pos.offset(facing);
             }
+
             Block storedBlock = Block.getBlockFromItem(storedStack.getItem());
             if (stack.stackSize == 0)
             {
                 return EnumActionResult.FAIL;
-            } else if (!player.canPlayerEdit(pos, facing, stack))
+            }
+            else if (!player.canPlayerEdit(pos, facing, stack))
             {
                 return EnumActionResult.FAIL;
-            } else if (pos.getY() == 255 && storedBlock.isBlockSolid(worldIn, pos, facing))
+            }
+            else if (pos.getY() == 255 && storedBlock.isBlockSolid(worldIn, pos, facing))
             {
                 return EnumActionResult.FAIL;
-            } else if (worldIn.canBlockBePlaced(storedBlock, pos, false, facing, player, storedStack))
+            }
+            else if (worldIn.canBlockBePlaced(storedBlock, pos, false, facing, player, storedStack))
             {
                 int storedMeta = Math.max(0, Math.min(storedStack.getItemDamage(), 16));
                 IBlockState state = storedBlock.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, storedMeta, player);
                 if (worldIn.setBlockState(pos, storedBlock.getDefaultState(), 3))
                 {
+                    //fire events
                     storedBlock.onBlockPlacedBy(worldIn, pos, state, player, storedStack);
-                    storedBlock.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, storedMeta, player);
+                    storedBlock.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, storedMeta, player); //TODO check if needed
+
+                    //Set tile entity data
                     NBTTagCompound nbtTagCompound = getStoredTileData(stack);
                     if (nbtTagCompound != null)
                     {
@@ -105,20 +92,32 @@ public class ItemBlockBox extends ItemBlock
                             tileEntity.setPos(pos);
                         }
                     }
-                    worldIn.playSound(player, pos, storedBlock.getSoundType().getStepSound(), SoundCategory.BLOCKS, (storedBlock.getSoundType().volume + 1.0F) / 2.0F, storedBlock.getSoundType().pitch * 0.8F);
-                    if (!player.capabilities.isCreativeMode)
+
+                    //Play sound
+                    SoundType soundtype = worldIn.getBlockState(pos).getBlock().getSoundType(worldIn.getBlockState(pos), worldIn, pos, player);
+                    worldIn.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+
+                    //Consume box
+                    if (!player.capabilities.isCreativeMode) //TODO check if needed
                     {
                         stack.stackSize--;
                     }
+
+                    //Return empty box
                     if (!player.inventory.addItemStackToInventory(new ItemStack(Cardboardboxes.blockBox)))
                     {
                         player.entityDropItem(new ItemStack(Cardboardboxes.blockBox), 0F);
                     }
+
+                    //Update inventory
                     player.inventoryContainer.detectAndSendChanges();
+
+                    //Done
                     return EnumActionResult.SUCCESS;
                 }
             }
-        } else if (!(block instanceof BlockBox))
+        }
+        else if (!(block instanceof BlockBox))
         {
             if (worldIn.isRemote)
             {
@@ -131,13 +130,16 @@ public class ItemBlockBox extends ItemBlock
                 if (tileEntity != null)
                 {
                     ItemStack blockStack = block.getItem(worldIn, pos, worldIn.getBlockState(pos));
+
                     NBTTagCompound nbtTagCompound = new NBTTagCompound();
                     tileEntity.writeToNBT(nbtTagCompound);
                     nbtTagCompound.removeTag("x");
                     nbtTagCompound.removeTag("y");
                     nbtTagCompound.removeTag("z");
+
                     worldIn.removeTileEntity(pos);
                     worldIn.setBlockState(pos, Cardboardboxes.blockBox.getDefaultState(), 2);
+
                     tileEntity = worldIn.getTileEntity(pos);
                     if (tileEntity instanceof TileBox)
                     {
@@ -150,17 +152,21 @@ public class ItemBlockBox extends ItemBlock
                         }
                         return EnumActionResult.SUCCESS;
                     }
-                } else
+                }
+                else
                 {
                     player.addChatComponentMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"));
                 }
-            } else if (result == HandlerManager.CanPickUpResult.BANNED_TILE)
+            }
+            else if (result == HandlerManager.CanPickUpResult.BANNED_TILE)
             {
                 player.addChatComponentMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.tile.name"));
-            } else if (result == HandlerManager.CanPickUpResult.BANNED_BLOCK)
+            }
+            else if (result == HandlerManager.CanPickUpResult.BANNED_BLOCK)
             {
                 player.addChatComponentMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.block.name"));
-            } else
+            }
+            else
             {
                 player.addChatComponentMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"));
             }
@@ -180,7 +186,8 @@ public class ItemBlockBox extends ItemBlock
             if (name != null && !name.isEmpty())
             {
                 list.add(name);
-            } else
+            }
+            else
             {
                 list.add("" + storedStack);
             }
