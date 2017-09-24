@@ -60,14 +60,18 @@ public class BlockBox extends BlockContainer
     {
         if (!world.isRemote)
         {
-            //TODO remove box and place tile back down
+            //Get box
             TileEntity tile = world.getTileEntity(x, y, z);
             if (tile instanceof TileBox && ((TileBox) tile).storedItem != null)
             {
+                //Get stored data
                 Block block = Block.getBlockFromItem(((TileBox) tile).storedItem.getItem());
                 int meta = ((TileBox) tile).storedItem.getItemDamage();
+
+                //Place block if data is stored
                 if (block != null && world.setBlock(x, y, z, block, meta, 3))
                 {
+                    //Load save data
                     NBTTagCompound nbt = ((TileBox) tile).tileData;
                     if (((TileBox) tile).tileData != null)
                     {
@@ -80,6 +84,8 @@ public class BlockBox extends BlockContainer
                             tileEntity.zCoord = z;
                         }
                     }
+
+                    //If not creative mode, drop box
                     if(!player.capabilities.isCreativeMode)
                     {
                         ItemStack stack = new ItemStack(this);
@@ -100,14 +106,20 @@ public class BlockBox extends BlockContainer
         {
             return true;
         }
+
+        //Pick up block if sneaking
         if (player.isSneaking())
         {
+            //Convert to item
             ItemStack stack = toItemStack(world, x, y, z);
             if(stack != null)
             {
+                //add to inventory if space
                 if (player.inventory.addItemStackToInventory(stack))
                 {
+                    //Update inventory
                     player.inventoryContainer.detectAndSendChanges();
+                    //Remove block
                     world.setBlockToAir(x, y, z);
                     return true;
                 }

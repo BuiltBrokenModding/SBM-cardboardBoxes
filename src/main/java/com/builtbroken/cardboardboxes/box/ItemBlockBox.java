@@ -70,13 +70,17 @@ public class ItemBlockBox extends ItemBlock
     {
         Block block = world.getBlock(x, y, z);
         ItemStack storedStack = getStoredBlock(boxItemStack);
+
+        //If we have a block stored
         if (storedStack != null)
         {
+            //Return true to send command to client
             if (world.isRemote)
             {
                 return true;
             }
 
+            //Adjust position
             if (block == Blocks.snow_layer && (world.getBlockMetadata(x, y, z) & 7) < 1)
             {
                 side = 1;
@@ -114,19 +118,28 @@ public class ItemBlockBox extends ItemBlock
                 }
             }
 
+            //Get stored block
             Block storedBlock = Block.getBlockFromItem(storedStack.getItem());
 
-            if (boxItemStack.stackSize == 0)
+            if (storedBlock == null || storedBlock == Blocks.air)
             {
-                return false;
+                player.addChatComponentMessage(new ChatComponentText("Failed to place, item '" + storedStack.getItem() + "' -> block is invalid '" + storedBlock + "'"));
+                return true;
+            }
+            else if (boxItemStack.stackSize == 0)
+            {
+                player.addChatComponentMessage(new ChatComponentText("Failed to place, stack size is zero"));
+                return true;
             }
             else if (!player.canPlayerEdit(x, y, z, side, boxItemStack))
             {
-                return false;
+                player.addChatComponentMessage(new ChatComponentText("Failed to place, can't edit location"));
+                return true;
             }
-            else if (y == 255 && storedBlock.getMaterial().isSolid())
+            else if (y == 255 && storedBlock.getMaterial().isSolid() || y <= 0)
             {
-                return false;
+                player.addChatComponentMessage(new ChatComponentText("Failed to place, outside of map"));
+                return true;
             }
             else if (world.canPlaceEntityOnSide(storedBlock, x, y, z, false, side, player, storedStack))
             {
@@ -162,8 +175,12 @@ public class ItemBlockBox extends ItemBlock
                         player.inventoryContainer.detectAndSendChanges();
                     }
                 }
-                return true;
             }
+            else
+            {
+                player.addChatComponentMessage(new ChatComponentText("Failed to place block on side"));
+            }
+            return true;
         }
         else if (!(block instanceof BlockBox))
         {
@@ -179,7 +196,7 @@ public class ItemBlockBox extends ItemBlock
                 {
                     //Get block from tile
                     ItemStack blockStack = block.getPickBlock(new MovingObjectPosition(x, y, z, side, Vec3.createVectorHelper(xHit, yHit, zHit)), world, x, y, z, player);
-                    if (blockStack == null)
+                    if (blockStack == null || !(blockStack.getItem() instanceof ItemBlock))
                     {
                         blockStack = new ItemStack(block.getItem(world, x, y, z), 1, block.getDamageValue(world, x, y, z));
                     }
