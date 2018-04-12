@@ -13,44 +13,34 @@ import java.util.List;
 /**
  * Created by Dark on 7/28/2015.
  */
-public class HandlerManager
-{
+public class HandlerManager {
     public static HashMap<Class<? extends TileEntity>, Handler> pickupHandlerMap = new HashMap();
     public static List<Class<? extends TileEntity>> blackListedTiles = new ArrayList();
     public static List<Block> blackListedBlocks = new ArrayList();
 
 
-    public void registerSpecialHandler(Class<? extends TileEntity> clazz, Handler handler)
-    {
+    public void registerSpecialHandler(Class<? extends TileEntity> clazz, Handler handler) {
         pickupHandlerMap.put(clazz, handler);
     }
 
-    public void banTile(Class<? extends TileEntity> clazz)
-    {
-        if (!blackListedTiles.contains(clazz))
-        {
+    public void banTile(Class<? extends TileEntity> clazz) {
+        if (!blackListedTiles.contains(clazz)) {
             blackListedTiles.add(clazz);
         }
     }
 
-    public void banBlock(Block block)
-    {
-        if (!blackListedBlocks.contains(block))
-        {
+    public void banBlock(Block block) {
+        if (!blackListedBlocks.contains(block)) {
             this.blackListedBlocks.add(block);
         }
     }
 
-    public CanPickUpResult canPickUp(World world, BlockPos pos)
-    {
+    public CanPickUpResult canPickUp(World world, BlockPos pos) {
         Block block = world.getBlockState(pos).getBlock();
-        if (!blackListedBlocks.contains(block))
-        {
+        if (!blackListedBlocks.contains(block)) {
             TileEntity tile = world.getTileEntity(pos);
-            if (tile != null)
-            {
-                if (!blackListedTiles.contains(tile.getClass()))
-                {
+            if (tile != null) {
+                if (!blackListedTiles.contains(tile.getClass())) {
                     //Check if we even have data to store, no data no point in using a box
                     NBTTagCompound nbt = new NBTTagCompound();
                     tile.writeToNBT(nbt);
@@ -67,8 +57,7 @@ public class HandlerManager
         return CanPickUpResult.BANNED_BLOCK;
     }
 
-    public enum CanPickUpResult
-    {
+    public enum CanPickUpResult {
         CAN_PICK_UP,
         BANNED_BLOCK,
         BANNED_TILE,

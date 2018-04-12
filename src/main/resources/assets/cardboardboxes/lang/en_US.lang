@@ -1,5 +1,5 @@
-tile.cardboardboxes:cardboardBox.name=Box
-tile.cardboardboxes:cardboardBox.inventoryFull.name=It seems your inventory is full
-tile.cardboardboxes:cardboardBox.banned.block.name=I don't think I can pick that block up
-tile.cardboardboxes:cardboardBox.banned.tile.name=I don't think I can pick that tile up
-tile.cardboardboxes:cardboardBox.noData.name=There doesn't seem to be much point in that
+tile.cardboardbox.name=Box
+tile.cardboardbox.inventoryFull.name=It seems your inventory is full
+tile.cardboardbox.banned.block.name=I don't think I can pick that block up
+tile.cardboardbox.banned.tile.name=I don't think I can pick that tile up
+tile.cardboardbox.noData.name=There doesn't seem to be much point in that

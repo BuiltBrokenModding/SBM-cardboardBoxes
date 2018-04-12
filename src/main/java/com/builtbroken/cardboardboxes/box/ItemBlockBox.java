@@ -5,6 +5,7 @@ import com.builtbroken.cardboardboxes.handler.HandlerManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -17,77 +18,85 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
+
+import static com.builtbroken.cardboardboxes.box.BlockBox.STORE_ITEM_TAG;
+import static com.builtbroken.cardboardboxes.box.BlockBox.TILE_DATA_TAG;
 
 /**
  * Created by Dark on 7/28/2015.
  */
-public class ItemBlockBox extends ItemBlock
-{
-    public ItemBlockBox(Block block)
-    {
+public class ItemBlockBox extends ItemBlock {
+    public ItemBlockBox(Block block) {
         super(block);
         this.setHasSubtypes(true);
+        setRegistryName("cardboardbox");
     }
 
     @Override
-    public int getItemStackLimit(ItemStack stack)
-    {
+    public int getItemStackLimit(ItemStack stack) {
         return stack.hasTagCompound() ? 1 : 64;
     }
 
     @Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
-    {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        if (stack.getTagCompound() != null && stack.getTagCompound().hasKey(STORE_ITEM_TAG)) {
+            ItemStack storedStack = new ItemStack(stack.getTagCompound().getCompoundTag(STORE_ITEM_TAG));
+            String name = storedStack.getDisplayName();
+            if (name != null && !name.isEmpty()) {
+                tooltip.add(name);
+            } else {
+                tooltip.add("" + storedStack);
+            }
+        }
+    }
+
+    public ItemStack getStoredBlock(ItemStack stack) {
+        return stack.getTagCompound() != null && stack.getTagCompound().hasKey(STORE_ITEM_TAG) ? new ItemStack(stack.getTagCompound().getCompoundTag(STORE_ITEM_TAG)) : ItemStack.EMPTY;
+    }
+
+    public NBTTagCompound getStoredTileData(ItemStack stack) {
+        return stack.getTagCompound() != null && stack.getTagCompound().hasKey(TILE_DATA_TAG) ? stack.getTagCompound().getCompoundTag(TILE_DATA_TAG) : null;
+    }
+
+    @Override
+    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         Block block = worldIn.getBlockState(pos).getBlock();
-        ItemStack storedStack = getStoredBlock(stack);
-        if (storedStack != null)
-        {
+        ItemStack stack = player.getHeldItem(hand);
+        ItemStack storedStack = getStoredBlock(player.getHeldItem(hand));
+        if (!storedStack.isEmpty()) {
             //TODO check if required
-            if (worldIn.isRemote)
-            {
+            if (worldIn.isRemote) {
                 return EnumActionResult.PASS;
             }
 
             //Offset block
-            if (!block.isReplaceable(worldIn, pos))
-            {
+            if (!block.isReplaceable(worldIn, pos)) {
                 pos = pos.offset(facing);
             }
 
             Block storedBlock = Block.getBlockFromItem(storedStack.getItem());
-            if (stack.stackSize == 0)
-            {
+            if (stack.getCount() == 0) {
                 return EnumActionResult.FAIL;
-            }
-            else if (!player.canPlayerEdit(pos, facing, stack))
-            {
+            } else if (!player.canPlayerEdit(pos, facing, stack)) {
                 return EnumActionResult.FAIL;
-            }
-            else if (pos.getY() == 255 && storedBlock.isBlockSolid(worldIn, pos, facing))
-            {
+            } else if (pos.getY() == 255 && storedBlock.isFullCube(worldIn.getBlockState(pos))) {
                 return EnumActionResult.FAIL;
-            }
-            else if (worldIn.canBlockBePlaced(storedBlock, pos, false, facing, player, storedStack))
-            {
-                int storedMeta = Math.max(0, Math.min(storedStack.getItemDamage(), 16));
-                IBlockState state = storedBlock.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, storedMeta, player);
-                if (worldIn.setBlockState(pos, storedBlock.getDefaultState(), 3))
-                {
-                    //fire events
+            } else if (worldIn.mayPlace(storedBlock, pos, false, facing, player)) {
+                IBlockState state = worldIn.getBlockState(pos);
+                if (worldIn.setBlockState(pos, storedBlock.getDefaultState(), 3)) {
+                    stack.getTagCompound().removeTag(STORE_ITEM_TAG);
+                    stack.getTagCompound().removeTag(TILE_DATA_TAG);
                     storedBlock.onBlockPlacedBy(worldIn, pos, state, player, storedStack);
-                    storedBlock.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, storedMeta, player); //TODO check if needed
+                    worldIn.getBlockState(pos);
 
                     //Set tile entity data
                     NBTTagCompound nbtTagCompound = getStoredTileData(stack);
-                    if (nbtTagCompound != null)
-                    {
+                    if (nbtTagCompound != null) {
                         TileEntity tileEntity = worldIn.getTileEntity(pos);
-                        if (tileEntity != null)
-                        {
+                        if (tileEntity != null) {
                             tileEntity.readFromNBT(nbtTagCompound);
                             tileEntity.setPos(pos);
                         }
@@ -100,12 +109,11 @@ public class ItemBlockBox extends ItemBlock
                     //Consume box
                     if (!player.capabilities.isCreativeMode) //TODO check if needed
                     {
-                        stack.stackSize--;
+                        stack.shrink(1);
                     }
 
                     //Return empty box
-                    if (!player.inventory.addItemStackToInventory(new ItemStack(Cardboardboxes.blockBox)))
-                    {
+                    if (!player.inventory.addItemStackToInventory(new ItemStack(Cardboardboxes.blockBox))) {
                         player.entityDropItem(new ItemStack(Cardboardboxes.blockBox), 0F);
                     }
 
@@ -116,19 +124,14 @@ public class ItemBlockBox extends ItemBlock
                     return EnumActionResult.SUCCESS;
                 }
             }
-        }
-        else if (!(block instanceof BlockBox))
-        {
-            if (worldIn.isRemote)
-            {
+        } else if (!(block instanceof BlockBox)) {
+            if (worldIn.isRemote) {
                 return EnumActionResult.SUCCESS;
             }
             HandlerManager.CanPickUpResult result = Cardboardboxes.boxHandler.canPickUp(worldIn, pos);
-            if (result == HandlerManager.CanPickUpResult.CAN_PICK_UP)
-            {
+            if (result == HandlerManager.CanPickUpResult.CAN_PICK_UP) {
                 TileEntity tileEntity = worldIn.getTileEntity(pos);
-                if (tileEntity != null)
-                {
+                if (tileEntity != null) {
                     ItemStack blockStack = block.getItem(worldIn, pos, worldIn.getBlockState(pos));
 
                     NBTTagCompound nbtTagCompound = new NBTTagCompound();
@@ -141,66 +144,27 @@ public class ItemBlockBox extends ItemBlock
                     worldIn.setBlockState(pos, Cardboardboxes.blockBox.getDefaultState(), 2);
 
                     tileEntity = worldIn.getTileEntity(pos);
-                    if (tileEntity instanceof TileBox)
-                    {
+                    if (tileEntity instanceof TileBox) {
                         TileBox tileBox = (TileBox) tileEntity;
                         tileBox.storedItem = blockStack;
                         tileBox.tileData = nbtTagCompound;
-                        if (!player.capabilities.isCreativeMode)
-                        {
-                            stack.stackSize--;
+                        if (!player.capabilities.isCreativeMode) {
+                            stack.shrink(1);
                         }
                         return EnumActionResult.SUCCESS;
                     }
+                } else {
+                    player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"), true);
                 }
-                else
-                {
-                    player.addChatComponentMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"));
-                }
-            }
-            else if (result == HandlerManager.CanPickUpResult.BANNED_TILE)
-            {
-                player.addChatComponentMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.tile.name"));
-            }
-            else if (result == HandlerManager.CanPickUpResult.BANNED_BLOCK)
-            {
-                player.addChatComponentMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.block.name"));
-            }
-            else
-            {
-                player.addChatComponentMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"));
+            } else if (result == HandlerManager.CanPickUpResult.BANNED_TILE) {
+                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.tile.name"), true);
+            } else if (result == HandlerManager.CanPickUpResult.BANNED_BLOCK) {
+                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.block.name"), true);
+            } else {
+                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"), true);
             }
             return EnumActionResult.SUCCESS;
         }
         return EnumActionResult.FAIL;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean b)
-    {
-        if (stack.getTagCompound() != null && stack.getTagCompound().hasKey(BlockBox.STORE_ITEM_TAG))
-        {
-            ItemStack storedStack = ItemStack.loadItemStackFromNBT(stack.getTagCompound().getCompoundTag(BlockBox.STORE_ITEM_TAG));
-            String name = storedStack.getDisplayName();
-            if (name != null && !name.isEmpty())
-            {
-                list.add(name);
-            }
-            else
-            {
-                list.add("" + storedStack);
-            }
-        }
-    }
-
-    public ItemStack getStoredBlock(ItemStack stack)
-    {
-        return stack.getTagCompound() != null && stack.getTagCompound().hasKey(BlockBox.STORE_ITEM_TAG) ? ItemStack.loadItemStackFromNBT(stack.getTagCompound().getCompoundTag(BlockBox.STORE_ITEM_TAG)) : null;
-    }
-
-    public NBTTagCompound getStoredTileData(ItemStack stack)
-    {
-        return stack.getTagCompound() != null && stack.getTagCompound().hasKey(BlockBox.TILE_DATA_TAG) ? stack.getTagCompound().getCompoundTag(BlockBox.TILE_DATA_TAG) : null;
     }
 }
