@@ -27,11 +27,13 @@ import static com.builtbroken.cardboardboxes.Cardboardboxes.itemBlockBox;
 /**
  * Created by Dark on 7/28/2015.
  */
-public class BlockBox extends BlockContainer {
+public class BlockBox extends BlockContainer
+{
     public static final String STORE_ITEM_TAG = "storedItem";
     public static final String TILE_DATA_TAG = "tileData";
 
-    public BlockBox() {
+    public BlockBox()
+    {
         super(Material.WOOD);
         this.setRegistryName("cardboardbox");
         this.setUnlocalizedName("cardboardbox");
@@ -41,30 +43,39 @@ public class BlockBox extends BlockContainer {
     }
 
     @Override
-    public EnumBlockRenderType getRenderType(IBlockState state) {
+    public EnumBlockRenderType getRenderType(IBlockState state)
+    {
         return EnumBlockRenderType.MODEL; // this is default invisible... mojang pls
     }
 
     @Override
-    public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {
-        if (!worldIn.isRemote) {
+    public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn)
+    {
+        if (!worldIn.isRemote)
+        {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if (tileEntity instanceof TileBox && ((TileBox) tileEntity).storedItem != null) {
+            if (tileEntity instanceof TileBox && ((TileBox) tileEntity).storedItem != null)
+            {
                 TileBox tileBox = (TileBox) tileEntity;
                 Block block = Block.getBlockFromItem(tileBox.storedItem.getItem());
                 int meta = tileBox.storedItem.getItemDamage();
-                if (block != null && worldIn.setBlockState(pos, block.getStateFromMeta(meta), 3)) {
+                if (block != null && worldIn.setBlockState(pos, block.getStateFromMeta(meta), 3))
+                {
                     NBTTagCompound compound = tileBox.tileData;
-                    if (compound != null) {
+                    if (compound != null)
+                    {
                         TileEntity tile = worldIn.getTileEntity(pos);
-                        if (tile != null) {
+                        if (tile != null)
+                        {
                             tile.readFromNBT(compound);
                             tile.setPos(pos);
                         }
                     }
-                    if (!playerIn.capabilities.isCreativeMode) {
+                    if (!playerIn.capabilities.isCreativeMode)
+                    {
                         ItemStack stack = new ItemStack(this);
-                        if (playerIn.inventory.addItemStackToInventory(stack)) {
+                        if (playerIn.inventory.addItemStackToInventory(stack))
+                        {
                             playerIn.entityDropItem(stack, 0F);
                         }
                     }
@@ -74,41 +85,53 @@ public class BlockBox extends BlockContainer {
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (worldIn.isRemote) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        if (worldIn.isRemote)
+        {
             return true;
         }
-        if (playerIn.isSneaking()) {
+        if (playerIn.isSneaking())
+        {
             ItemStack stack = toItemStack(worldIn, pos);
-            if (stack != null) {
-                if (playerIn.inventory.addItemStackToInventory(stack)) {
+            if (stack != null)
+            {
+                if (playerIn.inventory.addItemStackToInventory(stack))
+                {
                     playerIn.inventoryContainer.detectAndSendChanges();
                     worldIn.setBlockToAir(pos);
                     return true;
-                } else {
+                } else
+                {
                     playerIn.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".inventoryFull.name"), true);
                     return true;
                 }
-            } else {
+            } else
+            {
                 playerIn.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".error.stack.null"), true);
             }
         }
         return false;
     }
 
-    public ItemStack toItemStack(World world, BlockPos pos) {
+    public ItemStack toItemStack(World world, BlockPos pos)
+    {
         ItemStack stack = new ItemStack(Cardboardboxes.blockBox);
 
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileBox) {
-            if (((TileBox) tile).storedItem != null) {
+        if (tile instanceof TileBox)
+        {
+            if (((TileBox) tile).storedItem != null)
+            {
                 stack.setTagCompound(new NBTTagCompound());
 
                 stack.getTagCompound().setTag(STORE_ITEM_TAG, ((TileBox) tile).storedItem.writeToNBT(new NBTTagCompound()));
-                if (((TileBox) tile).tileData != null) {
+                if (((TileBox) tile).tileData != null)
+                {
                     stack.getTagCompound().setTag(TILE_DATA_TAG, ((TileBox) tile).tileData);
                 }
-            } else {
+            } else
+            {
                 System.out.println("Error: tile does not have an ItemStack");
             }
         }
@@ -116,17 +139,20 @@ public class BlockBox extends BlockContainer {
     }
 
     @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+    {
         return toItemStack(world, pos);
     }
 
     @Override
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
+    {
         return new TileBox();
     }
 
     @SideOnly(Side.CLIENT)
-    public void registerModel() {
+    public void registerModel()
+    {
         ModelLoader.setCustomModelResourceLocation(itemBlockBox, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
     }
 

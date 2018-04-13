@@ -13,9 +13,12 @@ import java.util.Map;
 
 import static com.builtbroken.cardboardboxes.Cardboardboxes.*;
 
-public class MainModHandler {
-    public static void banDefaultTiles() {
-        if (config.getBoolean("BlackListMobSpawners", "BlackListSettings", true, "Prevents mobs spawners from being placed into cardboard boxes")) {
+public class MainModHandler
+{
+    public static void banDefaultTiles()
+    {
+        if (config.getBoolean("BlackListMobSpawners", "BlackListSettings", true, "Prevents mobs spawners from being placed into cardboard boxes"))
+        {
             boxHandler.banBlock(Blocks.MOB_SPAWNER);
             boxHandler.banTile(TileEntityMobSpawner.class);
         }
@@ -65,23 +68,31 @@ public class MainModHandler {
         modSupportHandlerMap.put("BuildCraft|Builders", BuildCraftTransportHandler.class);
         modSupportHandlerMap.put("IC2", IC2Handler.class);
         modSupportHandlerMap.put("appliedenergistics2", ModSupportHandler.class);
-        try {
+        try
+        {
             Field field;
-            try {
+            try
+            {
                 field = TileEntity.class.getDeclaredField("field_145855_i");
-            } catch (NoSuchFieldException e) {
+            } catch (NoSuchFieldException e)
+            {
                 field = TileEntity.class.getDeclaredField("nameToClassMap");
             }
             field.setAccessible(true);
             Map<String, Class> map = (Map) field.get(null);
-            for (Map.Entry<String, Class<? extends ModSupportHandler>> entry : modSupportHandlerMap.entrySet()) {
-                if (Loader.isModLoaded(entry.getKey())) {
-                    try {
+            for (Map.Entry<String, Class<? extends ModSupportHandler>> entry : modSupportHandlerMap.entrySet())
+            {
+                if (Loader.isModLoaded(entry.getKey()))
+                {
+                    try
+                    {
                         entry.getValue().newInstance().handleBlackListedContent(map);
-                    } catch (InstantiationException e) {
+                    } catch (InstantiationException e)
+                    {
                         LOGGER.error("Failed to create handler for mod " + entry.getKey());
                         e.printStackTrace();
-                    } catch (IllegalAccessException e) {
+                    } catch (IllegalAccessException e)
+                    {
                         LOGGER.error("Failed to access constructor for handler for mod " + entry.getKey());
                         e.printStackTrace();
                     }
@@ -89,36 +100,46 @@ public class MainModHandler {
             }
 
             //TODO see if we can sort the files by mod to help users find what they are looking for
-            for (Map.Entry<String, Class> entry : map.entrySet()) {
-                try {
+            for (Map.Entry<String, Class> entry : map.entrySet())
+            {
+                try
+                {
                     config.setCategoryComment("BlackListTilesByName", "Auto generated list of tiles registered in Minecraft that can be blacklisted. If a tile does not show up on this list it is already black listed. The reasoning behind blacklisting tiles is to prevent crashes or unwanted interaction. Such as picking up a piston which can both causes issues and doesn't really matter.");
                     Class<? extends TileEntity> clazz = entry.getValue();
                     String name = entry.getKey();
-                    if (name != null && !name.isEmpty()) {
-                        if (clazz != null) {
+                    if (name != null && !name.isEmpty())
+                    {
+                        if (clazz != null)
+                        {
                             String clazzName = clazz.getSimpleName();
                             boolean shouldBan = boxHandler.blackListedTiles.contains(clazz) || clazzName.contains("cable") || clazzName.contains("wire") || clazzName.contains("pipe") || clazzName.contains("tube") || clazzName.contains("conduit") || clazzName.contains("channel");
-                            if (config.getBoolean("" + clazz, "BlackListTilesByName", shouldBan, "Prevents the cardboard box from picking up this tile[" + name + "]")) {
+                            if (config.getBoolean("" + clazz, "BlackListTilesByName", shouldBan, "Prevents the cardboard box from picking up this tile[" + name + "]"))
+                            {
                                 boxHandler.banTile(clazz);
-                            } else if (shouldBan && boxHandler.blackListedTiles.contains(clazz)) {
+                            } else if (shouldBan && boxHandler.blackListedTiles.contains(clazz))
+                            {
                                 //If original was banned but someone unbanned it in the config
                                 boxHandler.blackListedTiles.remove(clazz);
                             }
                         }
                     }
-                } catch (Exception e) {
+                } catch (Exception e)
+                {
                     LOGGER.error("Failed to add entry to config " + entry);
                     e.printStackTrace();
                 }
 
             }
-        } catch (NoSuchFieldException e) {
+        } catch (NoSuchFieldException e)
+        {
             LOGGER.error("Failed to find the tile map field");
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e)
+        {
             LOGGER.error("Failed to access tile map");
             e.printStackTrace();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             LOGGER.error("Failed to add tile map to config");
             e.printStackTrace();
         }

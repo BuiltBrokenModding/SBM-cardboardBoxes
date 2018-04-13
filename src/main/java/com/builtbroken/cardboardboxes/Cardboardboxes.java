@@ -29,7 +29,8 @@ import java.util.HashMap;
  */
 @Mod.EventBusSubscriber
 @Mod(modid = Cardboardboxes.DOMAIN, name = "Cardboard Boxes", version = "@MAJOR@.@MINOR@.@REVIS@.@BUILD@")
-public class Cardboardboxes {
+public class Cardboardboxes
+{
     public static final String DOMAIN = "cardboardboxes";
     public static final String PREFIX = DOMAIN + ":";
 
@@ -47,23 +48,27 @@ public class Cardboardboxes {
     public static HashMap<String, Class<? extends ModSupportHandler>> modSupportHandlerMap = new HashMap();
 
     @SubscribeEvent
-    public static void registerBlock(RegistryEvent.Register<Block> event) {
+    public static void registerBlock(RegistryEvent.Register<Block> event)
+    {
         event.getRegistry().register(blockBox);
         GameRegistry.registerTileEntity(TileBox.class, "cbcardboardbox");
     }
 
     @SubscribeEvent
-    public static void registerItem(RegistryEvent.Register<Item> event) {
+    public static void registerItem(RegistryEvent.Register<Item> event)
+    {
         event.getRegistry().register(itemBlockBox);
     }
 
     @SubscribeEvent
-    public static void registerModel(ModelRegistryEvent event) {
+    public static void registerModel(ModelRegistryEvent event)
+    {
         blockBox.registerModel();
     }
 
     @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event)
+    {
         LOGGER = LogManager.getLogger("CardboardBoxes");
         boxHandler = new HandlerManager();
         config = new Configuration(new File(event.getModConfigurationDirectory(), "bbm/Cardboard_Boxes.cfg"));
@@ -72,12 +77,14 @@ public class Cardboardboxes {
     }
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void init(FMLInitializationEvent event)
+    {
         proxy.init();
     }
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
+    public void postInit(FMLPostInitializationEvent event)
+    {
         MainModHandler.banDefaultTiles();
         proxy.postInit();
         config.save();
