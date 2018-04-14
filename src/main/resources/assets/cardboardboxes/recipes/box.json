@@ -1,0 +1,23 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "PPP",
+    "SWS",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "S": {
+      "item": "minecraft:slime_ball"
+    },
+    "W": {
+      "ore": "logWood",
+      "type": "forge:ore_dict"
+    }
+  },
+  "result": {
+    "item": "cardboardboxes:cardboardbox"
+  }
+}
