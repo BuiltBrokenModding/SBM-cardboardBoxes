@@ -105,8 +105,7 @@ public class ItemBlockBox extends ItemBlock
                 IBlockState state = worldIn.getBlockState(pos);
                 if (worldIn.setBlockState(pos, storedBlock.getDefaultState(), 3))
                 {
-                    stack.getTagCompound().removeTag(STORE_ITEM_TAG);
-                    stack.getTagCompound().removeTag(TILE_DATA_TAG);
+                    player.setHeldItem(hand, new ItemStack(this));
                     storedBlock.onBlockPlacedBy(worldIn, pos, state, player, storedStack);
                     worldIn.getBlockState(pos);
 
