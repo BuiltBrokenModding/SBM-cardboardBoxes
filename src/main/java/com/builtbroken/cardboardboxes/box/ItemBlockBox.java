@@ -27,7 +27,10 @@ import static com.builtbroken.cardboardboxes.box.BlockBox.STORE_ITEM_TAG;
 import static com.builtbroken.cardboardboxes.box.BlockBox.TILE_DATA_TAG;
 
 /**
- * Created by Dark on 7/28/2015.
+ * ItemBlock for the box
+ *
+ * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
  */
 public class ItemBlockBox extends ItemBlock
 {
@@ -54,7 +57,8 @@ public class ItemBlockBox extends ItemBlock
             if (name != null && !name.isEmpty())
             {
                 tooltip.add(name);
-            } else
+            }
+            else
             {
                 tooltip.add("" + storedStack);
             }
@@ -95,13 +99,16 @@ public class ItemBlockBox extends ItemBlock
             if (stack.getCount() == 0)
             {
                 return EnumActionResult.FAIL;
-            } else if (!player.canPlayerEdit(pos, facing, stack))
+            }
+            else if (!player.canPlayerEdit(pos, facing, stack))
             {
                 return EnumActionResult.FAIL;
-            } else if (pos.getY() == 255 && storedBlock.isFullCube(worldIn.getBlockState(pos)))
+            }
+            else if (pos.getY() == 255 && storedBlock.isFullCube(worldIn.getBlockState(pos)))
             {
                 return EnumActionResult.FAIL;
-            } else if (worldIn.mayPlace(storedBlock, pos, false, facing, player))
+            }
+            else if (worldIn.mayPlace(storedBlock, pos, false, facing, player))
             {
                 IBlockState state = worldIn.getBlockState(pos);
                 if (worldIn.setBlockState(pos, storedBlock.getDefaultState(), 3))
@@ -145,7 +152,8 @@ public class ItemBlockBox extends ItemBlock
                     return EnumActionResult.SUCCESS;
                 }
             }
-        } else if (!(block instanceof BlockBox))
+        }
+        else if (!(block instanceof BlockBox))
         {
             if (worldIn.isRemote)
             {
@@ -180,17 +188,21 @@ public class ItemBlockBox extends ItemBlock
                         }
                         return EnumActionResult.SUCCESS;
                     }
-                } else
+                }
+                else
                 {
                     player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"), true);
                 }
-            } else if (result == CanPickUpResult.BANNED_TILE)
+            }
+            else if (result == CanPickUpResult.BANNED_TILE)
             {
                 player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.tile.name"), true);
-            } else if (result == CanPickUpResult.BANNED_BLOCK)
+            }
+            else if (result == CanPickUpResult.BANNED_BLOCK)
             {
                 player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.block.name"), true);
-            } else
+            }
+            else
             {
                 player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"), true);
             }

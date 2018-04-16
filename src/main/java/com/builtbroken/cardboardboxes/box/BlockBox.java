@@ -19,7 +19,10 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 /**
- * Created by Dark on 7/28/2015.
+ * Block for the box
+ *
+ * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
  */
 public class BlockBox extends BlockContainer
 {
@@ -55,7 +58,7 @@ public class BlockBox extends BlockContainer
                 int meta = tileBox.getItemForPlacement().getItemDamage();
                 if (block != null && worldIn.setBlockState(pos, block.getStateFromMeta(meta), 3))
                 {
-                    NBTTagCompound compound = tileBox.getTileData();
+                    NBTTagCompound compound = tileBox.getDataForPlacement();
                     if (compound != null)
                     {
                         TileEntity tile = worldIn.getTileEntity(pos);
@@ -95,12 +98,14 @@ public class BlockBox extends BlockContainer
                     playerIn.inventoryContainer.detectAndSendChanges();
                     worldIn.setBlockToAir(pos);
                     return true;
-                } else
+                }
+                else
                 {
                     playerIn.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".inventoryFull.name"), true);
                     return true;
                 }
-            } else
+            }
+            else
             {
                 playerIn.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".error.stack.null"), true);
             }
@@ -120,11 +125,12 @@ public class BlockBox extends BlockContainer
                 stack.setTagCompound(new NBTTagCompound());
 
                 stack.getTagCompound().setTag(STORE_ITEM_TAG, ((TileEntityBox) tile).getItemForPlacement().writeToNBT(new NBTTagCompound()));
-                if (((TileEntityBox)tile).getDataForPlacement() != null)
+                if (((TileEntityBox) tile).getDataForPlacement() != null)
                 {
-                    stack.getTagCompound().setTag(TILE_DATA_TAG, ((TileEntityBox) tile).getTileData());
+                    stack.getTagCompound().setTag(TILE_DATA_TAG, ((TileEntityBox) tile).getDataForPlacement());
                 }
-            } else
+            }
+            else
             {
                 System.out.println("Error: tile does not have an ItemStack");
             }

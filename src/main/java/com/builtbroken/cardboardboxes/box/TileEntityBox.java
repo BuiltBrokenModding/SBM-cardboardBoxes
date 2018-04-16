@@ -5,7 +5,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 /**
- * Created by Dark on 7/28/2015.
+ * TileEntity for the box
+ *
+ * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
  */
 public class TileEntityBox extends TileEntity
 {
@@ -33,9 +36,9 @@ public class TileEntityBox extends TileEntity
         if (getItemForPlacement() != null)
         {
             nbt.setTag("storedTile", getItemForPlacement().writeToNBT(new NBTTagCompound()));
-            if (getTileData() != null)
+            if (getDataForPlacement() != null)
             {
-                nbt.setTag("tileData", getTileData());
+                nbt.setTag("tileData", getDataForPlacement());
             }
         }
         return nbt;

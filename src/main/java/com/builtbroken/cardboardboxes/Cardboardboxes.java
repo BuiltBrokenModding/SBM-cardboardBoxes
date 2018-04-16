@@ -22,7 +22,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 
 /**
- * Created by Dark on 7/25/2015.
+ * Main mod class, handles registering content and triggering loading of interaction
+ *
+ * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ * Created by Dark(DarkGuardsman, Robert) on 7/25/2015.
  */
 @Mod.EventBusSubscriber
 @Mod(modid = Cardboardboxes.DOMAIN, name = "[SBM] Cardboard Boxes", version = "@MAJOR@.@MINOR@.@REVIS@.@BUILD@")

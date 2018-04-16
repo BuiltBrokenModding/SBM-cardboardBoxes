@@ -15,7 +15,10 @@ import java.util.Map;
 import static com.builtbroken.cardboardboxes.Cardboardboxes.LOGGER;
 
 /**
- * Created by Dark on 7/28/2015.
+ * Prefab for handling interaction for a mod or content package
+ *
+ * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
  */
 public class ModHandler
 {

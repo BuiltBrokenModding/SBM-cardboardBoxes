@@ -4,8 +4,9 @@ import com.builtbroken.cardboardboxes.Cardboardboxes;
 import com.builtbroken.cardboardboxes.mods.ModHandler;
 import net.minecraftforge.common.config.Configuration;
 
-/**
- * Created by Dark on 7/29/2015.
+/** Handles interaction with IC2
+ * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ * Created by Dark(DarkGuardsman, Robert) on 7/29/2015.
  */
 public class IC2Handler extends ModHandler
 {

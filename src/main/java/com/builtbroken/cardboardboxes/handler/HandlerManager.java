@@ -12,7 +12,9 @@ import java.util.List;
 
 /**
  * Handles interaction between {@link com.builtbroken.cardboardboxes.box.ItemBlockBox} and tiles
- * Created by Dark on 7/28/2015.
+ *
+ * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
  */
 public class HandlerManager
 {
