@@ -34,18 +34,30 @@ public class ModHandler
 
     }
 
+    /**
+     * Helper method to ban TileEntity.class by registry name
+     *
+     * @param names - registry name of the tile
+     */
     protected void banTileNames(ResourceLocation... names)
     {
-        for (ResourceLocation name : names)
+        if (TILE_REGISTRY != null)
         {
-            if (TILE_REGISTRY.containsKey(name))
+            for (ResourceLocation name : names)
             {
-                HandlerManager.INSTANCE.banTile(TILE_REGISTRY.getObject(name));
+                if (TILE_REGISTRY.containsKey(name))
+                {
+                    HandlerManager.INSTANCE.banTile(TILE_REGISTRY.getObject(name));
+                }
+                else
+                {
+                    Cardboardboxes.LOGGER.error("\tFailed to locate tile by name " + name + ". This is most likely a mod version issue report this error to mod author so it can be updated");
+                }
             }
-            else
-            {
-                Cardboardboxes.LOGGER.error("\tFailed to locate tile by name " + name + ". This is most likely a mod version issue report this error to mod author so it can be updated");
-            }
+        }
+        else
+        {
+            LOGGER.error("Attempted to ban tiles but TILE_REGISTRY was null. This could cause issues with interaction, check log above for possible cause.");
         }
     }
 
@@ -56,41 +68,43 @@ public class ModHandler
      */
     public static void loadHandlerData(Configuration configuration)
     {
-        try
-        {
-            Field field;
-            try
-            {
-                field = TileEntity.class.getDeclaredField("REGISTRY");
-            }
-            catch (NoSuchFieldException e)
-            {
-                field = TileEntity.class.getDeclaredField("field_190562_f");
-            }
-            field.setAccessible(true);
-            TILE_REGISTRY = (RegistryNamespaced) field.get(null);
+        LOGGER.info("ModHandler#loadHandlerData() -> Loading data and data handlers");
+        loadTileRegistry();
+        LOGGER.info("ModHandler#loadHandlerData() -> Accessed Tile Registry: " + (TILE_REGISTRY != null));
+        processHandlers(configuration);
+        LOGGER.info("ModHandler#loadHandlerData() -> Finished loading data handlers");
+        loadConfig(configuration);
+        LOGGER.info("ModHandler#loadHandlerData() -> Finished loading configurations");
+    }
 
-            for (Map.Entry<String, Class<? extends ModHandler>> entry : ModHandler.modSupportHandlerMap.entrySet())
+    private static void processHandlers(Configuration configuration)
+    {
+        for (Map.Entry<String, Class<? extends ModHandler>> entry : ModHandler.modSupportHandlerMap.entrySet())
+        {
+            if (Loader.isModLoaded(entry.getKey()))
             {
-                if (Loader.isModLoaded(entry.getKey()))
+                try
                 {
-                    try
-                    {
-                        entry.getValue().newInstance().load(configuration);
-                    }
-                    catch (InstantiationException e)
-                    {
-                        LOGGER.error("Failed to create handler for mod " + entry.getKey());
-                        e.printStackTrace();
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        LOGGER.error("Failed to access constructor for handler for mod " + entry.getKey());
-                        e.printStackTrace();
-                    }
+                    entry.getValue().newInstance().load(configuration);
+                }
+                catch (InstantiationException e)
+                {
+                    LOGGER.error("Failed to create handler for mod " + entry.getKey());
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e)
+                {
+                    LOGGER.error("Failed to access constructor for handler for mod " + entry.getKey());
+                    e.printStackTrace();
                 }
             }
+        }
+    }
 
+    private static void loadConfig(Configuration configuration)
+    {
+        if (TILE_REGISTRY != null)
+        {
             final String cat_name = "tile_ban_list";
             configuration.setCategoryComment(cat_name, "Auto generated list of tiles registered in Minecraft that can be blocked from use with the box. " +
                     "If a tile does not show up on this list it is already black listed. The reasoning behind blocking tiles is to prevent crashes or unwanted " +
@@ -122,9 +136,27 @@ public class ModHandler
                 }
             }
         }
+    }
+
+    private static void loadTileRegistry()
+    {
+        try
+        {
+            Field field;
+            try
+            {
+                field = TileEntity.class.getDeclaredField("REGISTRY");
+            }
+            catch (NoSuchFieldException e)
+            {
+                field = TileEntity.class.getDeclaredField("field_190562_f");
+            }
+            field.setAccessible(true);
+            TILE_REGISTRY = (RegistryNamespaced) field.get(null);
+        }
         catch (NoSuchFieldException e)
         {
-            LOGGER.error("ModHandler#loadHandlerData() -> Failed to find the tile map field. Dumping fields in the clazz, report this error with fields.", e);
+            LOGGER.error("ModHandler#loadHandlerData() -> Failed to find the tile registry field. Dumping fields in the clazz, report this error with fields.", e);
             int index = 0;
             for (Field field : TileEntity.class.getDeclaredFields())
             {
@@ -133,11 +165,11 @@ public class ModHandler
         }
         catch (IllegalAccessException e)
         {
-            LOGGER.error("ModHandler#loadHandlerData() -> Failed to access tile map", e);
+            LOGGER.error("ModHandler#loadHandlerData() -> Failed to access tile registry\"", e);
         }
         catch (Exception e)
         {
-            LOGGER.error("ModHandler#loadHandlerData() -> Failed to add tile map to config", e);
+            LOGGER.error("ModHandler#loadHandlerData() -> Unexpected exception while attempting to access tile registry", e);
         }
     }
 }
