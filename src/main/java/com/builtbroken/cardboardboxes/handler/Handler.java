@@ -1,8 +1,13 @@
 package com.builtbroken.cardboardboxes.handler;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 /**
  * Handles interaction between the box and a single tile. Allows for customizing save/load and placement.
@@ -35,16 +40,28 @@ public class Handler
      */
     public void loadData(TileEntity tile, NBTTagCompound tag)
     {
-
+        tile.readFromNBT(tag);
     }
 
     /**
      * Called to place the tile
      *
-     * @param stack
-     * @param saveData
+     * @param stack    - block as a stack
+     * @param saveData - data for the tile entity
+     * @return true if placement was handled, false to let default code run
      */
-    public void placeBlock(ItemStack stack, NBTTagCompound saveData)
+    public boolean placeBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, ItemStack stack, NBTTagCompound saveData)
+    {
+        return false;
+    }
+
+    /**
+     * Called after the block has been placed to do post interaction
+     *
+     * @param stack    - block as a stack
+     * @param saveData - data for the tile entity
+     */
+    public void postPlaceBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, ItemStack stack, NBTTagCompound saveData)
     {
 
     }

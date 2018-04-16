@@ -2,6 +2,7 @@ package com.builtbroken.cardboardboxes.box;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
 import com.builtbroken.cardboardboxes.handler.CanPickUpResult;
+import com.builtbroken.cardboardboxes.handler.Handler;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -84,7 +85,7 @@ public class ItemBlockBox extends ItemBlock
                 //Get stack
                 final IBlockState state = worldIn.getBlockState(pos);
                 final ItemStack blockStack = state.getBlock().getItem(worldIn, pos, state);
-                if(!blockStack.isEmpty())
+                if (!blockStack.isEmpty())
                 {
                     //Copy tile data
                     NBTTagCompound nbtTagCompound = new NBTTagCompound();
@@ -148,6 +149,7 @@ public class ItemBlockBox extends ItemBlock
         IBlockState iblockstate = worldIn.getBlockState(pos);
         Block block = iblockstate.getBlock();
 
+        //Move up one if not replaceable
         if (!block.isReplaceable(worldIn, pos))
         {
             pos = pos.offset(facing);
@@ -156,27 +158,48 @@ public class ItemBlockBox extends ItemBlock
         final ItemStack heldItemStack = player.getHeldItem(hand);
         final ItemStack storeBlockAsItemStack = getStoredBlock(heldItemStack);
         final Block storedBlock = Block.getBlockFromItem(storeBlockAsItemStack.getItem());
+        final NBTTagCompound savedTileData = getStoredTileData(heldItemStack);
 
+        //Check if we can place the given block
         if (storedBlock != null && player.canPlayerEdit(pos, facing, heldItemStack) && worldIn.mayPlace(storedBlock, pos, false, facing, (Entity) null))
         {
+            Handler handler = HandlerManager.INSTANCE.getHandler(storedBlock);
+
             int meta = this.getMetadata(heldItemStack.getMetadata());
             IBlockState blockstate = storedBlock.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, player, hand);
 
-            if (placeBlockAt(heldItemStack, player, worldIn, pos, facing, hitX, hitY, hitZ, blockstate))
+            //Allow handler to control placement
+            if (handler != null && handler.placeBlock(player, worldIn, pos, hand, facing, hitX, hitY, hitZ, storeBlockAsItemStack, savedTileData)
+                    //Run normal placement if we don't have a handler or it didn't do anything
+                    || placeBlockAt(heldItemStack, player, worldIn, pos, facing, hitX, hitY, hitZ, blockstate))
             {
+                //Get placed block
                 blockstate = worldIn.getBlockState(pos);
 
+                //Allow handle to do post placement modification (e.g. fix rotation)
+                if (handler != null)
+                {
+                    handler.postPlaceBlock(player, worldIn, pos, hand, facing, hitX, hitY, hitZ, storeBlockAsItemStack, savedTileData);
+                }
+
                 //Set tile entity data
-                final NBTTagCompound nbtTagCompound = getStoredTileData(heldItemStack);
-                if (nbtTagCompound != null)
+                if (savedTileData != null)
                 {
                     TileEntity tileEntity = worldIn.getTileEntity(pos);
                     if (tileEntity != null)
                     {
-                        tileEntity.readFromNBT(nbtTagCompound);
+                        if (handler != null)
+                        {
+                            handler.loadData(tileEntity, savedTileData);
+                        }
+                        else
+                        {
+                            tileEntity.readFromNBT(savedTileData);
+                        }
                         tileEntity.setPos(pos);
                     }
                 }
+
 
                 //Place audio
                 SoundType soundtype = blockstate.getBlock().getSoundType(blockstate, worldIn, pos, player);

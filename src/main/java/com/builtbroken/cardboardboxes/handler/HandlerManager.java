@@ -21,6 +21,9 @@ public class HandlerManager
     /** Map of tiles to handlers that provide special interaction */
     public static HashMap<Class<? extends TileEntity>, Handler> pickupHandlerMap = new HashMap();
 
+    /** Map of block to handlers that provide special interaction */
+    public static HashMap<Block, Handler> handlerMap = new HashMap();
+
     /** List of tiles that are banned */
     public static List<Class<? extends TileEntity>> tileEntityBanList = new ArrayList();
 
@@ -32,14 +35,30 @@ public class HandlerManager
 
 
     /**
-     * Called to register an interaction handler
+     * Called to register a handler for managing the pickup state of a tile
      *
      * @param clazz
      * @param handler
      */
-    public void registerSpecialHandler(Class<? extends TileEntity> clazz, Handler handler)
+    public void registerPickupHandler(Class<? extends TileEntity> clazz, Handler handler) //TODO implement
     {
         pickupHandlerMap.put(clazz, handler);
+    }
+
+    /**
+     * Called to register an interaction handler to manage the overall state of a block
+     *
+     * @param block   - block to handle
+     * @param handler - object to manage handler calls
+     */
+    public void registerHandler(Block block, Handler handler)
+    {
+        handlerMap.put(block, handler);
+    }
+
+    public Handler getHandler(Block block)
+    {
+        return handlerMap.get(block);
     }
 
     /**
