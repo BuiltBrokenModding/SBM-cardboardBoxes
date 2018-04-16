@@ -8,7 +8,7 @@ import net.minecraftforge.common.config.Configuration;
 public class VanillaHandler extends ModHandler
 {
     @Override
-    public void handleBlackListedContent(Configuration configuration)
+    public void load(Configuration configuration)
     {
         if (configuration.getBoolean("BlackListMobSpawners", "BlackListSettings", true, "Prevents mobs spawners from being placed into cardboard boxes"))
         {

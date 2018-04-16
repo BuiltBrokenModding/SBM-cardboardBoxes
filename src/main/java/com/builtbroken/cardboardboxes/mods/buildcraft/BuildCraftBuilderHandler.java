@@ -15,7 +15,7 @@ public class BuildCraftBuilderHandler extends ModHandler
     String[] bannedTilesByName = new String[]{"Marker", "net.minecraft.src.builders.TileConstructionMarker"};
 
     @Override
-    public void handleBlackListedContent(Configuration configuration)
+    public void load(Configuration configuration)
     {
         Cardboardboxes.LOGGER.info("Loading blacklist support for BuildCraft Builders");
         //banTileNames(tileMap, bannedTilesByName);

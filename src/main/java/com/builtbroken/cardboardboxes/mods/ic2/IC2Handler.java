@@ -13,7 +13,7 @@ public class IC2Handler extends ModHandler
     String[] bannedTilesByName = new String[]{"TECrop", "Nuke"};
 
     @Override
-    public void handleBlackListedContent(Configuration configuration)
+    public void load(Configuration configuration)
     {
         Cardboardboxes.LOGGER.info("Loading blacklist support for IC2");
         //banTileNames(bannedTilesByName);

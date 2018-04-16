@@ -15,7 +15,7 @@ public class BuildCraftFactoryHandler extends ModHandler
     String[] bannedTilesByName = new String[]{"Machine"};
 
     @Override
-    public void handleBlackListedContent(Configuration configuration)
+    public void load(Configuration configuration)
     {
         Cardboardboxes.LOGGER.info("Loading blacklist support for BuildCraft Factory");
         //banTileNames(tileMap, bannedTilesByName);

@@ -13,7 +13,7 @@ public class BuildCraftTransportHandler extends ModHandler
     String[] bannedTilesByName = new String[]{"TileGenericPipe"};
 
     @Override
-    public void handleBlackListedContent(Configuration configuration)
+    public void load(Configuration configuration)
     {
         Cardboardboxes.LOGGER.info("Loading blacklist support for BuildCraft Transport");
         //banTileNames(tileMap, bannedTilesByName);

@@ -16,7 +16,7 @@ public class TinkersConstructHandler extends ModHandler
 
     //TODO add support to pick up entire smeltery, with config to disable feature
     @Override
-    public void handleBlackListedContent(Configuration configuration)
+    public void load(Configuration configuration)
     {
         Cardboardboxes.LOGGER.info("Loading blacklist support for TConstruct");
         //banTileNames(tileMap, bannedTilesByName);

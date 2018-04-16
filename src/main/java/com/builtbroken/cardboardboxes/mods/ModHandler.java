@@ -29,7 +29,7 @@ public class ModHandler
     /**
      * Called in the post init phase to handle any blocks that need to be blacklisted
      */
-    public void handleBlackListedContent(Configuration configuration)
+    public void load(Configuration configuration)
     {
 
     }
@@ -68,7 +68,7 @@ public class ModHandler
                 {
                     try
                     {
-                        entry.getValue().newInstance().handleBlackListedContent(configuration);
+                        entry.getValue().newInstance().load(configuration);
                     }
                     catch (InstantiationException e)
                     {

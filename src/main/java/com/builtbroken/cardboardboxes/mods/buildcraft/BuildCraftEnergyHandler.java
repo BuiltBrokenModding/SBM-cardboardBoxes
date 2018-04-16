@@ -15,7 +15,7 @@ public class BuildCraftEnergyHandler extends ModHandler
     String[] bannedTilesByName = new String[]{"net.minecraft.src.buildcraft.energy.TileEngineWood", "net.minecraft.src.buildcraft.energy.TileEngineCreative"};
 
     @Override
-    public void handleBlackListedContent(Configuration configuration)
+    public void load(Configuration configuration)
     {
         Cardboardboxes.LOGGER.info("Loading blacklist support for BuildCraft Energy");
         //banTileNames(tileMap, bannedTilesByName);
