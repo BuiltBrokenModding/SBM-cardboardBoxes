@@ -73,5 +73,24 @@ public class VanillaHandler extends ModHandler
         HandlerManager.INSTANCE.banBlock(Blocks.CAULDRON);
         HandlerManager.INSTANCE.banBlock(Blocks.FLOWER_POT);
         HandlerManager.INSTANCE.banTile(TileEntityFlowerPot.class);
+
+        //Black listed because (A can already be moved, B duplicaiton issue
+        HandlerManager.INSTANCE.banBlock(Blocks.WHITE_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.ORANGE_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.MAGENTA_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.LIGHT_BLUE_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.YELLOW_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.LIME_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.PINK_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.GRAY_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.SILVER_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.CYAN_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.PURPLE_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.BLUE_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.BROWN_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.GREEN_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.RED_SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlock(Blocks.BLACK_SHULKER_BOX);
+        HandlerManager.INSTANCE.banTile(TileEntityShulkerBox.class);
     }
 }
