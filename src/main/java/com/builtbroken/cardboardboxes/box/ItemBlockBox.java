@@ -1,6 +1,7 @@
 package com.builtbroken.cardboardboxes.box;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
+import com.builtbroken.cardboardboxes.handler.CanPickUpResult;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -150,8 +151,8 @@ public class ItemBlockBox extends ItemBlock
             {
                 return EnumActionResult.SUCCESS;
             }
-            HandlerManager.CanPickUpResult result = Cardboardboxes.boxHandler.canPickUp(worldIn, pos);
-            if (result == HandlerManager.CanPickUpResult.CAN_PICK_UP)
+            CanPickUpResult result = HandlerManager.INSTANCE.canPickUp(worldIn, pos);
+            if (result == CanPickUpResult.CAN_PICK_UP)
             {
                 TileEntity tileEntity = worldIn.getTileEntity(pos);
                 if (tileEntity != null)
@@ -168,11 +169,11 @@ public class ItemBlockBox extends ItemBlock
                     worldIn.setBlockState(pos, Cardboardboxes.blockBox.getDefaultState(), 2);
 
                     tileEntity = worldIn.getTileEntity(pos);
-                    if (tileEntity instanceof TileBox)
+                    if (tileEntity instanceof TileEntityBox)
                     {
-                        TileBox tileBox = (TileBox) tileEntity;
-                        tileBox.storedItem = blockStack;
-                        tileBox.tileData = nbtTagCompound;
+                        TileEntityBox tileBox = (TileEntityBox) tileEntity;
+                        tileBox.setItemForPlacement(blockStack);
+                        tileBox.setDataForPlacement(nbtTagCompound);
                         if (!player.capabilities.isCreativeMode)
                         {
                             stack.shrink(1);
@@ -183,10 +184,10 @@ public class ItemBlockBox extends ItemBlock
                 {
                     player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"), true);
                 }
-            } else if (result == HandlerManager.CanPickUpResult.BANNED_TILE)
+            } else if (result == CanPickUpResult.BANNED_TILE)
             {
                 player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.tile.name"), true);
-            } else if (result == HandlerManager.CanPickUpResult.BANNED_BLOCK)
+            } else if (result == CanPickUpResult.BANNED_BLOCK)
             {
                 player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.block.name"), true);
             } else

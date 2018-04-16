@@ -5,7 +5,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -18,11 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import static com.builtbroken.cardboardboxes.Cardboardboxes.itemBlockBox;
 
 /**
  * Created by Dark on 7/28/2015.
@@ -45,7 +39,7 @@ public class BlockBox extends BlockContainer
     @Override
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
-        return EnumBlockRenderType.MODEL; // this is default invisible... mojang pls
+        return EnumBlockRenderType.MODEL;
     }
 
     @Override
@@ -54,14 +48,14 @@ public class BlockBox extends BlockContainer
         if (!worldIn.isRemote)
         {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if (tileEntity instanceof TileBox && ((TileBox) tileEntity).storedItem != null)
+            if (tileEntity instanceof TileEntityBox && ((TileEntityBox) tileEntity).getItemForPlacement() != null)
             {
-                TileBox tileBox = (TileBox) tileEntity;
-                Block block = Block.getBlockFromItem(tileBox.storedItem.getItem());
-                int meta = tileBox.storedItem.getItemDamage();
+                TileEntityBox tileBox = (TileEntityBox) tileEntity;
+                Block block = Block.getBlockFromItem(tileBox.getItemForPlacement().getItem());
+                int meta = tileBox.getItemForPlacement().getItemDamage();
                 if (block != null && worldIn.setBlockState(pos, block.getStateFromMeta(meta), 3))
                 {
-                    NBTTagCompound compound = tileBox.tileData;
+                    NBTTagCompound compound = tileBox.getTileData();
                     if (compound != null)
                     {
                         TileEntity tile = worldIn.getTileEntity(pos);
@@ -119,16 +113,16 @@ public class BlockBox extends BlockContainer
         ItemStack stack = new ItemStack(Cardboardboxes.blockBox);
 
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileBox)
+        if (tile instanceof TileEntityBox)
         {
-            if (((TileBox) tile).storedItem != null)
+            if (((TileEntityBox) tile).getItemForPlacement() != null)
             {
                 stack.setTagCompound(new NBTTagCompound());
 
-                stack.getTagCompound().setTag(STORE_ITEM_TAG, ((TileBox) tile).storedItem.writeToNBT(new NBTTagCompound()));
-                if (((TileBox) tile).tileData != null)
+                stack.getTagCompound().setTag(STORE_ITEM_TAG, ((TileEntityBox) tile).getItemForPlacement().writeToNBT(new NBTTagCompound()));
+                if (((TileEntityBox)tile).getDataForPlacement() != null)
                 {
-                    stack.getTagCompound().setTag(TILE_DATA_TAG, ((TileBox) tile).tileData);
+                    stack.getTagCompound().setTag(TILE_DATA_TAG, ((TileEntityBox) tile).getTileData());
                 }
             } else
             {
@@ -147,13 +141,6 @@ public class BlockBox extends BlockContainer
     @Override
     public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
     {
-        return new TileBox();
+        return new TileEntityBox();
     }
-
-    @SideOnly(Side.CLIENT)
-    public void registerModel()
-    {
-        ModelLoader.setCustomModelResourceLocation(itemBlockBox, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
-    }
-
 }
