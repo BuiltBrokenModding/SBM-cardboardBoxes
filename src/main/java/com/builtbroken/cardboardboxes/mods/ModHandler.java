@@ -116,7 +116,12 @@ public class ModHandler
         }
         catch (NoSuchFieldException e)
         {
-            LOGGER.error("ModHandler#loadHandlerData() -> Failed to find the tile map field", e);
+            LOGGER.error("ModHandler#loadHandlerData() -> Failed to find the tile map field. Dumping fields in the clazz, report this error with fields.", e);
+            int index = 0;
+            for (Field field : TileEntity.class.getDeclaredFields())
+            {
+                LOGGER.error("\t\tField[" + (index++) + "] -> Name: " + field.getName() + "   Type: " + field.getType());
+            }
         }
         catch (IllegalAccessException e)
         {
