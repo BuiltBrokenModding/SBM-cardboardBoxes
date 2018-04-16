@@ -58,7 +58,15 @@ public class ModHandler
     {
         try
         {
-            Field field = TileEntity.class.getDeclaredField("REGISTRY");
+            Field field;
+            try
+            {
+                field = TileEntity.class.getDeclaredField("REGISTRY");
+            }
+            catch (NoSuchFieldException e)
+            {
+                field = TileEntity.class.getDeclaredField("field_190562_f");
+            }
             field.setAccessible(true);
             TILE_REGISTRY = (RegistryNamespaced) field.get(null);
 
