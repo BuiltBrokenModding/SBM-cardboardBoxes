@@ -75,16 +75,14 @@ public class Cardboardboxes
         //ModHandler.modSupportHandlerMap.put("BuildCraft|Builders", BuildCraftTransportHandler.class); //TODO add
         //ModHandler.modSupportHandlerMap.put("IC2", IC2Handler.class); //TODO add
         //ModHandler.modSupportHandlerMap.put("appliedenergistics2", ModHandler.class); //TODO add
-
-        //Trigger loading
-        config.load();
-        ModHandler.loadHandlerData(config);
-        config.save();
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-
+        //Trigger loading
+        config.load();
+        ModHandler.loadHandlerData(config);
+        config.save();
     }
 }

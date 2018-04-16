@@ -83,20 +83,21 @@ public class ModHandler
                 }
             }
 
-            configuration.setCategoryComment("BlackListTilesByName", "Auto generated list of tiles registered in Minecraft that can be blacklisted. " +
-                    "If a tile does not show up on this list it is already black listed. The reasoning behind blacklisting tiles is to prevent crashes or unwanted " +
-                    "interaction. Such as picking up a piston which can both causes issues and doesn't really matter.");
+            final String cat_name = "tile_ban_list";
+            configuration.setCategoryComment(cat_name, "Auto generated list of tiles registered in Minecraft that can be blocked from use with the box. " +
+                    "If a tile does not show up on this list it is already black listed. The reasoning behind blocking tiles is to prevent crashes or unwanted " +
+                    "interaction. Such as picking up a piston which can both causes issues and doesn't really matter. Set value to 'true' to disable interaction.");
 
-            for (Class<? extends TileEntity> clazz : TILE_REGISTRY)
+            for (ResourceLocation name : TILE_REGISTRY.getKeys())
             {
-                final ResourceLocation name = TILE_REGISTRY.getNameForObject(clazz);
+                Class<? extends TileEntity> clazz = TILE_REGISTRY.getObject(name);
                 if (name != null && clazz != null)
                 {
                     try
                     {
                         String clazzName = clazz.getSimpleName();
                         boolean shouldBan = HandlerManager.INSTANCE.tileEntityBanList.contains(clazz) || clazzName.contains("cable") || clazzName.contains("wire") || clazzName.contains("pipe") || clazzName.contains("tube") || clazzName.contains("conduit") || clazzName.contains("channel");
-                        if (configuration.getBoolean("" + name, "BlackListTilesByName", shouldBan, "Prevents the cardboard box from picking up this tile[" + clazzName + "]"))
+                        if (configuration.getBoolean("" + name, cat_name, shouldBan, "Clazz[" + clazzName + "]"))
                         {
                             HandlerManager.INSTANCE.banTile(clazz);
                         }
@@ -108,25 +109,22 @@ public class ModHandler
                     }
                     catch (Exception e)
                     {
-                        LOGGER.error("Failed to add entry to config [" + name + " > " + clazz + "]", e);
+                        LOGGER.error("ModHandler#loadHandlerData() -> Failed to add entry to config [" + name + " > " + clazz + "]", e);
                     }
                 }
             }
         }
         catch (NoSuchFieldException e)
         {
-            LOGGER.error("Failed to find the tile map field");
-            e.printStackTrace();
+            LOGGER.error("ModHandler#loadHandlerData() -> Failed to find the tile map field", e);
         }
         catch (IllegalAccessException e)
         {
-            LOGGER.error("Failed to access tile map");
-            e.printStackTrace();
+            LOGGER.error("ModHandler#loadHandlerData() -> Failed to access tile map", e);
         }
         catch (Exception e)
         {
-            LOGGER.error("Failed to add tile map to config");
-            e.printStackTrace();
+            LOGGER.error("ModHandler#loadHandlerData() -> Failed to add tile map to config", e);
         }
     }
 }
