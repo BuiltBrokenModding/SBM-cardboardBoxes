@@ -1,8 +1,18 @@
 package com.builtbroken.cardboardboxes.mods;
 
+import com.builtbroken.cardboardboxes.handler.Handler;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
+import net.minecraft.block.BlockChest;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 
 public class VanillaHandler extends ModHandler
@@ -15,6 +25,22 @@ public class VanillaHandler extends ModHandler
             HandlerManager.INSTANCE.banBlock(Blocks.MOB_SPAWNER);
             HandlerManager.INSTANCE.banTile(TileEntityMobSpawner.class);
         }
+
+        //Fix for chests being rotated in opposite direction
+        HandlerManager.INSTANCE.registerHandler(Blocks.CHEST, new Handler()
+        {
+            @Override
+            public void postPlaceBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, ItemStack stack, NBTTagCompound saveData)
+            {
+                IBlockState blockstate = worldIn.getBlockState(pos);
+                if (blockstate.getBlock() == Blocks.CHEST && blockstate.getValue(BlockChest.FACING) != player.getHorizontalFacing().getOpposite())
+                {
+                    blockstate = blockstate.withProperty(BlockChest.FACING, player.getHorizontalFacing().getOpposite());
+                    worldIn.setBlockState(pos, blockstate);
+                }
+            }
+        });
+
         //Remove unwanted interaction
         HandlerManager.INSTANCE.banBlock(Blocks.BEACON);
         HandlerManager.INSTANCE.banTile(TileEntityBeacon.class);
