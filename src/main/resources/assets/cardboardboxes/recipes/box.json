@@ -18,6 +18,8 @@
     }
   },
   "result": {
-    "item": "cardboardboxes:cardboardbox"
+    "item": "cardboardboxes:cardboardbox",
+    "data": 0,
+    "count": 1
   }
 }

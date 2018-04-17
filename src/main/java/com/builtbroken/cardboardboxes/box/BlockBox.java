@@ -32,8 +32,8 @@ public class BlockBox extends BlockContainer
     public BlockBox()
     {
         super(Material.WOOD);
-        this.setRegistryName("cardboardbox");
-        this.setUnlocalizedName("cardboardbox");
+        this.setRegistryName(Cardboardboxes.DOMAIN, "cardboardbox");
+        this.setUnlocalizedName(Cardboardboxes.PREFIX + "cardboardbox");
         this.setCreativeTab(CreativeTabs.DECORATIONS);
         this.setHardness(2f);
         this.setResistance(2f);
