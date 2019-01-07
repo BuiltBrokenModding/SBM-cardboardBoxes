@@ -1,0 +1,6 @@
+tile.cardboardboxes:cardboardbox.name=ארגז
+tile.cardboardboxes:cardboardbox.inventoryFull.name=נראה שהתיק שלך מלא
+tile.cardboardboxes:cardboardbox.banned.block.name=בלתי אפשרי לקחת את הבלוק הזה
+tile.cardboardboxes:cardboardbox.banned.tile.name=בלתי אפשרי לקחת את הבלוק הזה
+tile.cardboardboxes:cardboardbox.noData.name=לא נראה שיש טעם בזה
+tile.cardboardboxes:cardboardbox.noItem.name=לא נראה שניתן לקחת את זה
