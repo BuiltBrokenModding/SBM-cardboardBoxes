@@ -1,5 +1,5 @@
 {
-  "type": "forge:ore_shaped",
+  "type": "crafting_shaped",
   "pattern": [
     "PPP",
     "SWS",
@@ -13,13 +13,10 @@
       "item": "minecraft:slime_ball"
     },
     "W": {
-      "ore": "logWood",
-      "type": "forge:ore_dict"
+      "tag": "minecraft:planks"
     }
   },
   "result": {
-    "item": "cardboardboxes:cardboardbox",
-    "data": 0,
-    "count": 1
+    "item": "cardboardboxes:cardboardbox"
   }
 }

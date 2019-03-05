@@ -1,5 +1,6 @@
 package com.builtbroken.cardboardboxes.handler;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,17 +41,16 @@ public class Handler
      */
     public void loadData(TileEntity tile, NBTTagCompound tag)
     {
-        tile.readFromNBT(tag);
+        tile.read(tag);
     }
 
     /**
      * Called to place the tile
      *
-     * @param stack    - block as a stack
      * @param saveData - data for the tile entity
      * @return true if placement was handled, false to let default code run
      */
-    public boolean placeBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, ItemStack stack, NBTTagCompound saveData)
+    public boolean placeBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, IBlockState state, NBTTagCompound saveData)
     {
         return false;
     }
@@ -58,10 +58,9 @@ public class Handler
     /**
      * Called after the block has been placed to do post interaction
      *
-     * @param stack    - block as a stack
      * @param saveData - data for the tile entity
      */
-    public void postPlaceBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, ItemStack stack, NBTTagCompound saveData)
+    public void postPlaceBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, IBlockState state, NBTTagCompound saveData)
     {
 
     }

@@ -3,6 +3,7 @@ package com.builtbroken.cardboardboxes.handler;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -19,16 +20,16 @@ import java.util.List;
 public class HandlerManager
 {
     /** Map of tiles to handlers that provide special interaction */
-    public static HashMap<Class<? extends TileEntity>, Handler> pickupHandlerMap = new HashMap();
+    public static HashMap<Class<? extends TileEntity>, Handler> pickupHandlerMap = new HashMap<>();
 
     /** Map of block to handlers that provide special interaction */
-    public static HashMap<Block, Handler> handlerMap = new HashMap();
+    public static HashMap<Block, Handler> handlerMap = new HashMap<>();
 
     /** List of tiles that are banned */
-    public static List<Class<? extends TileEntity>> tileEntityBanList = new ArrayList();
+    public static List<TileEntityType<?>> tileEntityBanList = new ArrayList<>();
 
     /** List of Blocks that are banned */
-    public static List<Block> blockBanList = new ArrayList();
+    public static List<Block> blockBanList = new ArrayList<>();
 
     /** Primary manager */
     public final static HandlerManager INSTANCE = new HandlerManager();
@@ -64,13 +65,13 @@ public class HandlerManager
     /**
      * Called to ban a tile
      *
-     * @param clazz
+     * @param tile
      */
-    public void banTile(Class<? extends TileEntity> clazz)
+    public void banTile(TileEntityType<?> tile)
     {
-        if (!tileEntityBanList.contains(clazz))
+        if (!tileEntityBanList.contains(tile))
         {
-            tileEntityBanList.add(clazz);
+            tileEntityBanList.add(tile);
         }
     }
 
@@ -83,7 +84,7 @@ public class HandlerManager
     {
         if (!blockBanList.contains(block))
         {
-            this.blockBanList.add(block);
+        	HandlerManager.blockBanList.add(block);
         }
     }
 
@@ -106,12 +107,12 @@ public class HandlerManager
                 {
                     //Check if we even have data to store, no data no point in using a box
                     NBTTagCompound nbt = new NBTTagCompound();
-                    tile.writeToNBT(nbt);
+                    tile.write(nbt);
                     nbt.removeTag("x");
                     nbt.removeTag("y");
                     nbt.removeTag("z");
                     nbt.removeTag("id");
-                    return !nbt.hasNoTags() ? CanPickUpResult.CAN_PICK_UP : CanPickUpResult.NO_DATA;
+                    return !nbt.isEmpty() ? CanPickUpResult.CAN_PICK_UP : CanPickUpResult.NO_DATA;
                 }
                 return CanPickUpResult.BANNED_TILE;
             }

@@ -1,6 +1,0 @@
-tile.cardboardboxes:cardboardbox.name=Boîte
-tile.cardboardboxes:cardboardbox.inventoryFull.name=Votre inventaire semble plein
-tile.cardboardboxes:cardboardbox.banned.block.name=Je ne pense pas pouvoir ramasser ce bloc
-tile.cardboardboxes:cardboardbox.banned.tile.name=Je ne pense pas pouvoir ramasser ce bloc
-tile.cardboardboxes:cardboardbox.noData.name=Ça n'a pas l'air utile de faire ça
-tile.cardboardboxes:cardboardbox.noItem.name=Ça n'a pas l'air de pouvoir être ramassé
