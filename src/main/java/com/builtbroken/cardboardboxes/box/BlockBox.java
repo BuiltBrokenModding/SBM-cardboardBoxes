@@ -1,11 +1,11 @@
 package com.builtbroken.cardboardboxes.box;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,7 +16,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * Block for the box
@@ -31,12 +33,8 @@ public class BlockBox extends BlockContainer
 
     public BlockBox()
     {
-        super(Material.WOOD);
+    	super(Properties.create(Material.WOOD).hardnessAndResistance(2f, 2f));
         this.setRegistryName(Cardboardboxes.DOMAIN, "cardboardbox");
-        this.setUnlocalizedName(Cardboardboxes.PREFIX + "cardboardbox");
-        this.setCreativeTab(CreativeTabs.DECORATIONS);
-        this.setHardness(2f);
-        this.setResistance(2f);
     }
 
     @Override
@@ -46,17 +44,20 @@ public class BlockBox extends BlockContainer
     }
 
     @Override
-    public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn)
+    public boolean hasTileEntity() {
+    	return true;
+    }
+
+    @Override
+    public void onBlockClicked(IBlockState state, World worldIn, BlockPos pos, EntityPlayer player)
     {
         if (!worldIn.isRemote)
         {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityBox && ((TileEntityBox) tileEntity).getItemForPlacement() != null)
+            if (tileEntity instanceof TileEntityBox && ((TileEntityBox) tileEntity).getStateForPlacement() != null)
             {
                 TileEntityBox tileBox = (TileEntityBox) tileEntity;
-                Block block = Block.getBlockFromItem(tileBox.getItemForPlacement().getItem());
-                int meta = tileBox.getItemForPlacement().getItemDamage();
-                if (block != null && worldIn.setBlockState(pos, block.getStateFromMeta(meta), 3))
+                if (tileBox.getStateForPlacement() != null && worldIn.setBlockState(pos, tileBox.getStateForPlacement(), 3))
                 {
                     NBTTagCompound compound = tileBox.getDataForPlacement();
                     if (compound != null)
@@ -64,16 +65,16 @@ public class BlockBox extends BlockContainer
                         TileEntity tile = worldIn.getTileEntity(pos);
                         if (tile != null)
                         {
-                            tile.readFromNBT(compound);
+                            tile.read(compound);
                             tile.setPos(pos);
                         }
                     }
-                    if (!playerIn.capabilities.isCreativeMode)
+                    if (!player.isCreative())
                     {
                         ItemStack stack = new ItemStack(this);
-                        if (playerIn.inventory.addItemStackToInventory(stack))
+                        if (player.inventory.addItemStackToInventory(stack))
                         {
-                            playerIn.entityDropItem(stack, 0F);
+                            player.entityDropItem(stack, 0F);
                         }
                     }
                 }
@@ -82,52 +83,52 @@ public class BlockBox extends BlockContainer
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(IBlockState state, World worldIn, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         if (worldIn.isRemote)
         {
             return true;
         }
-        if (playerIn.isSneaking())
+        if (player.isSneaking())
         {
             ItemStack stack = toItemStack(worldIn, pos);
             if (stack != null)
             {
-                if (playerIn.inventory.addItemStackToInventory(stack))
+                if (player.inventory.addItemStackToInventory(stack))
                 {
-                    playerIn.inventoryContainer.detectAndSendChanges();
-                    worldIn.setBlockToAir(pos);
+                    player.inventoryContainer.detectAndSendChanges();
+                    worldIn.removeBlock(pos);
                     return true;
                 }
                 else
                 {
-                    playerIn.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".inventoryFull.name"), true);
+                    player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".inventoryFull"), true);
                     return true;
                 }
             }
             else
             {
-                playerIn.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".error.stack.null"), true);
+                player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".error.stack.null"), true);
             }
         }
         return false;
     }
 
-    public ItemStack toItemStack(World world, BlockPos pos)
+    public ItemStack toItemStack(IBlockReader world, BlockPos pos)
     {
         ItemStack stack = new ItemStack(Cardboardboxes.blockBox);
 
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileEntityBox)
         {
-            if (((TileEntityBox) tile).getItemForPlacement() != null)
+            if (((TileEntityBox) tile).getStateForPlacement() != null)
             {
-                stack.setTagCompound(new NBTTagCompound());
+                stack.setTag(new NBTTagCompound());
 
-                stack.getTagCompound().setTag(STORE_ITEM_TAG, ((TileEntityBox) tile).getItemForPlacement().writeToNBT(new NBTTagCompound()));
+                stack.getTag().setInt(STORE_ITEM_TAG, Block.getStateId(((TileEntityBox) tile).getStateForPlacement()));
                 if (((TileEntityBox) tile).getDataForPlacement() != null)
                 {
-                    stack.getTagCompound().setTag(TILE_DATA_TAG, ((TileEntityBox) tile).getDataForPlacement());
+                    stack.getTag().setTag(TILE_DATA_TAG, ((TileEntityBox) tile).getDataForPlacement());
                 }
             }
             else
@@ -139,13 +140,13 @@ public class BlockBox extends BlockContainer
     }
 
     @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, EntityPlayer player)
     {
         return toItemStack(world, pos);
     }
 
     @Override
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
+    public TileEntity createNewTileEntity(IBlockReader worldIn)
     {
         return new TileEntityBox();
     }

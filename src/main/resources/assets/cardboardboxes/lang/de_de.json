@@ -1,0 +1,8 @@
+{
+    "block.cardboardboxes.cardboardbox": "Box",
+    "block.cardboardboxes.cardboardbox.inventoryFull": "Scheint, als ob dein Inventar voll ist",
+    "block.cardboardboxes.cardboardbox.banned.block": "Ich glaube nicht, dass ich diesen Block aufheben kann",
+    "block.cardboardboxes.cardboardbox.banned.tile": "Ich glaube nicht, dass ich dieses Objekt aufheben kann",
+    "block.cardboardboxes.cardboardbox.noData": "Das scheint nicht viel Sinn zu machen",
+    "block.cardboardboxes.cardboardbox.noItem": "Sieht nicht danach aus, als lässt sich das aufheben"
+}

@@ -1,5 +1,9 @@
 package com.builtbroken.cardboardboxes.box;
 
+import com.builtbroken.cardboardboxes.Cardboardboxes;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -12,30 +16,34 @@ import net.minecraft.tileentity.TileEntity;
  */
 public class TileEntityBox extends TileEntity
 {
-    private ItemStack placementItem; //TODO convert to capability so we can recycle data for item
+    private IBlockState placementState;
     private NBTTagCompound placementData;
 
+    public TileEntityBox() {
+        super(Cardboardboxes.tileBox);
+    }
+
     @Override
-    public void readFromNBT(NBTTagCompound nbt)
+    public void read(NBTTagCompound nbt)
     {
-        super.readFromNBT(nbt);
+        super.read(nbt);
         if (nbt.hasKey("storedTile"))
         {
-            setItemForPlacement(new ItemStack(nbt.getCompoundTag("storedTile")));
+            setStateForPlacement(Block.getStateById(nbt.getInt("storedTile")));
             if (nbt.hasKey("tileData"))
             {
-                setDataForPlacement(nbt.getCompoundTag("tileData"));
+                setDataForPlacement(nbt.getCompound("tileData"));
             }
         }
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+    public NBTTagCompound write(NBTTagCompound nbt)
     {
-        super.writeToNBT(nbt);
-        if (getItemForPlacement() != null)
+        super.write(nbt);
+        if (getStateForPlacement() != null)
         {
-            nbt.setTag("storedTile", getItemForPlacement().writeToNBT(new NBTTagCompound()));
+            nbt.setInt("storedTile", Block.getStateId(placementState));
             if (getDataForPlacement() != null)
             {
                 nbt.setTag("tileData", getDataForPlacement());
@@ -44,14 +52,14 @@ public class TileEntityBox extends TileEntity
         return nbt;
     }
 
-    public ItemStack getItemForPlacement()
+    public IBlockState getStateForPlacement()
     {
-        return placementItem;
+        return placementState;
     }
 
-    public void setItemForPlacement(ItemStack storedItem)
+    public void setStateForPlacement(IBlockState state)
     {
-        this.placementItem = storedItem;
+        this.placementState = state;
     }
 
     public NBTTagCompound getDataForPlacement()

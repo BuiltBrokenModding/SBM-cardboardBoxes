@@ -8,10 +8,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
@@ -19,10 +23,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import javax.smartcardio.Card;
 import java.util.List;
 
 import static com.builtbroken.cardboardboxes.box.BlockBox.STORE_ITEM_TAG;
@@ -38,9 +44,8 @@ public class ItemBlockBox extends ItemBlock
 {
     public ItemBlockBox(Block block)
     {
-        super(block);
+        super(block, new Item.Properties().group(ItemGroup.DECORATIONS));
         this.setRegistryName(block.getRegistryName());
-        this.setHasSubtypes(true);
     }
 
     //TODO add property to change render if contains item
@@ -48,30 +53,33 @@ public class ItemBlockBox extends ItemBlock
     //TODO add property to change render color, label, etc
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(ItemUseContext ctxt)
     {
         //Run all logic server side
+    	World worldIn = ctxt.getWorld();
         if (worldIn.isRemote)
         {
             return EnumActionResult.SUCCESS;
         }
 
+    	EntityPlayer player = ctxt.getPlayer();
+    	EnumHand hand = player.getActiveHand();
         final ItemStack heldItemStack = player.getHeldItem(hand);
         if (!heldItemStack.isEmpty())
         {
-            final ItemStack storedStack = getStoredBlock(heldItemStack);
-            if (!storedStack.isEmpty())
+            final IBlockState storeBlock = getStoredBlock(heldItemStack);
+            if (storeBlock.getBlock() != Blocks.AIR)
             {
-                return tryToPlaceBlock(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
+                return tryToPlaceBlock(new BlockItemUseContext(ctxt));
             }
             else
             {
-                return tryToPickupBlock(player, worldIn, pos, hand, facing, hitX, hitY, hitZ);
+                return tryToPickupBlock(player, worldIn, ctxt.getPos(), hand, ctxt.getFace(), ctxt.getHitX(), ctxt.getHitY(), ctxt.getHitZ());
             }
         }
         return EnumActionResult.FAIL;
     }
-
+    
     protected EnumActionResult tryToPickupBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         //Check that we can pick up block
@@ -84,12 +92,11 @@ public class ItemBlockBox extends ItemBlock
             {
                 //Get stack
                 final IBlockState state = worldIn.getBlockState(pos);
-                final ItemStack blockStack = state.getBlock().getItem(worldIn, pos, state);
-                if (!blockStack.isEmpty())
+                if (state != null)
                 {
                     //Copy tile data
                     NBTTagCompound nbtTagCompound = new NBTTagCompound();
-                    tileEntity.writeToNBT(nbtTagCompound);
+                    tileEntity.write(nbtTagCompound);
 
                     //Remove location data
                     nbtTagCompound.removeTag("x");
@@ -109,7 +116,7 @@ public class ItemBlockBox extends ItemBlock
                         TileEntityBox tileBox = (TileEntityBox) tileEntity;
 
                         //Move data into tile
-                        tileBox.setItemForPlacement(blockStack);
+                        tileBox.setStateForPlacement(state);
                         tileBox.setDataForPlacement(nbtTagCompound);
 
                         //Consume item
@@ -121,71 +128,67 @@ public class ItemBlockBox extends ItemBlock
                 }
                 else
                 {
-                    player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".noItem.name"), true);
+                    player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".noItem"), true);
                 }
             }
             else
             {
-                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"), true);
+                player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".noData"), true);
             }
         }
         else if (result == CanPickUpResult.BANNED_TILE)
         {
-            player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.tile.name"), true);
+            player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".banned.tile"), true);
         }
         else if (result == CanPickUpResult.BANNED_BLOCK)
         {
-            player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.block.name"), true);
+            player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".banned.block"), true);
         }
         else
         {
-            player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"), true);
+            player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".noData"), true);
         }
         return EnumActionResult.SUCCESS;
     }
 
-    protected EnumActionResult tryToPlaceBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    protected EnumActionResult tryToPlaceBlock(BlockItemUseContext ctxt)
     {
-        IBlockState iblockstate = worldIn.getBlockState(pos);
-        Block block = iblockstate.getBlock();
-
+        BlockPos pos = ctxt.getPos();
+        EnumHand hand = ctxt.getPlayer().getActiveHand();
         //Move up one if not replaceable
-        if (!block.isReplaceable(worldIn, pos))
+        float hitX = ctxt.getHitX(), hitY = ctxt.getHitY(), hitZ = ctxt.getHitZ();
+        if (!ctxt.canPlace())
         {
-            pos = pos.offset(facing);
+            pos = pos.offset(ctxt.getFace());
         }
 
-        final ItemStack heldItemStack = player.getHeldItem(hand);
-        final ItemStack storeBlockAsItemStack = getStoredBlock(heldItemStack);
-        final Block storedBlock = Block.getBlockFromItem(storeBlockAsItemStack.getItem());
+        final ItemStack heldItemStack = ctxt.getItem();
+        final IBlockState storedBlockState = getStoredBlock(heldItemStack);
         final NBTTagCompound savedTileData = getStoredTileData(heldItemStack);
-
         //Check if we can place the given block
-        if (storedBlock != null && player.canPlayerEdit(pos, facing, heldItemStack) && worldIn.mayPlace(storedBlock, pos, false, facing, (Entity) null))
+        if (storedBlockState != null && ctxt.getPlayer().canPlayerEdit(pos, ctxt.getFace(), heldItemStack) && ctxt.getWorld().getBlockState(pos).getMaterial().isReplaceable())
         {
-            Handler handler = HandlerManager.INSTANCE.getHandler(storedBlock);
-
-            int meta = this.getMetadata(heldItemStack.getMetadata());
-            IBlockState blockstate = storedBlock.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, player, hand);
-
+            Handler handler = HandlerManager.INSTANCE.getHandler(storedBlockState.getBlock());
+            IBlockState blockstate = storedBlockState.getBlock().getStateForPlacement(ctxt);
             //Allow handler to control placement
-            if (handler != null && handler.placeBlock(player, worldIn, pos, hand, facing, hitX, hitY, hitZ, storeBlockAsItemStack, savedTileData)
+            if (handler != null && handler.placeBlock(ctxt.getPlayer(), ctxt.getWorld(), pos, hand, ctxt.getFace(), hitX, hitY, hitZ, storedBlockState, savedTileData)
                     //Run normal placement if we don't have a handler or it didn't do anything
-                    || placeBlockAt(heldItemStack, player, worldIn, pos, facing, hitX, hitY, hitZ, blockstate))
+                    || placeBlock(new BlockItemUseContext(ctxt.getWorld(), ctxt.getPlayer(), heldItemStack, pos, ctxt.getFace(), hitX, hitY, hitZ), blockstate))
+            	
             {
                 //Get placed block
-                blockstate = worldIn.getBlockState(pos);
+                blockstate = ctxt.getWorld().getBlockState(pos);
 
                 //Allow handle to do post placement modification (e.g. fix rotation)
                 if (handler != null)
                 {
-                    handler.postPlaceBlock(player, worldIn, pos, hand, facing, hitX, hitY, hitZ, storeBlockAsItemStack, savedTileData);
+                    handler.postPlaceBlock(ctxt.getPlayer(), ctxt.getWorld(), pos, hand, ctxt.getFace(), hitX, hitY, hitZ, storedBlockState, savedTileData);
                 }
 
                 //Set tile entity data
                 if (savedTileData != null)
                 {
-                    TileEntity tileEntity = worldIn.getTileEntity(pos);
+                    TileEntity tileEntity = ctxt.getWorld().getTileEntity(pos);
                     if (tileEntity != null)
                     {
                         if (handler != null)
@@ -194,7 +197,7 @@ public class ItemBlockBox extends ItemBlock
                         }
                         else
                         {
-                            tileEntity.readFromNBT(savedTileData);
+                            tileEntity.read(savedTileData);
                         }
                         tileEntity.setPos(pos);
                     }
@@ -202,16 +205,16 @@ public class ItemBlockBox extends ItemBlock
 
 
                 //Place audio
-                SoundType soundtype = blockstate.getBlock().getSoundType(blockstate, worldIn, pos, player);
-                worldIn.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                SoundType soundtype = blockstate.getBlock().getSoundType(blockstate, ctxt.getWorld(), pos, ctxt.getPlayer());
+                ctxt.getWorld().playSound(ctxt.getPlayer(), pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
 
                 //Consume item
                 heldItemStack.shrink(1);
 
                 //Return empty box
-                if (!player.isCreative() && !player.inventory.addItemStackToInventory(new ItemStack(Cardboardboxes.blockBox)))
+                if (!ctxt.getPlayer().isCreative() && !ctxt.getPlayer().inventory.addItemStackToInventory(new ItemStack(Cardboardboxes.blockBox)))
                 {
-                    player.entityDropItem(new ItemStack(Cardboardboxes.blockBox), 0F);
+                    ctxt.getPlayer().entityDropItem(new ItemStack(Cardboardboxes.blockBox), 0F);
                 }
             }
 
@@ -226,34 +229,28 @@ public class ItemBlockBox extends ItemBlock
     @Override
     public int getItemStackLimit(ItemStack stack)
     {
-        return stack.hasTagCompound() ? 1 : 64;
+        return stack.hasTag() ? 1 : 64;
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
+    public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        if (stack.getTagCompound() != null && stack.getTagCompound().hasKey(STORE_ITEM_TAG))
+        if (stack.getTag() != null && stack.getTag().hasKey(STORE_ITEM_TAG))
         {
-            ItemStack storedStack = new ItemStack(stack.getTagCompound().getCompoundTag(STORE_ITEM_TAG));
-            String name = storedStack.getDisplayName();
-            if (name != null && !name.isEmpty())
+            IBlockState state = Block.getStateById(stack.getTag().getInt(STORE_ITEM_TAG));
             {
-                tooltip.add(name);
-            }
-            else
-            {
-                tooltip.add("" + storedStack);
+                tooltip.add(new TextComponentTranslation(state.getBlock().getTranslationKey()));
             }
         }
     }
 
-    public ItemStack getStoredBlock(ItemStack stack)
+    public IBlockState getStoredBlock(ItemStack stack)
     {
-        return stack.getTagCompound() != null && stack.getTagCompound().hasKey(STORE_ITEM_TAG) ? new ItemStack(stack.getTagCompound().getCompoundTag(STORE_ITEM_TAG)) : ItemStack.EMPTY;
+        return stack.getTag() != null && stack.getTag().hasKey(STORE_ITEM_TAG) ? Block.getStateById(stack.getTag().getInt(STORE_ITEM_TAG)) : Blocks.AIR.getDefaultState();
     }
 
     public NBTTagCompound getStoredTileData(ItemStack stack)
     {
-        return stack.getTagCompound() != null && stack.getTagCompound().hasKey(TILE_DATA_TAG) ? stack.getTagCompound().getCompoundTag(TILE_DATA_TAG) : null;
+        return stack.getTag() != null && stack.getTag().hasKey(TILE_DATA_TAG) ? stack.getTag().getCompound(TILE_DATA_TAG) : null;
     }
 }
