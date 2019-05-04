@@ -7,10 +7,12 @@
   ],
   "key": {
     "P": {
-      "item": "minecraft:paper"
+      "item": "minecraft:paper",
+      "data": 0
     },
     "S": {
-      "item": "minecraft:slime_ball"
+      "item": "minecraft:slime_ball",
+      "data": 0
     },
     "W": {
       "ore": "logWood",
