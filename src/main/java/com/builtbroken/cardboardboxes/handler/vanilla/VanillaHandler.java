@@ -1,8 +1,10 @@
-package com.builtbroken.cardboardboxes.mods;
+package com.builtbroken.cardboardboxes.handler.vanilla;
 
 import com.builtbroken.cardboardboxes.handler.Handler;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
+import com.builtbroken.cardboardboxes.mods.ModHandler;
 import net.minecraft.block.BlockChest;
+import net.minecraft.block.BlockFurnace;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -37,6 +39,19 @@ public class VanillaHandler extends ModHandler
                 {
                     blockstate = blockstate.withProperty(BlockChest.FACING, player.getHorizontalFacing().getOpposite());
                     worldIn.setBlockState(pos, blockstate);
+                }
+            }
+        });
+
+        //Fix furnace
+        HandlerManager.INSTANCE.registerHandler(Blocks.FURNACE, new Handler()
+        {
+            @Override
+            public void postPlaceTileEntity(EntityPlayer player, TileEntity tileEntity, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, ItemStack stack, NBTTagCompound saveData)
+            {
+                if(tileEntity instanceof TileEntityFurnace && ((TileEntityFurnace) tileEntity).isBurning())
+                {
+                    BlockFurnace.setState(true, tileEntity.getWorld(), tileEntity.getPos());
                 }
             }
         });

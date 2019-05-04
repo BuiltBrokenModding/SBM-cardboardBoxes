@@ -56,12 +56,26 @@ public class Handler
     }
 
     /**
-     * Called after the block has been placed to do post interaction
+     * Called after the block has been placed to do post interaction.
+     * <p>
+     * This is called before the tile entity has loaded use {@link #postPlaceTileEntity(EntityPlayer, TileEntity, EnumHand, EnumFacing, float, float, float, ItemStack, NBTTagCompound)}
+     * for full data access.
      *
      * @param stack    - block as a stack
      * @param saveData - data for the tile entity
      */
     public void postPlaceBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, ItemStack stack, NBTTagCompound saveData)
+    {
+
+    }
+
+    /**
+     * Called after the block and tileEntity has been placed to do post interaction
+     *
+     * @param stack    - block as a stack
+     * @param saveData - data for the tile entity
+     */
+    public void postPlaceTileEntity(EntityPlayer player, TileEntity entity, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, ItemStack stack, NBTTagCompound saveData)
     {
 
     }

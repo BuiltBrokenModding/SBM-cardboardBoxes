@@ -182,12 +182,14 @@ public class ItemBlockBox extends ItemBlock
                     handler.postPlaceBlock(player, worldIn, pos, hand, facing, hitX, hitY, hitZ, storeBlockAsItemStack, savedTileData);
                 }
 
-                //Set tile entity data
-                if (savedTileData != null)
+                //Handle TileEntity
+                final TileEntity tileEntity = worldIn.getTileEntity(pos);
+                if (tileEntity != null)
                 {
-                    TileEntity tileEntity = worldIn.getTileEntity(pos);
-                    if (tileEntity != null)
+                    //Set tile entity data
+                    if (savedTileData != null)
                     {
+                        //Load data
                         if (handler != null)
                         {
                             handler.loadData(tileEntity, savedTileData);
@@ -196,7 +198,15 @@ public class ItemBlockBox extends ItemBlock
                         {
                             tileEntity.readFromNBT(savedTileData);
                         }
+
+                        //Force position
                         tileEntity.setPos(pos);
+                    }
+
+                    //Allow handle to do post placement modification (e.g. fix rotation)
+                    if (handler != null)
+                    {
+                        handler.postPlaceTileEntity(player, tileEntity, hand, facing, hitX, hitY, hitZ, storeBlockAsItemStack, savedTileData);
                     }
                 }
 

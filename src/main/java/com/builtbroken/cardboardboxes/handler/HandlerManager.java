@@ -111,7 +111,7 @@ public class HandlerManager
                     nbt.removeTag("y");
                     nbt.removeTag("z");
                     nbt.removeTag("id");
-                    return !nbt.hasNoTags() ? CanPickUpResult.CAN_PICK_UP : CanPickUpResult.NO_DATA;
+                    return !nbt.isEmpty() ? CanPickUpResult.CAN_PICK_UP : CanPickUpResult.NO_DATA;
                 }
                 return CanPickUpResult.BANNED_TILE;
             }
