@@ -33,7 +33,7 @@ public class BlockBox extends BlockContainer
     {
         super(Material.WOOD);
         this.setRegistryName(Cardboardboxes.DOMAIN, "cardboardbox");
-        this.setUnlocalizedName(Cardboardboxes.PREFIX + "cardboardbox");
+        this.setTranslationKey(Cardboardboxes.PREFIX + "cardboardbox");
         this.setCreativeTab(CreativeTabs.DECORATIONS);
         this.setHardness(2f);
         this.setResistance(2f);
@@ -101,13 +101,13 @@ public class BlockBox extends BlockContainer
                 }
                 else
                 {
-                    playerIn.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".inventoryFull.name"), true);
+                    playerIn.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".inventoryFull.name"), true);
                     return true;
                 }
             }
             else
             {
-                playerIn.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".error.stack.null"), true);
+                playerIn.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".error.stack.null"), true);
             }
         }
         return false;

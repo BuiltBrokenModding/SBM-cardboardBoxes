@@ -121,25 +121,25 @@ public class ItemBlockBox extends ItemBlock
                 }
                 else
                 {
-                    player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".noItem.name"), true);
+                    player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".noItem.name"), true);
                 }
             }
             else
             {
-                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"), true);
+                player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".noData.name"), true);
             }
         }
         else if (result == CanPickUpResult.BANNED_TILE)
         {
-            player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.tile.name"), true);
+            player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".banned.tile.name"), true);
         }
         else if (result == CanPickUpResult.BANNED_BLOCK)
         {
-            player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".banned.block.name"), true);
+            player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".banned.block.name"), true);
         }
         else
         {
-            player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".noData.name"), true);
+            player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".noData.name"), true);
         }
         return EnumActionResult.SUCCESS;
     }

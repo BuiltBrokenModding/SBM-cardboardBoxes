@@ -5,9 +5,10 @@ import com.builtbroken.cardboardboxes.box.ItemBlockBox;
 import com.builtbroken.cardboardboxes.box.TileEntityBox;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
 import com.builtbroken.cardboardboxes.mods.ModHandler;
-import com.builtbroken.cardboardboxes.mods.VanillaHandler;
+import com.builtbroken.cardboardboxes.handler.vanilla.VanillaHandler;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -44,7 +45,7 @@ public class Cardboardboxes
     public static void registerBlock(RegistryEvent.Register<Block> event)
     {
         event.getRegistry().register(blockBox = new BlockBox());
-        GameRegistry.registerTileEntity(TileEntityBox.class, PREFIX + "box");
+        GameRegistry.registerTileEntity(TileEntityBox.class, new ResourceLocation(DOMAIN, "box"));
     }
 
     @SubscribeEvent
