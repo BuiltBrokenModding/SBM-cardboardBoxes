@@ -1,4 +1,4 @@
-tile.cardboardboxes:cardboardbox.name=Box
+tile.cardboardboxes:cardboardbox.name=Kiste
 tile.cardboardboxes:cardboardbox.inventoryFull.name=Scheint, als ob dein Inventar voll ist
 tile.cardboardboxes:cardboardbox.banned.block.name=Ich glaube nicht, dass ich diesen Block aufheben kann
 tile.cardboardboxes:cardboardbox.banned.tile.name=Ich glaube nicht, dass ich dieses Objekt aufheben kann
