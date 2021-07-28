@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
     }
     dependencies {
@@ -12,14 +12,14 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.16.5-0.0.3'
+version = '1.17.1-0.0.3'
 group = 'com.builtbroken.cardboardboxes'
 archivesBaseName = 'cardboardboxes'
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'official', version: '1.17.1'
     runs {
         client {
             properties 'forge.logging.console.level': 'debug'
@@ -35,12 +35,14 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.0'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.0.12'
 }
 
 jar {
-    manifest {
-        attributes([
+    from('/') {
+        include 'LICENSE.txt'
+    }
+    manifest.attributes([
             "Specification-Title": archivesBaseName,
             "Specification-Vendor": "builtbroken",
             "Specification-Version": "1", // We are version 1 of ourselves
@@ -48,6 +50,5 @@ jar {
             "Implementation-Version": version,
             "Implementation-Vendor" :"builtbroken",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
+    ])
 }

@@ -1,15 +1,15 @@
 package com.builtbroken.cardboardboxes;
 
-import com.builtbroken.cardboardboxes.box.BlockBox;
-import com.builtbroken.cardboardboxes.box.ItemBlockBox;
-import com.builtbroken.cardboardboxes.box.TileEntityBox;
+import com.builtbroken.cardboardboxes.box.BlockEntityBox;
+import com.builtbroken.cardboardboxes.box.BoxBlock;
+import com.builtbroken.cardboardboxes.box.BoxItemBlock;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
 import com.builtbroken.cardboardboxes.mods.ModHandler;
 import com.builtbroken.cardboardboxes.mods.VanillaHandler;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,8 +36,8 @@ public class Cardboardboxes {
 
     public static Logger LOGGER = LogManager.getLogger();
 
-    public static BlockBox blockBox;
-    public static TileEntityType<TileEntityBox> tileBox;
+    public static BoxBlock boxBlock;
+    public static BlockEntityType<BlockEntityBox> tileBox;
 
     private static ForgeConfigSpec config;
 
@@ -51,21 +51,21 @@ public class Cardboardboxes {
 
     @SubscribeEvent
     public static void registerBlock(RegistryEvent.Register<Block> event) {
-        event.getRegistry().register(blockBox = new BlockBox());
+        event.getRegistry().register(boxBlock = new BoxBlock());
     }
 
     @SubscribeEvent
     public static void registerItem(RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(new ItemBlockBox(blockBox));
+        event.getRegistry().register(new BoxItemBlock(boxBlock));
     }
 
     @SubscribeEvent
-    public static void registerTileEntity(RegistryEvent.Register<TileEntityType<?>> event) {
-        event.getRegistry().register(TileEntityType.Builder.of(TileEntityBox::new, blockBox).build(null).setRegistryName(new ResourceLocation(PREFIX + "box")));
+    public static void registerTileEntity(RegistryEvent.Register<BlockEntityType<?>> event) {
+        event.getRegistry().register(BlockEntityType.Builder.of(BlockEntityBox::new, boxBlock).build(null).setRegistryName(new ResourceLocation(PREFIX + "box")));
     }
 
     private void setup(final FMLCommonSetupEvent e) {
-        HandlerManager.INSTANCE.banBlock(blockBox);
+        HandlerManager.INSTANCE.banBlock(boxBlock);
         HandlerManager.INSTANCE.banTile(tileBox);
 
         ModHandler.loadHandlerData(config);

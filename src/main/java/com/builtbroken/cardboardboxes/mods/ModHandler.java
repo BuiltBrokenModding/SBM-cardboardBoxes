@@ -1,8 +1,8 @@
 package com.builtbroken.cardboardboxes.mods;
 
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -23,7 +23,7 @@ public class ModHandler {
     public static HashMap<String, Class<? extends ModHandler>> modSupportHandlerMap = new HashMap<>();
     public static HashMap<String, ModHandler> modSupportHandlerMap_instances = new HashMap<>();
 
-    protected static IForgeRegistry<TileEntityType<?>> TILE_REGISTRY;
+    protected static IForgeRegistry<BlockEntityType<?>> BLOCK_ENTITIES_REGISTRY;
     public static HashMap<String, ForgeConfigSpec.BooleanValue> tileBanConfigMap = new HashMap<>();
 
     public void load(ForgeConfigSpec configuration) {
@@ -51,7 +51,7 @@ public class ModHandler {
      * @param configuration
      */
     public static void loadHandlerData(ForgeConfigSpec configuration) {
-        LOGGER.info("ModHandler#loadHandlerData() -> Accessed Tile Registry: " + (TILE_REGISTRY != null));
+        LOGGER.info("ModHandler#loadHandlerData() -> Accessed Tile Registry: " + (BLOCK_ENTITIES_REGISTRY != null));
         processHandlers(configuration);
         LOGGER.info("ModHandler#loadHandlerData() -> Finished loading data handlers");
         loadConfig(configuration);
@@ -87,8 +87,8 @@ public class ModHandler {
                 "If a tile does not show up on this list it is already black listed. The reasoning behind blocking tiles is to prevent crashes or unwanted " +
                 "interaction. Such as picking up a piston which can both causes issues and doesn't really matter. Set value to 'true' to disable interaction.";
         b.comment(comment).push("tile_ban_list"); //set the category
-        for (ResourceLocation name : TILE_REGISTRY.getKeys()) {
-            TileEntityType<?> type = TILE_REGISTRY.getValue(name);
+        for (ResourceLocation name : BLOCK_ENTITIES_REGISTRY.getKeys()) {
+            BlockEntityType<?> type = BLOCK_ENTITIES_REGISTRY.getValue(name);
             if (name != null && type != null) {
                 try {
                     String typeString = type.getRegistryName().toString();
@@ -104,9 +104,9 @@ public class ModHandler {
     }
 
     private static void loadConfig(ForgeConfigSpec configuration) {
-        if (TILE_REGISTRY != null) {
-            for (ResourceLocation name : TILE_REGISTRY.getKeys()) {
-                TileEntityType<?> type = TILE_REGISTRY.getValue(name);
+        if (BLOCK_ENTITIES_REGISTRY != null) {
+            for (ResourceLocation name : BLOCK_ENTITIES_REGISTRY.getKeys()) {
+                BlockEntityType<?> type = BLOCK_ENTITIES_REGISTRY.getValue(name);
                 if (name != null && type != null) {
                     try {
                         String typeString = type.getRegistryName().toString();
@@ -126,6 +126,6 @@ public class ModHandler {
     }
 
     private static void loadTileRegistry() {
-        TILE_REGISTRY = ForgeRegistries.TILE_ENTITIES;
+        BLOCK_ENTITIES_REGISTRY = ForgeRegistries.BLOCK_ENTITIES;
     }
 }

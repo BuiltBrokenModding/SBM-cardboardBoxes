@@ -2,16 +2,16 @@ package com.builtbroken.cardboardboxes.mods;
 
 import com.builtbroken.cardboardboxes.handler.Handler;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class VanillaHandler extends ModHandler {
@@ -27,13 +27,13 @@ public class VanillaHandler extends ModHandler {
         if (spawnerVal.get()) {
             HandlerManager.INSTANCE.banBlock(Blocks.SPAWNER);
 
-            HandlerManager.INSTANCE.banTile(TileEntityType.MOB_SPAWNER);
+            HandlerManager.INSTANCE.banTile(BlockEntityType.MOB_SPAWNER);
         }
 
         //Fix for chests being rotated in opposite direction
         HandlerManager.INSTANCE.registerHandler(Blocks.CHEST, new Handler() {
             @Override
-            public void postPlaceBlock(PlayerEntity player, World worldIn, BlockPos pos, Hand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundNBT saveData) {
+            public void postPlaceBlock(Player player, Level worldIn, BlockPos pos, InteractionHand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundTag saveData) {
                 BlockState blockstate = worldIn.getBlockState(pos);
                 if (blockstate.getBlock() == Blocks.CHEST && blockstate.getValue(ChestBlock.FACING) != player.getDirection().getOpposite()) {
                     blockstate = blockstate.setValue(ChestBlock.FACING, player.getDirection().getOpposite());
@@ -44,28 +44,28 @@ public class VanillaHandler extends ModHandler {
 
         //Remove unwanted interaction
         HandlerManager.INSTANCE.banBlock(Blocks.BEACON);
-        HandlerManager.INSTANCE.banTile(TileEntityType.BEACON);
+        HandlerManager.INSTANCE.banTile(BlockEntityType.BEACON);
         HandlerManager.INSTANCE.banBlock(Blocks.PISTON);
         HandlerManager.INSTANCE.banBlock(Blocks.MOVING_PISTON);
         HandlerManager.INSTANCE.banBlock(Blocks.PISTON_HEAD);
         HandlerManager.INSTANCE.banBlock(Blocks.STICKY_PISTON);
-        HandlerManager.INSTANCE.banTile(TileEntityType.PISTON);
+        HandlerManager.INSTANCE.banTile(BlockEntityType.PISTON);
         HandlerManager.INSTANCE.banBlock(Blocks.DAYLIGHT_DETECTOR);
-        HandlerManager.INSTANCE.banTile(TileEntityType.DAYLIGHT_DETECTOR);
+        HandlerManager.INSTANCE.banTile(BlockEntityType.DAYLIGHT_DETECTOR);
         HandlerManager.INSTANCE.banBlock(Blocks.ENDER_CHEST);
-        HandlerManager.INSTANCE.banTile(TileEntityType.ENDER_CHEST);
+        HandlerManager.INSTANCE.banTile(BlockEntityType.ENDER_CHEST);
         HandlerManager.INSTANCE.banBlock(Blocks.COMPARATOR);
-        HandlerManager.INSTANCE.banTile(TileEntityType.COMPARATOR);
+        HandlerManager.INSTANCE.banTile(BlockEntityType.COMPARATOR);
         HandlerManager.INSTANCE.banBlock(Blocks.COMMAND_BLOCK);
-        HandlerManager.INSTANCE.banTile(TileEntityType.COMMAND_BLOCK);
+        HandlerManager.INSTANCE.banTile(BlockEntityType.COMMAND_BLOCK);
         HandlerManager.INSTANCE.banBlock(Blocks.END_PORTAL);
         HandlerManager.INSTANCE.banBlock(Blocks.END_PORTAL_FRAME);
-        HandlerManager.INSTANCE.banTile(TileEntityType.END_PORTAL);
+        HandlerManager.INSTANCE.banTile(BlockEntityType.END_PORTAL);
         HandlerManager.INSTANCE.banBlock(Blocks.NOTE_BLOCK);
         HandlerManager.INSTANCE.banBlock(Blocks.ENCHANTING_TABLE);
-        HandlerManager.INSTANCE.banTile(TileEntityType.ENCHANTING_TABLE);
-        HandlerManager.INSTANCE.banTile(TileEntityType.SIGN);
-        HandlerManager.INSTANCE.banTile(TileEntityType.SIGN);
+        HandlerManager.INSTANCE.banTile(BlockEntityType.ENCHANTING_TABLE);
+        HandlerManager.INSTANCE.banTile(BlockEntityType.SIGN);
+        HandlerManager.INSTANCE.banTile(BlockEntityType.SIGN);
         HandlerManager.INSTANCE.banBlock(Blocks.SKELETON_SKULL);
         HandlerManager.INSTANCE.banBlock(Blocks.SKELETON_WALL_SKULL);
         HandlerManager.INSTANCE.banBlock(Blocks.WITHER_SKELETON_SKULL);
@@ -78,7 +78,7 @@ public class VanillaHandler extends ModHandler {
         HandlerManager.INSTANCE.banBlock(Blocks.PLAYER_WALL_HEAD);
         HandlerManager.INSTANCE.banBlock(Blocks.ZOMBIE_HEAD);
         HandlerManager.INSTANCE.banBlock(Blocks.ZOMBIE_WALL_HEAD);
-        HandlerManager.INSTANCE.banTile(TileEntityType.SKULL);
+        HandlerManager.INSTANCE.banTile(BlockEntityType.SKULL);
         HandlerManager.INSTANCE.banBlock(Blocks.CAULDRON);
         HandlerManager.INSTANCE.banBlock(Blocks.FLOWER_POT);
 
@@ -100,6 +100,6 @@ public class VanillaHandler extends ModHandler {
         HandlerManager.INSTANCE.banBlock(Blocks.GREEN_SHULKER_BOX);
         HandlerManager.INSTANCE.banBlock(Blocks.RED_SHULKER_BOX);
         HandlerManager.INSTANCE.banBlock(Blocks.BLACK_SHULKER_BOX);
-        HandlerManager.INSTANCE.banTile(TileEntityType.SHULKER_BOX);
+        HandlerManager.INSTANCE.banTile(BlockEntityType.SHULKER_BOX);
     }
 }

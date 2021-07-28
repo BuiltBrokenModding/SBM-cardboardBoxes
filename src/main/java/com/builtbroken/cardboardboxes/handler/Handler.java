@@ -1,13 +1,13 @@
 package com.builtbroken.cardboardboxes.handler;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Handles interaction between the box and a single tile. Allows for customizing save/load and placement.
@@ -26,15 +26,15 @@ public class Handler {
      *            already called
      * @return save data, never should return null
      */
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         return tag;
     }
 
     /**
      * Called to load data into the tile
      */
-    public void loadData(BlockState state, TileEntity tile, CompoundNBT tag) {
-        tile.load(state, tag);
+    public void loadData(BlockEntity tile, CompoundTag tag) {
+        tile.load(tag);
     }
 
     /**
@@ -43,7 +43,7 @@ public class Handler {
      * @param saveData - data for the tile entity
      * @return true if placement was handled, false to let default code run
      */
-    public boolean placeBlock(PlayerEntity player, World worldIn, BlockPos pos, Hand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundNBT saveData) {
+    public boolean placeBlock(Player player, Level worldIn, BlockPos pos, InteractionHand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundTag saveData) {
         return false;
     }
 
@@ -52,7 +52,7 @@ public class Handler {
      *
      * @param saveData - data for the tile entity
      */
-    public void postPlaceBlock(PlayerEntity player, World worldIn, BlockPos pos, Hand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundNBT saveData) {
+    public void postPlaceBlock(Player player, Level worldIn, BlockPos pos, InteractionHand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundTag saveData) {
 
     }
 }

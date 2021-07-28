@@ -1,18 +1,19 @@
 package com.builtbroken.cardboardboxes.handler;
 
-import net.minecraft.block.Block;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import com.builtbroken.cardboardboxes.box.BoxItemBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * Handles interaction between {@link com.builtbroken.cardboardboxes.box.ItemBlockBox} and tiles
+ * Handles interaction between {@link BoxItemBlock} and tiles
  *
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
@@ -25,7 +26,7 @@ public class HandlerManager {
     /**
      * Map of tiles to handlers that provide special interaction
      */
-    public static HashMap<Class<? extends TileEntity>, Handler> pickupHandlerMap = new HashMap<>();
+    public static HashMap<Class<? extends BlockEntity>, Handler> pickupHandlerMap = new HashMap<>();
     /**
      * Map of block to handlers that provide special interaction
      */
@@ -33,7 +34,7 @@ public class HandlerManager {
     /**
      * List of tiles that are banned
      */
-    public static List<TileEntityType<?>> tileEntityBanList = new ArrayList<>();
+    public static List<BlockEntityType<?>> tileEntityBanList = new ArrayList<>();
     /**
      * List of Blocks that are banned
      */
@@ -42,7 +43,7 @@ public class HandlerManager {
     /**
      * Called to register a handler for managing the pickup state of a tile
      */
-    public void registerPickupHandler(Class<? extends TileEntity> clazz, Handler handler) //TODO implement
+    public void registerPickupHandler(Class<? extends BlockEntity> clazz, Handler handler) //TODO implement
     {
         pickupHandlerMap.put(clazz, handler);
     }
@@ -64,7 +65,7 @@ public class HandlerManager {
     /**
      * Called to ban a tile
      */
-    public void banTile(TileEntityType<?> tile) {
+    public void banTile(BlockEntityType<?> tile) {
         if (!tileEntityBanList.contains(tile)) {
             tileEntityBanList.add(tile);
         }
@@ -82,14 +83,14 @@ public class HandlerManager {
     /**
      * Called to check if a block can be picked up inside a box
      */
-    public CanPickUpResult canPickUp(World world, BlockPos pos) {
+    public CanPickUpResult canPickUp(Level world, BlockPos pos) {
         Block block = world.getBlockState(pos).getBlock();
         if (!blockBanList.contains(block)) {
-            TileEntity tile = world.getBlockEntity(pos);
+            BlockEntity tile = world.getBlockEntity(pos);
             if (tile != null) {
                 if (!tileEntityBanList.contains(tile.getClass())) {
                     //Check if we even have data to store, no data no point in using a box
-                    CompoundNBT nbt = new CompoundNBT();
+                    CompoundTag nbt = new CompoundTag();
                     tile.save(nbt);
                     nbt.remove("x");
                     nbt.remove("y");

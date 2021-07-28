@@ -1,10 +1,11 @@
 package com.builtbroken.cardboardboxes.box;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * TileEntity for the box
@@ -12,18 +13,18 @@ import net.minecraft.tileentity.TileEntity;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
  */
-public class TileEntityBox extends TileEntity {
+public class BlockEntityBox extends BlockEntity {
     private BlockState placementState;
-    private CompoundNBT placementData;
+    private CompoundTag placementData;
 
-    public TileEntityBox() {
-        super(Cardboardboxes.tileBox);
+    public BlockEntityBox(BlockPos pos, BlockState state) {
+        super(Cardboardboxes.tileBox, pos, state);
     }
 
 
     @Override
-    public void load(BlockState state, CompoundNBT compoundNBT) {
-        super.load(state, compoundNBT);
+    public void load(CompoundTag compoundNBT) {
+        super.load(compoundNBT);
         if (compoundNBT.contains("storedTile")) {
             setStateForPlacement(Block.stateById(compoundNBT.getInt("storedTile")));
             if (compoundNBT.contains("tileData")) {
@@ -33,7 +34,7 @@ public class TileEntityBox extends TileEntity {
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compoundNBT) {
+    public CompoundTag save(CompoundTag compoundNBT) {
         super.save(compoundNBT);
         if (getStateForPlacement() != null) {
             compoundNBT.putInt("storedTile", Block.getId(placementState));
@@ -52,11 +53,11 @@ public class TileEntityBox extends TileEntity {
         this.placementState = state;
     }
 
-    public CompoundNBT getDataForPlacement() {
+    public CompoundTag getDataForPlacement() {
         return placementData;
     }
 
-    public void setDataForPlacement(CompoundNBT tileData) {
+    public void setDataForPlacement(CompoundTag tileData) {
         this.placementData = tileData;
     }
 }
