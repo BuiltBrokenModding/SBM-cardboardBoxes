@@ -1,12 +1,11 @@
 package com.builtbroken.cardboardboxes.handler;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -16,8 +15,7 @@ import net.minecraft.world.World;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
  */
-public class Handler
-{
+public class Handler {
     /**
      * Called to handle special saving and loading for a
      * tile. Including stripping NBT data that shouldn't
@@ -28,20 +26,15 @@ public class Handler
      *            already called
      * @return save data, never should return null
      */
-    public NBTTagCompound save(NBTTagCompound tag)
-    {
+    public CompoundNBT save(CompoundNBT tag) {
         return tag;
     }
 
     /**
      * Called to load data into the tile
-     *
-     * @param tile
-     * @param tag
      */
-    public void loadData(TileEntity tile, NBTTagCompound tag)
-    {
-        tile.read(tag);
+    public void loadData(BlockState state, TileEntity tile, CompoundNBT tag) {
+        tile.load(state, tag);
     }
 
     /**
@@ -50,8 +43,7 @@ public class Handler
      * @param saveData - data for the tile entity
      * @return true if placement was handled, false to let default code run
      */
-    public boolean placeBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, IBlockState state, NBTTagCompound saveData)
-    {
+    public boolean placeBlock(PlayerEntity player, World worldIn, BlockPos pos, Hand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundNBT saveData) {
         return false;
     }
 
@@ -60,8 +52,7 @@ public class Handler
      *
      * @param saveData - data for the tile entity
      */
-    public void postPlaceBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, IBlockState state, NBTTagCompound saveData)
-    {
+    public void postPlaceBlock(PlayerEntity player, World worldIn, BlockPos pos, Hand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundNBT saveData) {
 
     }
 }

@@ -1,32 +1,26 @@
 package com.builtbroken.cardboardboxes;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.builtbroken.cardboardboxes.box.BlockBox;
 import com.builtbroken.cardboardboxes.box.ItemBlockBox;
 import com.builtbroken.cardboardboxes.box.TileEntityBox;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
 import com.builtbroken.cardboardboxes.mods.ModHandler;
 import com.builtbroken.cardboardboxes.mods.VanillaHandler;
-
-import io.netty.handler.codec.http2.Http2FrameReader.Configuration;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Main mod class, handles registering content and triggering loading of interaction
@@ -55,13 +49,6 @@ public class Cardboardboxes {
         LOGGER.info("Finished building the config -> " + config);
     }
 
-    private void setup(final FMLCommonSetupEvent e) {
-        HandlerManager.INSTANCE.banBlock(blockBox);
-        HandlerManager.INSTANCE.banTile(tileBox);
-
-        ModHandler.loadHandlerData(config);
-    }
-
     @SubscribeEvent
     public static void registerBlock(RegistryEvent.Register<Block> event) {
         event.getRegistry().register(blockBox = new BlockBox());
@@ -74,6 +61,13 @@ public class Cardboardboxes {
 
     @SubscribeEvent
     public static void registerTileEntity(RegistryEvent.Register<TileEntityType<?>> event) {
-        tileBox = TileEntityType.register(PREFIX + "box", TileEntityType.Builder.create(TileEntityBox::new));
+        event.getRegistry().register(TileEntityType.Builder.of(TileEntityBox::new, blockBox).build(null).setRegistryName(new ResourceLocation(PREFIX + "box")));
+    }
+
+    private void setup(final FMLCommonSetupEvent e) {
+        HandlerManager.INSTANCE.banBlock(blockBox);
+        HandlerManager.INSTANCE.banTile(tileBox);
+
+        ModHandler.loadHandlerData(config);
     }
 }

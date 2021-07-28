@@ -2,21 +2,19 @@ package com.builtbroken.cardboardboxes.mods;
 
 import com.builtbroken.cardboardboxes.handler.Handler;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.*;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class VanillaHandler extends ModHandler
-{
+public class VanillaHandler extends ModHandler {
     private ForgeConfigSpec.BooleanValue spawnerVal;
 
     @Override
@@ -25,26 +23,21 @@ public class VanillaHandler extends ModHandler
     }
 
     @Override
-    public void load(ForgeConfigSpec configuration)
-    {
-        if (spawnerVal.get())
-        {
+    public void load(ForgeConfigSpec configuration) {
+        if (spawnerVal.get()) {
             HandlerManager.INSTANCE.banBlock(Blocks.SPAWNER);
 
             HandlerManager.INSTANCE.banTile(TileEntityType.MOB_SPAWNER);
         }
 
         //Fix for chests being rotated in opposite direction
-        HandlerManager.INSTANCE.registerHandler(Blocks.CHEST, new Handler()
-        {
+        HandlerManager.INSTANCE.registerHandler(Blocks.CHEST, new Handler() {
             @Override
-            public void postPlaceBlock(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ, IBlockState state, NBTTagCompound saveData)
-            {
-                IBlockState blockstate = worldIn.getBlockState(pos);
-                if (blockstate.getBlock() == Blocks.CHEST && blockstate.get(BlockChest.FACING) != player.getHorizontalFacing().getOpposite())
-                {
-                    blockstate = blockstate.with(BlockChest.FACING, player.getHorizontalFacing().getOpposite());
-                    worldIn.setBlockState(pos, blockstate);
+            public void postPlaceBlock(PlayerEntity player, World worldIn, BlockPos pos, Hand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundNBT saveData) {
+                BlockState blockstate = worldIn.getBlockState(pos);
+                if (blockstate.getBlock() == Blocks.CHEST && blockstate.getValue(ChestBlock.FACING) != player.getDirection().getOpposite()) {
+                    blockstate = blockstate.setValue(ChestBlock.FACING, player.getDirection().getOpposite());
+                    worldIn.setBlockAndUpdate(pos, blockstate);
                 }
             }
         });
@@ -71,8 +64,7 @@ public class VanillaHandler extends ModHandler
         HandlerManager.INSTANCE.banBlock(Blocks.NOTE_BLOCK);
         HandlerManager.INSTANCE.banBlock(Blocks.ENCHANTING_TABLE);
         HandlerManager.INSTANCE.banTile(TileEntityType.ENCHANTING_TABLE);
-        HandlerManager.INSTANCE.banBlock(Blocks.SIGN);
-        HandlerManager.INSTANCE.banBlock(Blocks.WALL_SIGN);
+        HandlerManager.INSTANCE.banTile(TileEntityType.SIGN);
         HandlerManager.INSTANCE.banTile(TileEntityType.SIGN);
         HandlerManager.INSTANCE.banBlock(Blocks.SKELETON_SKULL);
         HandlerManager.INSTANCE.banBlock(Blocks.SKELETON_WALL_SKULL);

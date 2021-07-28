@@ -2,10 +2,8 @@ package com.builtbroken.cardboardboxes.box;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.BlockState;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 
 /**
@@ -14,61 +12,51 @@ import net.minecraft.tileentity.TileEntity;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
  */
-public class TileEntityBox extends TileEntity
-{
-    private IBlockState placementState;
-    private NBTTagCompound placementData;
+public class TileEntityBox extends TileEntity {
+    private BlockState placementState;
+    private CompoundNBT placementData;
 
     public TileEntityBox() {
         super(Cardboardboxes.tileBox);
     }
 
+
     @Override
-    public void read(NBTTagCompound nbt)
-    {
-        super.read(nbt);
-        if (nbt.hasKey("storedTile"))
-        {
-            setStateForPlacement(Block.getStateById(nbt.getInt("storedTile")));
-            if (nbt.hasKey("tileData"))
-            {
-                setDataForPlacement(nbt.getCompound("tileData"));
+    public void load(BlockState state, CompoundNBT compoundNBT) {
+        super.load(state, compoundNBT);
+        if (compoundNBT.contains("storedTile")) {
+            setStateForPlacement(Block.stateById(compoundNBT.getInt("storedTile")));
+            if (compoundNBT.contains("tileData")) {
+                setDataForPlacement(compoundNBT.getCompound("tileData"));
             }
         }
     }
 
     @Override
-    public NBTTagCompound write(NBTTagCompound nbt)
-    {
-        super.write(nbt);
-        if (getStateForPlacement() != null)
-        {
-            nbt.setInt("storedTile", Block.getStateId(placementState));
-            if (getDataForPlacement() != null)
-            {
-                nbt.setTag("tileData", getDataForPlacement());
+    public CompoundNBT save(CompoundNBT compoundNBT) {
+        super.save(compoundNBT);
+        if (getStateForPlacement() != null) {
+            compoundNBT.putInt("storedTile", Block.getId(placementState));
+            if (getDataForPlacement() != null) {
+                compoundNBT.put("tileData", getDataForPlacement());
             }
         }
-        return nbt;
+        return compoundNBT;
     }
 
-    public IBlockState getStateForPlacement()
-    {
+    public BlockState getStateForPlacement() {
         return placementState;
     }
 
-    public void setStateForPlacement(IBlockState state)
-    {
+    public void setStateForPlacement(BlockState state) {
         this.placementState = state;
     }
 
-    public NBTTagCompound getDataForPlacement()
-    {
+    public CompoundNBT getDataForPlacement() {
         return placementData;
     }
 
-    public void setDataForPlacement(NBTTagCompound tileData)
-    {
+    public void setDataForPlacement(CompoundNBT tileData) {
         this.placementData = tileData;
     }
 }

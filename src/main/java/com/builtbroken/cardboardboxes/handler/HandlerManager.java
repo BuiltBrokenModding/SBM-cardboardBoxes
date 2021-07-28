@@ -1,7 +1,7 @@
 package com.builtbroken.cardboardboxes.handler;
 
 import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
@@ -17,29 +17,30 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
  */
-public class HandlerManager
-{
-    /** Map of tiles to handlers that provide special interaction */
-    public static HashMap<Class<? extends TileEntity>, Handler> pickupHandlerMap = new HashMap<>();
-
-    /** Map of block to handlers that provide special interaction */
-    public static HashMap<Block, Handler> handlerMap = new HashMap<>();
-
-    /** List of tiles that are banned */
-    public static List<TileEntityType<?>> tileEntityBanList = new ArrayList<>();
-
-    /** List of Blocks that are banned */
-    public static List<Block> blockBanList = new ArrayList<>();
-
-    /** Primary manager */
+public class HandlerManager {
+    /**
+     * Primary manager
+     */
     public final static HandlerManager INSTANCE = new HandlerManager();
-
+    /**
+     * Map of tiles to handlers that provide special interaction
+     */
+    public static HashMap<Class<? extends TileEntity>, Handler> pickupHandlerMap = new HashMap<>();
+    /**
+     * Map of block to handlers that provide special interaction
+     */
+    public static HashMap<Block, Handler> handlerMap = new HashMap<>();
+    /**
+     * List of tiles that are banned
+     */
+    public static List<TileEntityType<?>> tileEntityBanList = new ArrayList<>();
+    /**
+     * List of Blocks that are banned
+     */
+    public static List<Block> blockBanList = new ArrayList<>();
 
     /**
      * Called to register a handler for managing the pickup state of a tile
-     *
-     * @param clazz
-     * @param handler
      */
     public void registerPickupHandler(Class<? extends TileEntity> clazz, Handler handler) //TODO implement
     {
@@ -52,66 +53,48 @@ public class HandlerManager
      * @param block   - block to handle
      * @param handler - object to manage handler calls
      */
-    public void registerHandler(Block block, Handler handler)
-    {
+    public void registerHandler(Block block, Handler handler) {
         handlerMap.put(block, handler);
     }
 
-    public Handler getHandler(Block block)
-    {
+    public Handler getHandler(Block block) {
         return handlerMap.get(block);
     }
 
     /**
      * Called to ban a tile
-     *
-     * @param tile
      */
-    public void banTile(TileEntityType<?> tile)
-    {
-        if (!tileEntityBanList.contains(tile))
-        {
+    public void banTile(TileEntityType<?> tile) {
+        if (!tileEntityBanList.contains(tile)) {
             tileEntityBanList.add(tile);
         }
     }
 
     /**
      * Called to ban a block
-     *
-     * @param block
      */
-    public void banBlock(Block block)
-    {
-        if (!blockBanList.contains(block))
-        {
-        	HandlerManager.blockBanList.add(block);
+    public void banBlock(Block block) {
+        if (!blockBanList.contains(block)) {
+            HandlerManager.blockBanList.add(block);
         }
     }
 
     /**
      * Called to check if a block can be picked up inside a box
-     *
-     * @param world - position
-     * @param pos   - position
-     * @return result of the interaction
      */
-    public CanPickUpResult canPickUp(World world, BlockPos pos)
-    {
+    public CanPickUpResult canPickUp(World world, BlockPos pos) {
         Block block = world.getBlockState(pos).getBlock();
-        if (!blockBanList.contains(block))
-        {
-            TileEntity tile = world.getTileEntity(pos);
-            if (tile != null)
-            {
-                if (!tileEntityBanList.contains(tile.getClass()))
-                {
+        if (!blockBanList.contains(block)) {
+            TileEntity tile = world.getBlockEntity(pos);
+            if (tile != null) {
+                if (!tileEntityBanList.contains(tile.getClass())) {
                     //Check if we even have data to store, no data no point in using a box
-                    NBTTagCompound nbt = new NBTTagCompound();
-                    tile.write(nbt);
-                    nbt.removeTag("x");
-                    nbt.removeTag("y");
-                    nbt.removeTag("z");
-                    nbt.removeTag("id");
+                    CompoundNBT nbt = new CompoundNBT();
+                    tile.save(nbt);
+                    nbt.remove("x");
+                    nbt.remove("y");
+                    nbt.remove("z");
+                    nbt.remove("id");
                     return !nbt.isEmpty() ? CanPickUpResult.CAN_PICK_UP : CanPickUpResult.NO_DATA;
                 }
                 return CanPickUpResult.BANNED_TILE;

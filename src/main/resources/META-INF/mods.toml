@@ -1,28 +1,29 @@
-modLoader="javafml" #mandatory
-loaderVersion="[25,)" #mandatory (24 is current forge version)
-issueTrackerURL="https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/issues" #optional
+modLoader = "javafml" #mandatory
+loaderVersion = "[33,)" #mandatory (24 is current forge version)
+license = "MIT"
+issueTrackerURL = "https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/issues" #optional
 [[mods]] #mandatory
-modId="cardboardboxes" #mandatory
-version="${file.jarVersion}" #mandatory
-displayName="[SBM] Cardboard Boxes" #mandatory
-displayURL="https://minecraft.curseforge.com/projects/sbm-cardboardboxes/" #optional
+modId = "cardboardboxes" #mandatory
+version = "${file.jarVersion}" #mandatory
+displayName = "[SBM] Cardboard Boxes" #mandatory
+displayURL = "https://minecraft.curseforge.com/projects/sbm-cardboardboxes/" #optional
 
-authors="BuiltBrokenModding" #optional
+authors = "BuiltBrokenModding" #optional
 
-description='''
+description = '''
 Simplistic storage for moving tiles while maintaining inventories, and settings. 
 '''
 
 [[dependencies.cardboardboxes]] #optional
-    modId="forge"
-    mandatory=true
-    versionRange="[25,)"
-    ordering="NONE"
-    side="BOTH"
+modId = "forge"
+mandatory = true
+versionRange = "[33,)"
+ordering = "NONE"
+side = "BOTH"
 
 [[dependencies.cardboardboxes]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.13.2]"
-    ordering="NONE"
-    side="BOTH"
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.2,)"
+ordering = "NONE"
+side = "BOTH"
