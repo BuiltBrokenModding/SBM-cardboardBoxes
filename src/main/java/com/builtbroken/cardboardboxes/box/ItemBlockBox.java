@@ -84,13 +84,13 @@ public class ItemBlockBox extends ItemBlock
 			//Get tile, ignore anything without a tile
 			TileEntity tileEntity = worldIn.getTileEntity(pos);
 			if (tileEntity != null)
-            {
-                //Get stack
-                final IBlockState state = worldIn.getBlockState(pos);
-                final ItemStack blockStack = state.getBlock().getItem(worldIn, pos, state);
-                if (!blockStack.isEmpty())
-                {
-                    //Copy tile data
+			{
+				//Get stack
+				final IBlockState state = worldIn.getBlockState(pos);
+				final ItemStack blockStack = new ItemStack(Item.getItemFromBlock(state.getBlock()));
+				if (!blockStack.isEmpty())
+				{
+					//Copy tile data
 					NBTTagCompound nbtTagCompound = new NBTTagCompound();
 					tileEntity.writeToNBT(nbtTagCompound);
 
