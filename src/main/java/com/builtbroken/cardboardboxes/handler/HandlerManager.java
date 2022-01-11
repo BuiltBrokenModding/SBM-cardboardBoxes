@@ -18,20 +18,20 @@ import java.util.List;
  */
 public class HandlerManager
 {
-    /** Map of tiles to handlers that provide special interaction */
-    public static HashMap<Class<? extends TileEntity>, Handler> pickupHandlerMap = new HashMap();
+	/** Map of tiles to handlers that provide special interaction */
+	public static HashMap<Class<? extends TileEntity>, Handler> pickupHandlerMap = new HashMap<>();
 
-    /** Map of block to handlers that provide special interaction */
-    public static HashMap<Block, Handler> handlerMap = new HashMap();
+	/** Map of block to handlers that provide special interaction */
+	public static HashMap<Block, Handler> handlerMap = new HashMap<>();
 
-    /** List of tiles that are banned */
-    public static List<Class<? extends TileEntity>> tileEntityBanList = new ArrayList();
+	/** List of tiles that are banned */
+	public static List<Class<? extends TileEntity>> tileEntityBanList = new ArrayList<>();
 
-    /** List of Blocks that are banned */
-    public static List<Block> blockBanList = new ArrayList();
+	/** List of Blocks that are banned */
+	public static List<Block> blockBanList = new ArrayList<>();
 
-    /** Primary manager */
-    public final static HandlerManager INSTANCE = new HandlerManager();
+	/** Primary manager */
+	public final static HandlerManager INSTANCE = new HandlerManager();
 
 
     /**
@@ -80,12 +80,12 @@ public class HandlerManager
      * @param block
      */
     public void banBlock(Block block)
-    {
-        if (!blockBanList.contains(block))
-        {
-            this.blockBanList.add(block);
-        }
-    }
+	{
+		if (!blockBanList.contains(block))
+		{
+			blockBanList.add(block);
+		}
+	}
 
     /**
      * Called to check if a block can be picked up inside a box

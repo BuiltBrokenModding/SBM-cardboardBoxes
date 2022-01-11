@@ -22,9 +22,9 @@ import static com.builtbroken.cardboardboxes.Cardboardboxes.LOGGER;
  */
 public class ModHandler
 {
-    public static HashMap<String, Class<? extends ModHandler>> modSupportHandlerMap = new HashMap();
+	public static HashMap<String, Class<? extends ModHandler>> modSupportHandlerMap = new HashMap<>();
 
-    protected static RegistryNamespaced<ResourceLocation, Class<? extends TileEntity>> TILE_REGISTRY;
+	protected static RegistryNamespaced<ResourceLocation, Class<? extends TileEntity>> TILE_REGISTRY;
 
     /**
      * Called in the post init phase to handle any blocks that need to be blacklisted
@@ -115,21 +115,21 @@ public class ModHandler
                 Class<? extends TileEntity> clazz = TILE_REGISTRY.getObject(name);
                 if (name != null && clazz != null)
                 {
-                    try
-                    {
-                        String clazzName = clazz.getSimpleName();
-                        boolean shouldBan = HandlerManager.INSTANCE.tileEntityBanList.contains(clazz) || clazzName.contains("cable") || clazzName.contains("wire") || clazzName.contains("pipe") || clazzName.contains("tube") || clazzName.contains("conduit") || clazzName.contains("channel");
-                        if (configuration.getBoolean("" + name, cat_name, shouldBan, "Clazz[" + clazzName + "]"))
-                        {
-                            HandlerManager.INSTANCE.banTile(clazz);
-                        }
-                        else if (shouldBan && HandlerManager.INSTANCE.tileEntityBanList.contains(clazz))
-                        {
-                            //If original was banned but someone unbanned it in the config
-                            HandlerManager.INSTANCE.tileEntityBanList.remove(clazz);
-                        }
-                    }
-                    catch (Exception e)
+					try
+					{
+						String clazzName = clazz.getSimpleName();
+						boolean shouldBan = HandlerManager.tileEntityBanList.contains(clazz) || clazzName.contains("cable") || clazzName.contains("wire") || clazzName.contains("pipe") || clazzName.contains("tube") || clazzName.contains("conduit") || clazzName.contains("channel");
+						if (configuration.getBoolean("" + name, cat_name, shouldBan, "Clazz[" + clazzName + "]"))
+						{
+							HandlerManager.INSTANCE.banTile(clazz);
+						}
+						else if (shouldBan && HandlerManager.tileEntityBanList.contains(clazz))
+						{
+							//If original was banned but someone unbanned it in the config
+							HandlerManager.tileEntityBanList.remove(clazz);
+						}
+					}
+					catch (Exception e)
                     {
                         LOGGER.error("ModHandler#loadHandlerData() -> Failed to add entry to config [" + name + " > " + clazz + "]", e);
                     }
