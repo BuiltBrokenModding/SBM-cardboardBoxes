@@ -40,3 +40,4 @@ setup.bat
 build.bat
 src/main/java/com/builtbroken/cardboardboxes/Cardboardboxes.java
 changelog\.html
+*.launch
