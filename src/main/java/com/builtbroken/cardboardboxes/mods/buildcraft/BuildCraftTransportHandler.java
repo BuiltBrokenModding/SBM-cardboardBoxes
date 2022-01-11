@@ -2,6 +2,7 @@ package com.builtbroken.cardboardboxes.mods.buildcraft;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
 import com.builtbroken.cardboardboxes.mods.ModHandler;
+
 import net.minecraftforge.common.config.Configuration;
 
 /** Handles interaction for Buildcraft transport module

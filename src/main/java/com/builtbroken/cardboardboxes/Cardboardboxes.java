@@ -1,11 +1,17 @@
 package com.builtbroken.cardboardboxes;
 
+import java.io.File;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.builtbroken.cardboardboxes.box.BlockBox;
 import com.builtbroken.cardboardboxes.box.ItemBlockBox;
 import com.builtbroken.cardboardboxes.box.TileEntityBox;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
-import com.builtbroken.cardboardboxes.mods.ModHandler;
 import com.builtbroken.cardboardboxes.handler.vanilla.VanillaHandler;
+import com.builtbroken.cardboardboxes.mods.ModHandler;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -17,10 +23,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.File;
 
 /**
  * Main mod class, handles registering content and triggering loading of interaction
