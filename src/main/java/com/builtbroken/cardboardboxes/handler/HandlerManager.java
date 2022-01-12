@@ -1,16 +1,17 @@
 package com.builtbroken.cardboardboxes.handler;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import com.builtbroken.cardboardboxes.box.BoxItemBlock;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Handles interaction between {@link BoxItemBlock} and tiles

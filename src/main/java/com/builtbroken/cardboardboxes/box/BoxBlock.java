@@ -1,6 +1,9 @@
 package com.builtbroken.cardboardboxes.box;
 
+import javax.annotation.Nullable;
+
 import com.builtbroken.cardboardboxes.Cardboardboxes;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -18,8 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-
-import javax.annotation.Nullable;
 
 /**
  * Block for the box
