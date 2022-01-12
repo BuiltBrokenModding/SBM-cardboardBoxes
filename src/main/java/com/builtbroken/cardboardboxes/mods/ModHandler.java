@@ -111,7 +111,7 @@ public class ModHandler {
                     try {
                         String typeString = type.getRegistryName().toString();
                         boolean shouldBan = HandlerManager.tileEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
-                        if (tileBanConfigMap.containsKey("typeString") ? tileBanConfigMap.get(typeString).get() : false) {
+                        if (tileBanConfigMap.containsKey(typeString) ? tileBanConfigMap.get(typeString).get() : false) {
                             HandlerManager.INSTANCE.banTile(type);
                         } else if (shouldBan) {
                             //If original was banned but someone unbanned it in the config
