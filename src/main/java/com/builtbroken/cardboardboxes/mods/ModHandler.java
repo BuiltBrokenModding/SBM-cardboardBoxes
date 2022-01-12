@@ -1,17 +1,18 @@
 package com.builtbroken.cardboardboxes.mods;
 
+import static com.builtbroken.cardboardboxes.Cardboardboxes.LOGGER;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
+
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.builtbroken.cardboardboxes.Cardboardboxes.LOGGER;
 
 /**
  * Prefab for handling interaction for a mod or content package

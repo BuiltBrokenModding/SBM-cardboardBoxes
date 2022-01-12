@@ -2,6 +2,7 @@ package com.builtbroken.cardboardboxes.mods;
 
 import com.builtbroken.cardboardboxes.handler.Handler;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;

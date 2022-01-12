@@ -1,16 +1,27 @@
 package com.builtbroken.cardboardboxes.box;
 
+import static com.builtbroken.cardboardboxes.box.BlockBox.STORE_ITEM_TAG;
+import static com.builtbroken.cardboardboxes.box.BlockBox.TILE_DATA_TAG;
+
+import java.util.List;
+
 import com.builtbroken.cardboardboxes.Cardboardboxes;
 import com.builtbroken.cardboardboxes.handler.CanPickUpResult;
 import com.builtbroken.cardboardboxes.handler.Handler;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -21,11 +32,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-
-import java.util.List;
-
-import static com.builtbroken.cardboardboxes.box.BlockBox.STORE_ITEM_TAG;
-import static com.builtbroken.cardboardboxes.box.BlockBox.TILE_DATA_TAG;
 
 /**
  * ItemBlock for the box

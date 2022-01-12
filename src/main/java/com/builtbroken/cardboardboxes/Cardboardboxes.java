@@ -1,11 +1,15 @@
 package com.builtbroken.cardboardboxes;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.builtbroken.cardboardboxes.box.BlockBox;
 import com.builtbroken.cardboardboxes.box.ItemBlockBox;
 import com.builtbroken.cardboardboxes.box.TileEntityBox;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
 import com.builtbroken.cardboardboxes.mods.ModHandler;
 import com.builtbroken.cardboardboxes.mods.VanillaHandler;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
@@ -19,8 +23,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Main mod class, handles registering content and triggering loading of interaction

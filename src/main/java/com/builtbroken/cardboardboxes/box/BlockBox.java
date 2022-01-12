@@ -1,6 +1,7 @@
 package com.builtbroken.cardboardboxes.box;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
