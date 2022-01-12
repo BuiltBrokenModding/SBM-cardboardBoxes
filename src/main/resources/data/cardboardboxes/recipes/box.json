@@ -10,10 +10,10 @@
       "item": "minecraft:paper"
     },
     "S": {
-      "item": "minecraft:slime_ball"
+      "tag": "forge:slimeballs"
     },
     "W": {
-      "tag": "minecraft:planks"
+      "tag": "minecraft:logs"
     }
   },
   "result": {
