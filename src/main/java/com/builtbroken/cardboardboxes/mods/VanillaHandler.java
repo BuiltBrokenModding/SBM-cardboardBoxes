@@ -28,45 +28,45 @@ public class VanillaHandler extends ModHandler {
         if (spawnerVal.get()) {
             HandlerManager.INSTANCE.banBlock(Blocks.SPAWNER);
 
-            HandlerManager.INSTANCE.banTile(BlockEntityType.MOB_SPAWNER);
+            HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.MOB_SPAWNER);
         }
 
         //Fix for chests being rotated in opposite direction
         HandlerManager.INSTANCE.registerHandler(Blocks.CHEST, new Handler() {
             @Override
-            public void postPlaceBlock(Player player, Level worldIn, BlockPos pos, InteractionHand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundTag saveData) {
-                BlockState blockstate = worldIn.getBlockState(pos);
+            public void postPlaceBlock(Player player, Level level, BlockPos pos, InteractionHand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundTag saveData) {
+                BlockState blockstate = level.getBlockState(pos);
                 if (blockstate.getBlock() == Blocks.CHEST && blockstate.getValue(ChestBlock.FACING) != player.getDirection().getOpposite()) {
                     blockstate = blockstate.setValue(ChestBlock.FACING, player.getDirection().getOpposite());
-                    worldIn.setBlockAndUpdate(pos, blockstate);
+                    level.setBlockAndUpdate(pos, blockstate);
                 }
             }
         });
 
         //Remove unwanted interaction
         HandlerManager.INSTANCE.banBlock(Blocks.BEACON);
-        HandlerManager.INSTANCE.banTile(BlockEntityType.BEACON);
+        HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.BEACON);
         HandlerManager.INSTANCE.banBlock(Blocks.PISTON);
         HandlerManager.INSTANCE.banBlock(Blocks.MOVING_PISTON);
         HandlerManager.INSTANCE.banBlock(Blocks.PISTON_HEAD);
         HandlerManager.INSTANCE.banBlock(Blocks.STICKY_PISTON);
-        HandlerManager.INSTANCE.banTile(BlockEntityType.PISTON);
+        HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.PISTON);
         HandlerManager.INSTANCE.banBlock(Blocks.DAYLIGHT_DETECTOR);
-        HandlerManager.INSTANCE.banTile(BlockEntityType.DAYLIGHT_DETECTOR);
+        HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.DAYLIGHT_DETECTOR);
         HandlerManager.INSTANCE.banBlock(Blocks.ENDER_CHEST);
-        HandlerManager.INSTANCE.banTile(BlockEntityType.ENDER_CHEST);
+        HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.ENDER_CHEST);
         HandlerManager.INSTANCE.banBlock(Blocks.COMPARATOR);
-        HandlerManager.INSTANCE.banTile(BlockEntityType.COMPARATOR);
+        HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.COMPARATOR);
         HandlerManager.INSTANCE.banBlock(Blocks.COMMAND_BLOCK);
-        HandlerManager.INSTANCE.banTile(BlockEntityType.COMMAND_BLOCK);
+        HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.COMMAND_BLOCK);
         HandlerManager.INSTANCE.banBlock(Blocks.END_PORTAL);
         HandlerManager.INSTANCE.banBlock(Blocks.END_PORTAL_FRAME);
-        HandlerManager.INSTANCE.banTile(BlockEntityType.END_PORTAL);
+        HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.END_PORTAL);
         HandlerManager.INSTANCE.banBlock(Blocks.NOTE_BLOCK);
         HandlerManager.INSTANCE.banBlock(Blocks.ENCHANTING_TABLE);
-        HandlerManager.INSTANCE.banTile(BlockEntityType.ENCHANTING_TABLE);
-        HandlerManager.INSTANCE.banTile(BlockEntityType.SIGN);
-        HandlerManager.INSTANCE.banTile(BlockEntityType.SIGN);
+        HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.ENCHANTING_TABLE);
+        HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.SIGN);
+        HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.SIGN);
         HandlerManager.INSTANCE.banBlock(Blocks.SKELETON_SKULL);
         HandlerManager.INSTANCE.banBlock(Blocks.SKELETON_WALL_SKULL);
         HandlerManager.INSTANCE.banBlock(Blocks.WITHER_SKELETON_SKULL);
@@ -79,7 +79,7 @@ public class VanillaHandler extends ModHandler {
         HandlerManager.INSTANCE.banBlock(Blocks.PLAYER_WALL_HEAD);
         HandlerManager.INSTANCE.banBlock(Blocks.ZOMBIE_HEAD);
         HandlerManager.INSTANCE.banBlock(Blocks.ZOMBIE_WALL_HEAD);
-        HandlerManager.INSTANCE.banTile(BlockEntityType.SKULL);
+        HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.SKULL);
         HandlerManager.INSTANCE.banBlock(Blocks.CAULDRON);
         HandlerManager.INSTANCE.banBlock(Blocks.FLOWER_POT);
 
@@ -101,6 +101,6 @@ public class VanillaHandler extends ModHandler {
         HandlerManager.INSTANCE.banBlock(Blocks.GREEN_SHULKER_BOX);
         HandlerManager.INSTANCE.banBlock(Blocks.RED_SHULKER_BOX);
         HandlerManager.INSTANCE.banBlock(Blocks.BLACK_SHULKER_BOX);
-        HandlerManager.INSTANCE.banTile(BlockEntityType.SHULKER_BOX);
+        HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.SHULKER_BOX);
     }
 }

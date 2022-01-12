@@ -18,12 +18,12 @@ import net.minecraft.world.level.block.state.BlockState;
 public class Handler {
     /**
      * Called to handle special saving and loading for a
-     * tile. Including stripping NBT data that shouldn't
-     * exist on a replaced tile. Such as position data,
-     * excluding tile's XYZ which is already removed.
+     * block entity. Including stripping NBT data that shouldn't
+     * exist on a replaced block entity. Such as position data,
+     * excluding block entity's XYZ which is already removed.
      *
-     * @param tag - save data, tile.writeToNBT is
-     *            already called
+     * @param tag - save data, the block entity's save routine
+     *            is already called
      * @return save data, never should return null
      */
     public CompoundTag save(CompoundTag tag) {
@@ -33,26 +33,26 @@ public class Handler {
     /**
      * Called to load data into the tile
      */
-    public void loadData(BlockEntity tile, CompoundTag tag) {
-        tile.load(tag);
+    public void loadData(BlockEntity blockEntity, CompoundTag tag) {
+        blockEntity.load(tag);
     }
 
     /**
-     * Called to place the tile
+     * Called to place the block entity
      *
-     * @param saveData - data for the tile entity
+     * @param saveData - data for the block entity
      * @return true if placement was handled, false to let default code run
      */
-    public boolean placeBlock(Player player, Level worldIn, BlockPos pos, InteractionHand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundTag saveData) {
+    public boolean placeBlock(Player player, Level level, BlockPos pos, InteractionHand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundTag saveData) {
         return false;
     }
 
     /**
      * Called after the block has been placed to do post interaction
      *
-     * @param saveData - data for the tile entity
+     * @param saveData - data for the block entity
      */
-    public void postPlaceBlock(Player player, Level worldIn, BlockPos pos, InteractionHand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundTag saveData) {
+    public void postPlaceBlock(Player player, Level level, BlockPos pos, InteractionHand hand, Direction direction, float hitX, float hitY, float hitZ, BlockState state, CompoundTag saveData) {
 
     }
 }

@@ -1,7 +1,7 @@
 package com.builtbroken.cardboardboxes.box;
 
+import static com.builtbroken.cardboardboxes.box.BoxBlock.BLOCK_ENTITY_DATA_TAG;
 import static com.builtbroken.cardboardboxes.box.BoxBlock.STORE_ITEM_TAG;
-import static com.builtbroken.cardboardboxes.box.BoxBlock.TILE_DATA_TAG;
 
 import java.util.List;
 
@@ -39,8 +39,8 @@ import net.minecraft.world.level.block.state.BlockState;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
  */
-public class BoxItemBlock extends BlockItem {
-    public BoxItemBlock(Block block) {
+public class BoxBlockItem extends BlockItem {
+    public BoxBlockItem(Block block) {
         super(block, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
         this.setRegistryName(block.getRegistryName());
     }
@@ -52,8 +52,8 @@ public class BoxItemBlock extends BlockItem {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         //Run all logic server side
-        Level worldIn = context.getLevel();
-        if (worldIn.isClientSide) {
+        Level level = context.getLevel();
+        if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
 
@@ -65,43 +65,43 @@ public class BoxItemBlock extends BlockItem {
             if (storeBlock.getBlock() != Blocks.AIR) {
                 return tryToPlaceBlock(new BlockPlaceContext(context));
             } else {
-                return tryToPickupBlock(player, worldIn, context.getClickedPos(), hand, context.getClickedFace());
+                return tryToPickupBlock(player, level, context.getClickedPos(), hand, context.getClickedFace());
             }
         }
         return InteractionResult.FAIL;
     }
 
-    protected InteractionResult tryToPickupBlock(Player player, Level worldIn, BlockPos pos, InteractionHand hand, Direction direction) {
+    protected InteractionResult tryToPickupBlock(Player player, Level level, BlockPos pos, InteractionHand hand, Direction direction) {
         //Check that we can pick up block
-        CanPickUpResult result = HandlerManager.INSTANCE.canPickUp(worldIn, pos);
+        CanPickUpResult result = HandlerManager.INSTANCE.canPickUp(level, pos);
 
         if (result == CanPickUpResult.CAN_PICK_UP) {
-            //Get tile, ignore anything without a tile
-            BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-            if (tileEntity != null) {
+            //Get tile, ignore anything without a block entity
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity != null) {
                 //Get stack
-                final BlockState state = worldIn.getBlockState(pos);
+                final BlockState state = level.getBlockState(pos);
                 //Copy tile data
-                CompoundTag nbtTagCompound = new CompoundTag();
-                tileEntity.save(nbtTagCompound);
+                CompoundTag tag = new CompoundTag();
+                blockEntity.save(tag);
 
                 //Remove location data
-                nbtTagCompound.remove("x");
-                nbtTagCompound.remove("y");
-                nbtTagCompound.remove("z");
+                tag.remove("x");
+                tag.remove("y");
+                tag.remove("z");
 
-                //Remove tile
-                worldIn.removeBlockEntity(pos);
+                //Remove block entity
+                level.removeBlockEntity(pos);
 
                 //Replace block with our block
-                worldIn.setBlock(pos, Cardboardboxes.boxBlock.defaultBlockState(), 2);
+                level.setBlock(pos, Cardboardboxes.boxBlock.defaultBlockState(), 2);
 
-                //Get our tile
-                tileEntity = worldIn.getBlockEntity(pos);
-                if (tileEntity instanceof BlockEntityBox tileBox) {
-                    //Move data into tile
+                //Get our block entity
+                blockEntity = level.getBlockEntity(pos);
+                if (blockEntity instanceof BoxBlockEntity tileBox) {
+                    //Move data into block entity
                     tileBox.setStateForPlacement(state);
-                    tileBox.setDataForPlacement(nbtTagCompound);
+                    tileBox.setDataForPlacement(tag);
 
                     //Consume item
                     player.getItemInHand(hand).shrink(1);
@@ -112,7 +112,7 @@ public class BoxItemBlock extends BlockItem {
             } else {
                 player.displayClientMessage(new TranslatableComponent(getDescriptionId() + ".noData"), true);
             }
-        } else if (result == CanPickUpResult.BANNED_TILE) {
+        } else if (result == CanPickUpResult.BANNED_BLOCK_ENTITY) {
             player.displayClientMessage(new TranslatableComponent(getDescriptionId() + ".banned.tile"), true);
         } else if (result == CanPickUpResult.BANNED_BLOCK) {
             player.displayClientMessage(new TranslatableComponent(getDescriptionId() + ".banned.block"), true);
@@ -133,13 +133,13 @@ public class BoxItemBlock extends BlockItem {
 
         final ItemStack heldItemStack = context.getItemInHand();
         final BlockState storedBlockState = getStoredBlock(heldItemStack);
-        final CompoundTag savedTileData = getStoredTileData(heldItemStack);
+        final CompoundTag storedBlockEntityData = getStoredBlockEntityData(heldItemStack);
         //Check if we can place the given block
         if (storedBlockState != null && context.getPlayer().mayUseItemAt(pos, context.getClickedFace(), heldItemStack) && context.getLevel().getBlockState(pos).getMaterial().isReplaceable()) {
             Handler handler = HandlerManager.INSTANCE.getHandler(storedBlockState.getBlock());
             BlockState blockstate = storedBlockState.getBlock().getStateForPlacement(context);
             //Allow handler to control placement
-            if (handler != null && handler.placeBlock(context.getPlayer(), context.getLevel(), pos, hand, context.getClickedFace(), hitX, hitY, hitZ, storedBlockState, savedTileData)
+            if (handler != null && handler.placeBlock(context.getPlayer(), context.getLevel(), pos, hand, context.getClickedFace(), hitX, hitY, hitZ, storedBlockState, storedBlockEntityData)
                     //Run normal placement if we don't have a handler or it didn't do anything
                     || placeBlock(context, blockstate)) {
                 //Get placed block
@@ -147,17 +147,17 @@ public class BoxItemBlock extends BlockItem {
 
                 //Allow handle to do post placement modification (e.g. fix rotation)
                 if (handler != null) {
-                    handler.postPlaceBlock(context.getPlayer(), context.getLevel(), pos, hand, context.getClickedFace(), hitX, hitY, hitZ, storedBlockState, savedTileData);
+                    handler.postPlaceBlock(context.getPlayer(), context.getLevel(), pos, hand, context.getClickedFace(), hitX, hitY, hitZ, storedBlockState, storedBlockEntityData);
                 }
 
                 //Set tile entity data
-                if (savedTileData != null) {
+                if (storedBlockEntityData != null) {
                     BlockEntity blockEntity = context.getLevel().getBlockEntity(pos);
                     if (blockEntity != null) {
                         if (handler != null) {
-                            handler.loadData(blockEntity, savedTileData);
+                            handler.loadData(blockEntity, storedBlockEntityData);
                         } else {
-                            blockEntity.load(savedTileData);
+                            blockEntity.load(storedBlockEntityData);
                         }
                     }
                 }
@@ -191,9 +191,7 @@ public class BoxItemBlock extends BlockItem {
     public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (stack.getTag() != null && stack.getTag().contains(STORE_ITEM_TAG)) {
             BlockState state = Block.stateById(stack.getTag().getInt(STORE_ITEM_TAG));
-            {
-                tooltip.add(new TranslatableComponent(state.getBlock().getDescriptionId()));
-            }
+            tooltip.add(new TranslatableComponent(state.getBlock().getDescriptionId()));
         }
     }
 
@@ -201,7 +199,7 @@ public class BoxItemBlock extends BlockItem {
         return stack.getTag() != null && stack.getTag().contains(STORE_ITEM_TAG) ? Block.stateById(stack.getTag().getInt(STORE_ITEM_TAG)) : Blocks.AIR.defaultBlockState();
     }
 
-    public CompoundTag getStoredTileData(ItemStack stack) {
-        return stack.getTag() != null && stack.getTag().contains(TILE_DATA_TAG) ? stack.getTag().getCompound(TILE_DATA_TAG) : null;
+    public CompoundTag getStoredBlockEntityData(ItemStack stack) {
+        return stack.getTag() != null && stack.getTag().contains(BLOCK_ENTITY_DATA_TAG) ? stack.getTag().getCompound(BLOCK_ENTITY_DATA_TAG) : null;
     }
 }

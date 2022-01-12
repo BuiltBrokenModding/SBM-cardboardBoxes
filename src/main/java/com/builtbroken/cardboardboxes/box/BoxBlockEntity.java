@@ -14,36 +14,36 @@ import net.minecraft.world.level.block.state.BlockState;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
  */
-public class BlockEntityBox extends BlockEntity {
+public class BoxBlockEntity extends BlockEntity {
     private BlockState placementState;
     private CompoundTag placementData;
 
-    public BlockEntityBox(BlockPos pos, BlockState state) {
-        super(Cardboardboxes.tileBox, pos, state);
+    public BoxBlockEntity(BlockPos pos, BlockState state) {
+        super(Cardboardboxes.boxBlockEntityType, pos, state);
     }
 
 
     @Override
-    public void load(CompoundTag compoundNBT) {
-        super.load(compoundNBT);
-        if (compoundNBT.contains("storedTile")) {
-            setStateForPlacement(Block.stateById(compoundNBT.getInt("storedTile")));
-            if (compoundNBT.contains("tileData")) {
-                setDataForPlacement(compoundNBT.getCompound("tileData"));
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        if (tag.contains("storedTile")) {
+            setStateForPlacement(Block.stateById(tag.getInt("storedTile")));
+            if (tag.contains("tileData")) {
+                setDataForPlacement(tag.getCompound("tileData"));
             }
         }
     }
 
     @Override
-    public CompoundTag save(CompoundTag compoundNBT) {
-        super.save(compoundNBT);
+    public CompoundTag save(CompoundTag tag) {
+        super.save(tag);
         if (getStateForPlacement() != null) {
-            compoundNBT.putInt("storedTile", Block.getId(placementState));
+            tag.putInt("storedTile", Block.getId(placementState));
             if (getDataForPlacement() != null) {
-                compoundNBT.put("tileData", getDataForPlacement());
+                tag.put("tileData", getDataForPlacement());
             }
         }
-        return compoundNBT;
+        return tag;
     }
 
     public BlockState getStateForPlacement() {
@@ -58,7 +58,7 @@ public class BlockEntityBox extends BlockEntity {
         return placementData;
     }
 
-    public void setDataForPlacement(CompoundTag tileData) {
-        this.placementData = tileData;
+    public void setDataForPlacement(CompoundTag placementData) {
+        this.placementData = placementData;
     }
 }

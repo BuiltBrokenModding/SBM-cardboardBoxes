@@ -25,7 +25,7 @@ public class ModHandler {
     public static HashMap<String, ModHandler> modSupportHandlerMap_instances = new HashMap<>();
 
     protected static IForgeRegistry<BlockEntityType<?>> BLOCK_ENTITIES_REGISTRY;
-    public static HashMap<String, ForgeConfigSpec.BooleanValue> tileBanConfigMap = new HashMap<>();
+    public static HashMap<String, ForgeConfigSpec.BooleanValue> blockEntityBanConfigMap = new HashMap<>();
 
     public void load(ForgeConfigSpec configuration) {
     }
@@ -52,7 +52,7 @@ public class ModHandler {
      * @param configuration
      */
     public static void loadHandlerData(ForgeConfigSpec configuration) {
-        LOGGER.info("ModHandler#loadHandlerData() -> Accessed Tile Registry: " + (BLOCK_ENTITIES_REGISTRY != null));
+        LOGGER.info("ModHandler#loadHandlerData() -> Accessed Block Entity Registry: " + (BLOCK_ENTITIES_REGISTRY != null));
         processHandlers(configuration);
         LOGGER.info("ModHandler#loadHandlerData() -> Finished loading data handlers");
         loadConfig(configuration);
@@ -84,8 +84,8 @@ public class ModHandler {
     }
 
     public static void buildConfig(ForgeConfigSpec.Builder b) {
-        String comment = "Auto generated list of tiles registered in Minecraft that can be blocked from use with the box. " +
-                "If a tile does not show up on this list it is already black listed. The reasoning behind blocking tiles is to prevent crashes or unwanted " +
+        String comment = "Auto generated list of block entities registered in Minecraft that can be blocked from use with the box. " +
+                "If a block entity does not show up on this list it is already black listed. The reasoning behind blocking block entities is to prevent crashes or unwanted " +
                 "interaction. Such as picking up a piston which can both causes issues and doesn't really matter. Set value to 'true' to disable interaction.";
         b.comment(comment).push("tile_ban_list"); //set the category
         for (ResourceLocation name : BLOCK_ENTITIES_REGISTRY.getKeys()) {
@@ -93,8 +93,8 @@ public class ModHandler {
             if (name != null && type != null) {
                 try {
                     String typeString = type.getRegistryName().toString();
-                    boolean shouldBan = HandlerManager.tileEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
-                    tileBanConfigMap.put(typeString, b.define(typeString, shouldBan));
+                    boolean shouldBan = HandlerManager.blockEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
+                    blockEntityBanConfigMap.put(typeString, b.define(typeString, shouldBan));
                 } catch (Exception e) {
                     LOGGER.error("ModHandler#buildConfig() -> Failed to add entry to config [" + name + " > " + type + "]", e);
                 }
@@ -111,12 +111,12 @@ public class ModHandler {
                 if (name != null && type != null) {
                     try {
                         String typeString = type.getRegistryName().toString();
-                        boolean shouldBan = HandlerManager.tileEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
-                        if (tileBanConfigMap.containsKey(typeString) ? tileBanConfigMap.get(typeString).get() : false) {
-                            HandlerManager.INSTANCE.banTile(type);
+                        boolean shouldBan = HandlerManager.blockEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
+                        if (blockEntityBanConfigMap.containsKey(typeString) ? blockEntityBanConfigMap.get(typeString).get() : false) {
+                            HandlerManager.INSTANCE.banBlockEntity(type);
                         } else if (shouldBan) {
                             //If original was banned but someone unbanned it in the config
-                            HandlerManager.tileEntityBanList.remove(type);
+                            HandlerManager.blockEntityBanList.remove(type);
                         }
                     } catch (Exception e) {
                         LOGGER.error("ModHandler#loadHandlerData() -> Failed to add entry to config [" + name + " > " + type + "]", e);

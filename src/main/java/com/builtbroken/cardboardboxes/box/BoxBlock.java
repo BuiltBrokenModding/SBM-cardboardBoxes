@@ -30,7 +30,7 @@ import net.minecraft.world.phys.HitResult;
  */
 public class BoxBlock extends BaseEntityBlock {
     public static final String STORE_ITEM_TAG = "storedItem";
-    public static final String TILE_DATA_TAG = "tileData";
+    public static final String BLOCK_ENTITY_DATA_TAG = "tileData";
 
     public BoxBlock() {
         super(Properties.of(Material.WOOD).strength(2f, 2f));
@@ -45,7 +45,7 @@ public class BoxBlock extends BaseEntityBlock {
     @Override
     public void attack(BlockState state, Level worldIn, BlockPos pos, Player player) {
         if (!worldIn.isClientSide) {
-            if (worldIn.getBlockEntity(pos) instanceof BlockEntityBox tileBox && tileBox.getStateForPlacement() != null) {
+            if (worldIn.getBlockEntity(pos) instanceof BoxBlockEntity tileBox && tileBox.getStateForPlacement() != null) {
                 if (tileBox.getStateForPlacement() != null && worldIn.setBlock(pos, tileBox.getStateForPlacement(), 3)) {
                     CompoundTag compound = tileBox.getDataForPlacement();
                     if (compound != null) {
@@ -91,13 +91,13 @@ public class BoxBlock extends BaseEntityBlock {
     public ItemStack toItemStack(BlockGetter world, BlockPos pos) {
         ItemStack stack = new ItemStack(Cardboardboxes.boxBlock);
 
-        if (world.getBlockEntity(pos) instanceof BlockEntityBox tile) {
+        if (world.getBlockEntity(pos) instanceof BoxBlockEntity tile) {
             if (tile.getStateForPlacement() != null) {
                 stack.setTag(new CompoundTag());
 
                 stack.getTag().putInt(STORE_ITEM_TAG, Block.getId(tile.getStateForPlacement()));
                 if (tile.getDataForPlacement() != null) {
-                    stack.getTag().put(TILE_DATA_TAG, tile.getDataForPlacement());
+                    stack.getTag().put(BLOCK_ENTITY_DATA_TAG, tile.getDataForPlacement());
                 }
             } else {
                 System.out.println("Error: tile does not have an ItemStack");
@@ -114,6 +114,6 @@ public class BoxBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new BlockEntityBox(pos, state);
+        return new BoxBlockEntity(pos, state);
     }
 }

@@ -9,7 +9,7 @@ package com.builtbroken.cardboardboxes.handler;
 public enum CanPickUpResult {
     CAN_PICK_UP,
     BANNED_BLOCK,
-    BANNED_TILE,
-    NO_TILE,
+    BANNED_BLOCK_ENTITY,
+    NO_BLOCK_ENTITY,
     NO_DATA
 }

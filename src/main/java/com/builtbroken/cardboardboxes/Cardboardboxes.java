@@ -3,9 +3,9 @@ package com.builtbroken.cardboardboxes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.builtbroken.cardboardboxes.box.BlockEntityBox;
+import com.builtbroken.cardboardboxes.box.BoxBlockEntity;
 import com.builtbroken.cardboardboxes.box.BoxBlock;
-import com.builtbroken.cardboardboxes.box.BoxItemBlock;
+import com.builtbroken.cardboardboxes.box.BoxBlockItem;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
 import com.builtbroken.cardboardboxes.mods.ModHandler;
 import com.builtbroken.cardboardboxes.mods.VanillaHandler;
@@ -39,7 +39,7 @@ public class Cardboardboxes {
     public static Logger LOGGER = LogManager.getLogger();
 
     public static BoxBlock boxBlock;
-    public static BlockEntityType<BlockEntityBox> tileBox;
+    public static BlockEntityType<BoxBlockEntity> boxBlockEntityType;
 
     private static ForgeConfigSpec config;
 
@@ -58,17 +58,17 @@ public class Cardboardboxes {
 
     @SubscribeEvent
     public static void registerItem(RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(new BoxItemBlock(boxBlock));
+        event.getRegistry().register(new BoxBlockItem(boxBlock));
     }
 
     @SubscribeEvent
-    public static void registerTileEntity(RegistryEvent.Register<BlockEntityType<?>> event) {
-        event.getRegistry().register(BlockEntityType.Builder.of(BlockEntityBox::new, boxBlock).build(null).setRegistryName(new ResourceLocation(PREFIX + "box")));
+    public static void registerBlockEntityType(RegistryEvent.Register<BlockEntityType<?>> event) {
+        event.getRegistry().register(BlockEntityType.Builder.of(BoxBlockEntity::new, boxBlock).build(null).setRegistryName(new ResourceLocation(PREFIX + "box")));
     }
 
     private void setup(final FMLCommonSetupEvent e) {
         HandlerManager.INSTANCE.banBlock(boxBlock);
-        HandlerManager.INSTANCE.banTile(tileBox);
+        HandlerManager.INSTANCE.banBlockEntity(boxBlockEntityType);
 
         ModHandler.loadHandlerData(config);
     }
