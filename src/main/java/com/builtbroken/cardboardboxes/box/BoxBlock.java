@@ -45,8 +45,7 @@ public class BoxBlock extends BaseEntityBlock {
     @Override
     public void attack(BlockState state, Level worldIn, BlockPos pos, Player player) {
         if (!worldIn.isClientSide) {
-            BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-            if (tileEntity instanceof BlockEntityBox tileBox && ((BlockEntityBox) tileEntity).getStateForPlacement() != null) {
+            if (worldIn.getBlockEntity(pos) instanceof BlockEntityBox tileBox && tileBox.getStateForPlacement() != null) {
                 if (tileBox.getStateForPlacement() != null && worldIn.setBlock(pos, tileBox.getStateForPlacement(), 3)) {
                     CompoundTag compound = tileBox.getDataForPlacement();
                     if (compound != null) {
@@ -92,14 +91,13 @@ public class BoxBlock extends BaseEntityBlock {
     public ItemStack toItemStack(BlockGetter world, BlockPos pos) {
         ItemStack stack = new ItemStack(Cardboardboxes.boxBlock);
 
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof BlockEntityBox) {
-            if (((BlockEntityBox) tile).getStateForPlacement() != null) {
+        if (world.getBlockEntity(pos) instanceof BlockEntityBox tile) {
+            if (tile.getStateForPlacement() != null) {
                 stack.setTag(new CompoundTag());
 
-                stack.getTag().putInt(STORE_ITEM_TAG, Block.getId(((BlockEntityBox) tile).getStateForPlacement()));
-                if (((BlockEntityBox) tile).getDataForPlacement() != null) {
-                    stack.getTag().put(TILE_DATA_TAG, ((BlockEntityBox) tile).getDataForPlacement());
+                stack.getTag().putInt(STORE_ITEM_TAG, Block.getId(tile.getStateForPlacement()));
+                if (tile.getDataForPlacement() != null) {
+                    stack.getTag().put(TILE_DATA_TAG, tile.getDataForPlacement());
                 }
             } else {
                 System.out.println("Error: tile does not have an ItemStack");

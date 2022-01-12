@@ -98,9 +98,7 @@ public class BoxItemBlock extends BlockItem {
 
                 //Get our tile
                 tileEntity = worldIn.getBlockEntity(pos);
-                if (tileEntity instanceof BlockEntityBox) {
-                    BlockEntityBox tileBox = (BlockEntityBox) tileEntity;
-
+                if (tileEntity instanceof BlockEntityBox tileBox) {
                     //Move data into tile
                     tileBox.setStateForPlacement(state);
                     tileBox.setDataForPlacement(nbtTagCompound);
