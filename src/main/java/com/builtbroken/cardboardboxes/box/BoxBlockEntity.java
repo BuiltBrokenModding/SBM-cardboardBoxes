@@ -35,15 +35,13 @@ public class BoxBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        super.save(tag);
+    public void saveAdditional(CompoundTag tag) {
         if (getStateForPlacement() != null) {
             tag.putInt("storedTile", Block.getId(placementState));
             if (getDataForPlacement() != null) {
                 tag.put("tileData", getDataForPlacement());
             }
         }
-        return tag;
     }
 
     public BlockState getStateForPlacement() {

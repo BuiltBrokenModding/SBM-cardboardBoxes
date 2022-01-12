@@ -43,13 +43,13 @@ public class BoxBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void attack(BlockState state, Level worldIn, BlockPos pos, Player player) {
-        if (!worldIn.isClientSide) {
-            if (worldIn.getBlockEntity(pos) instanceof BoxBlockEntity tileBox && tileBox.getStateForPlacement() != null) {
-                if (tileBox.getStateForPlacement() != null && worldIn.setBlock(pos, tileBox.getStateForPlacement(), 3)) {
-                    CompoundTag compound = tileBox.getDataForPlacement();
+    public void attack(BlockState state, Level level, BlockPos pos, Player player) {
+        if (!level.isClientSide) {
+            if (level.getBlockEntity(pos) instanceof BoxBlockEntity boxBlockEntity && boxBlockEntity.getStateForPlacement() != null) {
+                if (boxBlockEntity.getStateForPlacement() != null && level.setBlock(pos, boxBlockEntity.getStateForPlacement(), 3)) {
+                    CompoundTag compound = boxBlockEntity.getDataForPlacement();
                     if (compound != null) {
-                        BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+                        BlockEntity blockEntity = level.getBlockEntity(pos);
                         if (blockEntity != null) {
                             blockEntity.load(compound);
                         }
@@ -66,16 +66,16 @@ public class BoxBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        if (worldIn.isClientSide) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (level.isClientSide) {
             return InteractionResult.PASS;
         }
         if (player.isShiftKeyDown()) {
-            ItemStack stack = toItemStack(worldIn, pos);
+            ItemStack stack = toItemStack(level, pos);
             if (stack != null) {
                 if (player.getInventory().add(stack)) {
                     player.getInventory().setChanged();
-                    worldIn.removeBlock(pos, false);
+                    level.removeBlock(pos, false);
                     return InteractionResult.SUCCESS;
                 } else {
                     player.displayClientMessage(new TranslatableComponent(getDescriptionId() + ".inventoryFull"), true);
@@ -88,27 +88,27 @@ public class BoxBlock extends BaseEntityBlock {
         return InteractionResult.PASS;
     }
 
-    public ItemStack toItemStack(BlockGetter world, BlockPos pos) {
+    public ItemStack toItemStack(BlockGetter level, BlockPos pos) {
         ItemStack stack = new ItemStack(Cardboardboxes.boxBlock);
 
-        if (world.getBlockEntity(pos) instanceof BoxBlockEntity tile) {
-            if (tile.getStateForPlacement() != null) {
+        if (level.getBlockEntity(pos) instanceof BoxBlockEntity blockEntity) {
+            if (blockEntity.getStateForPlacement() != null) {
                 stack.setTag(new CompoundTag());
 
-                stack.getTag().putInt(STORE_ITEM_TAG, Block.getId(tile.getStateForPlacement()));
-                if (tile.getDataForPlacement() != null) {
-                    stack.getTag().put(BLOCK_ENTITY_DATA_TAG, tile.getDataForPlacement());
+                stack.getTag().putInt(STORE_ITEM_TAG, Block.getId(blockEntity.getStateForPlacement()));
+                if (blockEntity.getDataForPlacement() != null) {
+                    stack.getTag().put(BLOCK_ENTITY_DATA_TAG, blockEntity.getDataForPlacement());
                 }
             } else {
-                System.out.println("Error: tile does not have an ItemStack");
+                System.out.println("Error: block entity does not have an ItemStack");
             }
         }
         return stack;
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
-        return toItemStack(world, pos);
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
+        return toItemStack(level, pos);
     }
 
     @Nullable

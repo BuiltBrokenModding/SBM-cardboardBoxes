@@ -3,8 +3,8 @@ package com.builtbroken.cardboardboxes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.builtbroken.cardboardboxes.box.BoxBlockEntity;
 import com.builtbroken.cardboardboxes.box.BoxBlock;
+import com.builtbroken.cardboardboxes.box.BoxBlockEntity;
 import com.builtbroken.cardboardboxes.box.BoxBlockItem;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
 import com.builtbroken.cardboardboxes.mods.ModHandler;

@@ -40,7 +40,7 @@ public class ModHandler {
         //Create the builder
         ForgeConfigSpec.Builder b = new ForgeConfigSpec.Builder();
         LOGGER.info("ModHandler#buildHandlerData() -> Loading data and data handlers");
-        loadTileRegistry();
+        loadBlockEntityRegistry();
         buildHandlers(b);
         buildConfig(b);
         return b.build();
@@ -126,7 +126,7 @@ public class ModHandler {
         }
     }
 
-    private static void loadTileRegistry() {
+    private static void loadBlockEntityRegistry() {
         BLOCK_ENTITIES_REGISTRY = ForgeRegistries.BLOCK_ENTITIES;
     }
 }
