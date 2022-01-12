@@ -91,13 +91,13 @@ public class HandlerManager {
             if (blockEntity != null) {
                 if (!blockEntityBanList.contains(blockEntity.getType())) {
                     //Check if we even have data to store, no data no point in using a box
-                    CompoundTag nbt = new CompoundTag();
-                    blockEntity.save(nbt);
-                    nbt.remove("x");
-                    nbt.remove("y");
-                    nbt.remove("z");
-                    nbt.remove("id");
-                    return !nbt.isEmpty() ? CanPickUpResult.CAN_PICK_UP : CanPickUpResult.NO_DATA;
+                    CompoundTag tag = new CompoundTag();
+                    blockEntity.save(tag);
+                    tag.remove("x");
+                    tag.remove("y");
+                    tag.remove("z");
+                    tag.remove("id");
+                    return !tag.isEmpty() ? CanPickUpResult.CAN_PICK_UP : CanPickUpResult.NO_DATA;
                 }
                 return CanPickUpResult.BANNED_BLOCK_ENTITY;
             }

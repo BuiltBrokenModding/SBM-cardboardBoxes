@@ -81,7 +81,7 @@ public class BoxBlockItem extends BlockItem {
             if (blockEntity != null) {
                 //Get stack
                 final BlockState state = level.getBlockState(pos);
-                //Copy tile data
+                //Copy block entity data
                 CompoundTag tag = new CompoundTag();
                 blockEntity.save(tag);
 
@@ -97,11 +97,10 @@ public class BoxBlockItem extends BlockItem {
                 level.setBlock(pos, Cardboardboxes.boxBlock.defaultBlockState(), 2);
 
                 //Get our block entity
-                blockEntity = level.getBlockEntity(pos);
-                if (blockEntity instanceof BoxBlockEntity tileBox) {
+                if (level.getBlockEntity(pos) instanceof BoxBlockEntity boxBlockEntity) {
                     //Move data into block entity
-                    tileBox.setStateForPlacement(state);
-                    tileBox.setDataForPlacement(tag);
+                    boxBlockEntity.setStateForPlacement(state);
+                    boxBlockEntity.setDataForPlacement(tag);
 
                     //Consume item
                     player.getItemInHand(hand).shrink(1);
