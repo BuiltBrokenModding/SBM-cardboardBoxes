@@ -88,7 +88,7 @@ public class HandlerManager {
         if (!blockBanList.contains(block)) {
             BlockEntity tile = world.getBlockEntity(pos);
             if (tile != null) {
-                if (!tileEntityBanList.contains(tile.getClass())) {
+                if (!tileEntityBanList.contains(tile.getType())) {
                     //Check if we even have data to store, no data no point in using a box
                     CompoundTag nbt = new CompoundTag();
                     tile.save(nbt);
