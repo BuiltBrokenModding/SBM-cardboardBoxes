@@ -34,7 +34,6 @@ public class BoxBlock extends BaseEntityBlock {
 
     public BoxBlock() {
         super(Properties.of(Material.WOOD).strength(2f, 2f));
-        this.setRegistryName(Cardboardboxes.DOMAIN, "cardboardbox");
     }
 
     @Override
@@ -89,7 +88,7 @@ public class BoxBlock extends BaseEntityBlock {
     }
 
     public ItemStack toItemStack(BlockGetter level, BlockPos pos) {
-        ItemStack stack = new ItemStack(Cardboardboxes.boxBlock);
+        ItemStack stack = new ItemStack(Cardboardboxes.BOX_BLOCK.get());
 
         if (level.getBlockEntity(pos) instanceof BoxBlockEntity blockEntity) {
             if (blockEntity.getStateForPlacement() != null) {

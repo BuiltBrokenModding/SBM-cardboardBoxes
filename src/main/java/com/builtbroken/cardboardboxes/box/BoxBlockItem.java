@@ -42,7 +42,6 @@ import net.minecraft.world.level.block.state.BlockState;
 public class BoxBlockItem extends BlockItem {
     public BoxBlockItem(Block block) {
         super(block, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
-        this.setRegistryName(block.getRegistryName());
     }
 
     //TODO add property to change render if contains item
@@ -94,7 +93,7 @@ public class BoxBlockItem extends BlockItem {
                 level.removeBlockEntity(pos);
 
                 //Replace block with our block
-                level.setBlock(pos, Cardboardboxes.boxBlock.defaultBlockState(), 2);
+                level.setBlock(pos, Cardboardboxes.BOX_BLOCK.get().defaultBlockState(), 2);
 
                 //Get our block entity
                 if (level.getBlockEntity(pos) instanceof BoxBlockEntity boxBlockEntity) {
@@ -170,8 +169,8 @@ public class BoxBlockItem extends BlockItem {
                 heldItemStack.shrink(1);
 
                 //Return empty box
-                if (!context.getPlayer().isCreative() && !context.getPlayer().getInventory().add(new ItemStack(Cardboardboxes.boxBlock))) {
-                    context.getPlayer().spawnAtLocation(new ItemStack(Cardboardboxes.boxBlock), 0F);
+                if (!context.getPlayer().isCreative() && !context.getPlayer().getInventory().add(new ItemStack(Cardboardboxes.BOX_BLOCK.get()))) {
+                    context.getPlayer().spawnAtLocation(new ItemStack(Cardboardboxes.BOX_BLOCK.get()), 0F);
                 }
             }
 
