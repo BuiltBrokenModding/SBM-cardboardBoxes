@@ -18,9 +18,8 @@ public class TileEntityBox extends TileEntity {
     private CompoundNBT placementData;
 
     public TileEntityBox() {
-        super(Cardboardboxes.tileBox);
+        super(Cardboardboxes.BOX_TILE.get());
     }
-
 
     @Override
     public void load(BlockState state, CompoundNBT compoundNBT) {

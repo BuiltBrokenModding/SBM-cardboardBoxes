@@ -32,7 +32,6 @@ public class BlockBox extends ContainerBlock {
 
     public BlockBox() {
         super(Properties.of(Material.WOOD).strength(2f, 2f));
-        this.setRegistryName(Cardboardboxes.DOMAIN, "cardboardbox");
     }
 
     @Override
@@ -95,7 +94,7 @@ public class BlockBox extends ContainerBlock {
     }
 
     public ItemStack toItemStack(IBlockReader world, BlockPos pos) {
-        ItemStack stack = new ItemStack(Cardboardboxes.blockBox);
+        ItemStack stack = new ItemStack(Cardboardboxes.BOX_BLOCK.get());
 
         TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof TileEntityBox) {

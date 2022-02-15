@@ -42,7 +42,6 @@ import net.minecraft.world.World;
 public class ItemBlockBox extends BlockItem {
     public ItemBlockBox(Block block) {
         super(block, new Item.Properties().tab(ItemGroup.TAB_DECORATIONS));
-        this.setRegistryName(block.getRegistryName());
     }
 
     //TODO add property to change render if contains item
@@ -94,7 +93,7 @@ public class ItemBlockBox extends BlockItem {
                 worldIn.removeBlockEntity(pos);
 
                 //Replace block with our block
-                worldIn.setBlock(pos, Cardboardboxes.blockBox.defaultBlockState(), 2);
+                worldIn.setBlock(pos, Cardboardboxes.BOX_BLOCK.get().defaultBlockState(), 2);
 
                 //Get our tile
                 tileEntity = worldIn.getBlockEntity(pos);
@@ -174,8 +173,8 @@ public class ItemBlockBox extends BlockItem {
                 heldItemStack.shrink(1);
 
                 //Return empty box
-                if (!context.getPlayer().isCreative() && !context.getPlayer().inventory.add(new ItemStack(Cardboardboxes.blockBox))) {
-                    context.getPlayer().spawnAtLocation(new ItemStack(Cardboardboxes.blockBox), 0F);
+                if (!context.getPlayer().isCreative() && !context.getPlayer().inventory.add(new ItemStack(Cardboardboxes.BOX_BLOCK.get()))) {
+                    context.getPlayer().spawnAtLocation(new ItemStack(Cardboardboxes.BOX_BLOCK.get()), 0F);
                 }
             }
 
