@@ -19,7 +19,7 @@ public class BoxBlockEntity extends BlockEntity {
     private CompoundTag placementData;
 
     public BoxBlockEntity(BlockPos pos, BlockState state) {
-        super(Cardboardboxes.boxBlockEntityType, pos, state);
+        super(Cardboardboxes.BOX_BLOCK_ENTITY_TYPE.get(), pos, state);
     }
 
 
