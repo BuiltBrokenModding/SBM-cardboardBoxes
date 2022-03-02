@@ -15,14 +15,14 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.18.1-0.0.5'
+version = '1.18.2-0.0.5'
 group = 'com.builtbroken.cardboardboxes'
 archivesBaseName = 'cardboardboxes'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'parchment', version: '2021.12.19-1.18.1'
+    mappings channel: 'official', version: '1.18.2'
     runs {
         client {
             properties 'forge.logging.console.level': 'debug'
@@ -38,7 +38,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.1-39.0.18'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.0.1'
 }
 
 jar {
