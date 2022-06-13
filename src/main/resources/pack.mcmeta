@@ -1,6 +1,7 @@
 {
     "pack": {
-        "description": "cardboard boxes resources",
-        "pack_format": 8
+        "description": "cardboard boxes resources & data",
+        "pack_format": 9,
+        "forge:data_pack_format": 10
     }
 }
