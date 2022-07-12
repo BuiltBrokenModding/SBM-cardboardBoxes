@@ -174,7 +174,7 @@ public class BoxBlockItem extends BlockItem {
 	}
 
 	@Override
-	public int getItemStackLimit(ItemStack stack) {
+	public int getMaxStackSize(ItemStack stack) {
 		return stack.hasTag() ? 1 : 64;
 	}
 

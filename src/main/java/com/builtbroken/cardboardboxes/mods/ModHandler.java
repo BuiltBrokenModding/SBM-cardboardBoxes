@@ -92,7 +92,7 @@ public class ModHandler {
 			BlockEntityType<?> type = BLOCK_ENTITIES_REGISTRY.getValue(name);
 			if (name != null && type != null) {
 				try {
-					String typeString = ForgeRegistries.BLOCK_ENTITIES.getKey(type).toString();
+					String typeString = ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(type).toString();
 					boolean shouldBan = HandlerManager.blockEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
 					blockEntityBanConfigMap.put(typeString, b.define(typeString, shouldBan));
 				} catch (Exception e) {
@@ -110,7 +110,7 @@ public class ModHandler {
 				BlockEntityType<?> type = BLOCK_ENTITIES_REGISTRY.getValue(name);
 				if (name != null && type != null) {
 					try {
-						String typeString = ForgeRegistries.BLOCK_ENTITIES.getKey(type).toString();
+						String typeString = ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(type).toString();
 						boolean shouldBan = HandlerManager.blockEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
 						if (blockEntityBanConfigMap.containsKey(typeString) ? blockEntityBanConfigMap.get(typeString).get() : false) {
 							HandlerManager.INSTANCE.banBlockEntity(type);
@@ -127,6 +127,6 @@ public class ModHandler {
 	}
 
 	private static void loadBlockEntityRegistry() {
-		BLOCK_ENTITIES_REGISTRY = ForgeRegistries.BLOCK_ENTITIES;
+		BLOCK_ENTITIES_REGISTRY = ForgeRegistries.BLOCK_ENTITY_TYPES;
 	}
 }

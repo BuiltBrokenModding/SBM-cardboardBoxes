@@ -14,7 +14,7 @@ issueTrackerURL = "https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/issu
 [[dependencies.cardboardboxes]]
 	modId = "forge"
 	mandatory = true
-	versionRange = "[41,)"
+	versionRange = "[41.0.94,)"
 	ordering = "NONE"
 	side = "BOTH"
 
