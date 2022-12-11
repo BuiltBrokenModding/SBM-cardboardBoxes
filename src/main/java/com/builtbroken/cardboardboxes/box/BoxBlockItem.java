@@ -19,7 +19,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -40,7 +39,7 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class BoxBlockItem extends BlockItem {
 	public BoxBlockItem(Block block) {
-		super(block, new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
+		super(block, new Item.Properties());
 	}
 
 	//TODO add property to change render if contains item
