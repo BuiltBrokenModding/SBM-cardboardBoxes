@@ -46,7 +46,7 @@ public class Cardboardboxes {
     // Blocks
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, DOMAIN);
     public static final RegistryObject<BoxBlock> BOX_BLOCK = BLOCKS.register("cardboardbox", () -> new BoxBlock(null));
-    public static final List<RegistryObject<BoxBlock>> BOX_COLORS = Arrays.stream(DyeColor.values()).map(color ->
+    public static final List<RegistryObject<BoxBlock>> BOX_COLORS = Arrays.stream(TabSortedColors.values()).map(TabSortedColors::toDyeColor).map(color ->
     BLOCKS.register("box_" + color.getName(), () -> new BoxBlock(color))).toList();
 
     // Tiles
@@ -85,9 +85,38 @@ public class Cardboardboxes {
     }
 
     private void onCreativeModeTabBuildContents(CreativeModeTabEvent.BuildContents event) {
-        if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+        if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS || event.getTab() == CreativeModeTabs.COLORED_BLOCKS) {
             event.accept(BOX_ITEM.get());
             BOX_COLORS.forEach((defBlock) -> event.accept(defBlock.get()));
+        }
+    }
+
+    private static enum TabSortedColors {
+        WHITE(0),
+        LIGHT_GRAY(8),
+        GRAY(7),
+        BLACK(15),
+        BROWN(12),
+        RED(14),
+        ORANGE(1),
+        YELLOW(4),
+        LIME(5),
+        GREEN(13),
+        CYAN(9),
+        LIGHT_BLUE(3),
+        BLUE(11),
+        PURPLE(10),
+        MAGENTA(2),
+        PINK(6);
+
+        private int dyeColorId;
+
+        private TabSortedColors(int dyeColorId) {
+            this.dyeColorId = dyeColorId;
+        }
+
+        public DyeColor toDyeColor() {
+            return DyeColor.byId(dyeColorId);
         }
     }
 }
