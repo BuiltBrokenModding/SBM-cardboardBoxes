@@ -50,7 +50,7 @@ public class BoxBlock extends BaseEntityBlock {
     public void attack(BlockState state, Level level, BlockPos pos, Player player) {
         if (!level.isClientSide) {
             if (level.getBlockEntity(pos) instanceof BoxBlockEntity boxBlockEntity && boxBlockEntity.getStateForPlacement() != null) {
-                if (boxBlockEntity.getStateForPlacement() != null && level.setBlock(pos, boxBlockEntity.getStateForPlacement(), 3)) {
+                if (level.setBlock(pos, boxBlockEntity.getStateForPlacement(), 3)) {
                     CompoundTag compound = boxBlockEntity.getDataForPlacement();
                     if (compound != null) {
                         BlockEntity blockEntity = level.getBlockEntity(pos);
