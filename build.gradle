@@ -27,12 +27,13 @@ minecraft {
     runs {
         client {
             properties 'forge.logging.console.level': 'debug'
-            workingDirectory project.file('run')
+            workingDirectory project.file('run/client')
             source sourceSets.main
         }
         server {
             properties 'forge.logging.console.level': 'debug'
-            workingDirectory project.file('run')
+            args '-nogui'
+            workingDirectory project.file('run/server')
             source sourceSets.main
         }
     }
