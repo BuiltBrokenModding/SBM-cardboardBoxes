@@ -16,7 +16,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.19.3-0.0.6'
+version = '1.19.3-0.1.0'
 group = 'com.builtbroken.cardboardboxes'
 archivesBaseName = 'cardboardboxes'
 
