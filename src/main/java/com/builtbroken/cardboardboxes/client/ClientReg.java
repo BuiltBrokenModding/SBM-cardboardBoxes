@@ -30,15 +30,15 @@ public class ClientReg {
         event.register(ClientReg::blockColor, Cardboardboxes.BOX_COLORS.stream().map(RegistryObject::get).toArray(Block[]::new));
     }
 
-    private static int itemColor(ItemStack pStack, int pTintIndex) {
-        if(pStack.getItem() instanceof BoxBlockItem box && box.color != null) {
+    private static int itemColor(ItemStack stack, int tintIndex) {
+        if(stack.getItem() instanceof BoxBlockItem box && box.color != null) {
             return box.color.getMaterialColor().col;
         }
         return -1;
     }
 
-    private static int blockColor(BlockState pState, @Nullable BlockAndTintGetter pLevel, @Nullable BlockPos pPos, int pTintIndex) {
-        if(pState.getBlock() instanceof BoxBlock box && box.color != null) {
+    private static int blockColor(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
+        if(state.getBlock() instanceof BoxBlock box && box.color != null) {
             return box.color.getMaterialColor().col;
         }
         return -1;
