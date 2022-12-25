@@ -43,8 +43,7 @@ public class HandlerManager {
     /**
      * Called to register a handler for managing the pickup state of a block entity
      */
-    public void registerPickupHandler(Class<? extends BlockEntity> clazz, Handler handler) //TODO implement
-    {
+    public void registerPickupHandler(Class<? extends BlockEntity> clazz, Handler handler) { //TODO implement
         pickupHandlerMap.put(clazz, handler);
     }
 

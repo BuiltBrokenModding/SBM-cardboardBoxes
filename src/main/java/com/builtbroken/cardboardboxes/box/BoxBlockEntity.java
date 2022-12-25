@@ -22,7 +22,6 @@ public class BoxBlockEntity extends BlockEntity {
         super(Cardboardboxes.BOX_BLOCK_ENTITY_TYPE.get(), pos, state);
     }
 
-
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);

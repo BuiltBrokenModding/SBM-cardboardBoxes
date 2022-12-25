@@ -30,93 +30,93 @@ import net.minecraft.world.phys.HitResult;
  * Created by Dark(DarkGuardsman, Robert) on 7/28/2015.
  */
 public class BoxBlock extends BaseEntityBlock {
-	public static final String STORE_ITEM_TAG = "storedItem";
-	public static final String BLOCK_ENTITY_DATA_TAG = "tileData";
+    public static final String STORE_ITEM_TAG = "storedItem";
+    public static final String BLOCK_ENTITY_DATA_TAG = "tileData";
 
-	public final DyeColor color;
+    public final DyeColor color;
 
-	public BoxBlock(DyeColor color) {
-		super(Properties.of(Material.WOOD).strength(2f, 2f));
-		this.color = color;
-	}
+    public BoxBlock(DyeColor color) {
+        super(Properties.of(Material.WOOD).strength(2f, 2f));
+        this.color = color;
+    }
 
-	@Override
-	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.MODEL;
-	}
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
+    }
 
-	@Override
-	public void attack(BlockState state, Level level, BlockPos pos, Player player) {
-		if (!level.isClientSide) {
-			if (level.getBlockEntity(pos) instanceof BoxBlockEntity boxBlockEntity && boxBlockEntity.getStateForPlacement() != null) {
-				if (boxBlockEntity.getStateForPlacement() != null && level.setBlock(pos, boxBlockEntity.getStateForPlacement(), 3)) {
-					CompoundTag compound = boxBlockEntity.getDataForPlacement();
-					if (compound != null) {
-						BlockEntity blockEntity = level.getBlockEntity(pos);
-						if (blockEntity != null) {
-							blockEntity.load(compound);
-						}
-					}
-					if (!player.isCreative()) {
-						ItemStack stack = new ItemStack(this);
-						if (player.getInventory().add(stack)) {
-							player.spawnAtLocation(stack, 0F);
-						}
-					}
-				}
-			}
-		}
-	}
+    @Override
+    public void attack(BlockState state, Level level, BlockPos pos, Player player) {
+        if (!level.isClientSide) {
+            if (level.getBlockEntity(pos) instanceof BoxBlockEntity boxBlockEntity && boxBlockEntity.getStateForPlacement() != null) {
+                if (boxBlockEntity.getStateForPlacement() != null && level.setBlock(pos, boxBlockEntity.getStateForPlacement(), 3)) {
+                    CompoundTag compound = boxBlockEntity.getDataForPlacement();
+                    if (compound != null) {
+                        BlockEntity blockEntity = level.getBlockEntity(pos);
+                        if (blockEntity != null) {
+                            blockEntity.load(compound);
+                        }
+                    }
+                    if (!player.isCreative()) {
+                        ItemStack stack = new ItemStack(this);
+                        if (player.getInventory().add(stack)) {
+                            player.spawnAtLocation(stack, 0F);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-		if (level.isClientSide) {
-			return InteractionResult.PASS;
-		}
-		if (player.isShiftKeyDown()) {
-			ItemStack stack = toItemStack(level, pos);
-			if (stack != null) {
-				if (player.getInventory().add(stack)) {
-					player.getInventory().setChanged();
-					level.removeBlock(pos, false);
-					return InteractionResult.SUCCESS;
-				} else {
-					player.displayClientMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".inventoryFull"), true);
-					return InteractionResult.PASS;
-				}
-			} else {
-				player.displayClientMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".error.stack.null"), true);
-			}
-		}
-		return InteractionResult.PASS;
-	}
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (level.isClientSide) {
+            return InteractionResult.PASS;
+        }
+        if (player.isShiftKeyDown()) {
+            ItemStack stack = toItemStack(level, pos);
+            if (stack != null) {
+                if (player.getInventory().add(stack)) {
+                    player.getInventory().setChanged();
+                    level.removeBlock(pos, false);
+                    return InteractionResult.SUCCESS;
+                } else {
+                    player.displayClientMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".inventoryFull"), true);
+                    return InteractionResult.PASS;
+                }
+            } else {
+                player.displayClientMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".error.stack.null"), true);
+            }
+        }
+        return InteractionResult.PASS;
+    }
 
-	public ItemStack toItemStack(BlockGetter level, BlockPos pos) {
-		ItemStack stack = new ItemStack(this);
+    public ItemStack toItemStack(BlockGetter level, BlockPos pos) {
+        ItemStack stack = new ItemStack(this);
 
-		if (level.getBlockEntity(pos) instanceof BoxBlockEntity blockEntity) {
-			if (blockEntity.getStateForPlacement() != null) {
-				stack.setTag(new CompoundTag());
+        if (level.getBlockEntity(pos) instanceof BoxBlockEntity blockEntity) {
+            if (blockEntity.getStateForPlacement() != null) {
+                stack.setTag(new CompoundTag());
 
-				stack.getTag().putInt(STORE_ITEM_TAG, Block.getId(blockEntity.getStateForPlacement()));
-				if (blockEntity.getDataForPlacement() != null) {
-					stack.getTag().put(BLOCK_ENTITY_DATA_TAG, blockEntity.getDataForPlacement());
-				}
-			} else {
-				System.out.println("Error: block entity does not have an ItemStack");
-			}
-		}
-		return stack;
-	}
+                stack.getTag().putInt(STORE_ITEM_TAG, Block.getId(blockEntity.getStateForPlacement()));
+                if (blockEntity.getDataForPlacement() != null) {
+                    stack.getTag().put(BLOCK_ENTITY_DATA_TAG, blockEntity.getDataForPlacement());
+                }
+            } else {
+                System.out.println("Error: block entity does not have an ItemStack");
+            }
+        }
+        return stack;
+    }
 
-	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
-		return toItemStack(level, pos);
-	}
+    @Override
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
+        return toItemStack(level, pos);
+    }
 
-	@Nullable
-	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new BoxBlockEntity(pos, state);
-	}
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new BoxBlockEntity(pos, state);
+    }
 }
