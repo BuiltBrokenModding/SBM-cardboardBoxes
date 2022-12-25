@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -32,8 +33,11 @@ public class BoxBlock extends BaseEntityBlock {
 	public static final String STORE_ITEM_TAG = "storedItem";
 	public static final String BLOCK_ENTITY_DATA_TAG = "tileData";
 
-	public BoxBlock() {
+	public final DyeColor color;
+
+	public BoxBlock(DyeColor color) {
 		super(Properties.of(Material.WOOD).strength(2f, 2f));
+		this.color = color;
 	}
 
 	@Override
@@ -77,18 +81,18 @@ public class BoxBlock extends BaseEntityBlock {
 					level.removeBlock(pos, false);
 					return InteractionResult.SUCCESS;
 				} else {
-					player.displayClientMessage(Component.translatable(getDescriptionId() + ".inventoryFull"), true);
+					player.displayClientMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".inventoryFull"), true);
 					return InteractionResult.PASS;
 				}
 			} else {
-				player.displayClientMessage(Component.translatable(getDescriptionId() + ".error.stack.null"), true);
+				player.displayClientMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".error.stack.null"), true);
 			}
 		}
 		return InteractionResult.PASS;
 	}
 
 	public ItemStack toItemStack(BlockGetter level, BlockPos pos) {
-		ItemStack stack = new ItemStack(Cardboardboxes.BOX_BLOCK.get());
+		ItemStack stack = new ItemStack(this);
 
 		if (level.getBlockEntity(pos) instanceof BoxBlockEntity blockEntity) {
 			if (blockEntity.getStateForPlacement() != null) {
