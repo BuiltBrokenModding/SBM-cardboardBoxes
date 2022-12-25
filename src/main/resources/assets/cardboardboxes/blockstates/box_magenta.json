@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "cardboardboxes:block/cardboardbox"
+      "model": "cardboardboxes:block/box"
     }
   }
 }

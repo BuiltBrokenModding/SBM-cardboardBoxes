@@ -1,0 +1,26 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "cardboardboxes:block/box_side_tint",
+    "down": "cardboardboxes:block/box_side_tint",
+    "up": "cardboardboxes:block/box_top_tint",
+    "east": "cardboardboxes:block/box_side_tint",
+    "west": "cardboardboxes:block/box_side_tint",
+    "north": "cardboardboxes:block/box_side_tint",
+    "south": "cardboardboxes:block/box_side_tint"
+  },
+  "elements": [
+    {
+      "from": [ 0, 0, 0 ],
+      "to": [ 16, 16, 16 ],
+      "faces": {
+        "down":  { "texture": "#down", "cullface": "down", "tintindex": 0  },
+        "up":    { "texture": "#up", "cullface": "up", "tintindex": 0  },
+        "north": { "texture": "#north", "cullface": "north", "tintindex": 0  },
+        "south": { "texture": "#south", "cullface": "south", "tintindex": 0  },
+        "west":  { "texture": "#west", "cullface": "west", "tintindex": 0  },
+        "east":  { "texture": "#east", "cullface": "east", "tintindex": 0  }
+      }
+    }
+  ]
+}
