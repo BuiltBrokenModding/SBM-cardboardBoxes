@@ -128,7 +128,7 @@ public class BoxBlockItem extends BlockItem {
         final BlockState storedBlockState = getStoredBlock(heldItemStack);
         final CompoundTag storedBlockEntityData = getStoredBlockEntityData(heldItemStack);
         //Check if we can place the given block
-        if (storedBlockState != null && context.getPlayer().mayUseItemAt(pos, context.getClickedFace(), heldItemStack) && context.getLevel().getBlockState(pos).getMaterial().isReplaceable()) {
+        if (storedBlockState != null && context.getPlayer().mayUseItemAt(pos, context.getClickedFace(), heldItemStack) && context.getLevel().getBlockState(pos).canBeReplaced()) {
             Handler handler = HandlerManager.INSTANCE.getHandler(storedBlockState.getBlock());
             BlockState blockstate = storedBlockState.getBlock().getStateForPlacement(context);
             //Allow handler to control placement

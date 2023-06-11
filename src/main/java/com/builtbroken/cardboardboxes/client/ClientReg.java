@@ -32,14 +32,14 @@ public class ClientReg {
 
     private static int itemColor(ItemStack stack, int tintIndex) {
         if(stack.getItem() instanceof BoxBlockItem box && box.color != null) {
-            return box.color.getMaterialColor().col;
+            return box.color.getMapColor().col;
         }
         return -1;
     }
 
     private static int blockColor(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
         if(state.getBlock() instanceof BoxBlock box && box.color != null) {
-            return box.color.getMaterialColor().col;
+            return box.color.getMapColor().col;
         }
         return -1;
     }

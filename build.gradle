@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '[6.0,6.2)', changing: true
         classpath 'org.parchmentmc:librarian:1.+'
     }
 }
@@ -16,14 +16,19 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.19.3-0.1.0'
+version = '1.20-0.1.0'
 group = 'com.builtbroken.cardboardboxes'
-archivesBaseName = 'cardboardboxes'
+
+base {
+	archivesName = 'cardboardboxes'
+}
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'parchment', version: '1.19.2-2022.11.27-1.19.3'
+	mappings channel: 'parchment', version: '1.19.3-2023.03.12-1.20'
+	copyIdeResources = true
+
     runs {
         client {
             properties 'forge.logging.console.level': 'debug'
@@ -40,10 +45,10 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.3-44.0.6'
+	minecraft 'net.minecraftforge:forge:1.20-46.0.12'
 }
 
-jar {
+tasks.named('jar', Jar).configure {
     from('/') {
         include 'LICENSE.txt'
     }
@@ -53,7 +58,10 @@ jar {
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": archivesBaseName,
             "Implementation-Version": version,
-            "Implementation-Vendor" :"builtbroken",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Implementation-Vendor": "builtbroken"
     ])
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
 }

@@ -19,8 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -37,7 +36,7 @@ public class BoxBlock extends BaseEntityBlock {
     public final DyeColor color;
 
     public BoxBlock(DyeColor color) {
-        super(Properties.of(Material.WOOD, color == null ? MaterialColor.DIRT : color.getMaterialColor()).strength(2f, 2f));
+        super(Properties.of().mapColor(color == null ? MapColor.DIRT : color.getMapColor()).strength(2f, 2f));
         this.color = color;
     }
 
