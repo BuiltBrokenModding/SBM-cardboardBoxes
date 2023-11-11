@@ -18,18 +18,18 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 /**
  * Main mod class, handles registering content and triggering loading of interaction
@@ -37,7 +37,6 @@ import net.minecraftforge.registries.RegistryObject;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 7/25/2015.
  */
-@Mod.EventBusSubscriber(bus = Bus.MOD)
 @Mod(Cardboardboxes.DOMAIN)
 public class Cardboardboxes {
     public static final String DOMAIN = "cardboardboxes";
@@ -60,11 +59,9 @@ public class Cardboardboxes {
     ITEMS.register(defBlock.getId().getPath(), () -> new BoxBlockItem(defBlock.get(), defBlock.get().color))).toList();
 
     // Config
-    private static ForgeConfigSpec config;
+    private static ModConfigSpec config;
 
-    public Cardboardboxes() {
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-
+    public Cardboardboxes(IEventBus modBus) {
         modBus.addListener(this::setup);
         modBus.addListener(this::onCreativeModeTabBuildContents);
         ModHandler.modSupportHandlerMap.put("minecraft", VanillaHandler.class);

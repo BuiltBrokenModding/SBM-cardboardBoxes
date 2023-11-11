@@ -13,18 +13,18 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class VanillaHandler extends ModHandler {
-    private ForgeConfigSpec.BooleanValue spawnerVal;
+    private ModConfigSpec.BooleanValue spawnerVal;
 
     @Override
-    public void build(ForgeConfigSpec.Builder b) {
+    public void build(ModConfigSpec.Builder b) {
         spawnerVal = b.comment("Prevents mobs spawners from being placed into cardboard boxes").define("BlackListSettings.BlackListMobSpawners", true);
     }
 
     @Override
-    public void load(ForgeConfigSpec configuration) {
+    public void load(ModConfigSpec configuration) {
         if (spawnerVal.get()) {
             HandlerManager.INSTANCE.banBlock(Blocks.SPAWNER);
 

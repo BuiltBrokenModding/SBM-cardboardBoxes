@@ -9,10 +9,10 @@ import com.builtbroken.cardboardboxes.handler.HandlerManager;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.IForgeRegistry;
 
 /**
  * Prefab for handling interaction for a mod or content package
@@ -25,20 +25,20 @@ public class ModHandler {
     public static HashMap<String, ModHandler> modSupportHandlerMap_instances = new HashMap<>();
 
     protected static IForgeRegistry<BlockEntityType<?>> BLOCK_ENTITIES_REGISTRY;
-    public static HashMap<String, ForgeConfigSpec.BooleanValue> blockEntityBanConfigMap = new HashMap<>();
+    public static HashMap<String, ModConfigSpec.BooleanValue> blockEntityBanConfigMap = new HashMap<>();
 
-    public void load(ForgeConfigSpec configuration) {
+    public void load(ModConfigSpec configuration) {
     }
 
-    public void build(ForgeConfigSpec.Builder b) {
+    public void build(ModConfigSpec.Builder b) {
     }
 
     /**
      * Called to build config
      */
-    public static ForgeConfigSpec buildHandlerData() {
+    public static ModConfigSpec buildHandlerData() {
         //Create the builder
-        ForgeConfigSpec.Builder b = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder b = new ModConfigSpec.Builder();
         LOGGER.info("ModHandler#buildHandlerData() -> Loading data and data handlers");
         loadBlockEntityRegistry();
         buildHandlers(b);
@@ -51,7 +51,7 @@ public class ModHandler {
      *
      * @param configuration
      */
-    public static void loadHandlerData(ForgeConfigSpec configuration) {
+    public static void loadHandlerData(ModConfigSpec configuration) {
         LOGGER.info("ModHandler#loadHandlerData() -> Accessed Block Entity Registry: " + (BLOCK_ENTITIES_REGISTRY != null));
         processHandlers(configuration);
         LOGGER.info("ModHandler#loadHandlerData() -> Finished loading data handlers");
@@ -59,7 +59,7 @@ public class ModHandler {
         LOGGER.info("ModHandler#loadHandlerData() -> Finished loading configurations");
     }
 
-    private static void buildHandlers(ForgeConfigSpec.Builder b) {
+    private static void buildHandlers(ModConfigSpec.Builder b) {
         for (Map.Entry<String, Class<? extends ModHandler>> entry : ModHandler.modSupportHandlerMap.entrySet()) {
             if (ModList.get().isLoaded(entry.getKey()) || entry.getKey().equals("minecraft")) {
                 try {
@@ -77,13 +77,13 @@ public class ModHandler {
         }
     }
 
-    private static void processHandlers(ForgeConfigSpec configuration) {
+    private static void processHandlers(ModConfigSpec configuration) {
         for (Map.Entry<String, ModHandler> entry : ModHandler.modSupportHandlerMap_instances.entrySet()) {
             entry.getValue().load(configuration);
         }
     }
 
-    public static void buildConfig(ForgeConfigSpec.Builder b) {
+    public static void buildConfig(ModConfigSpec.Builder b) {
         String comment = """
                 Auto generated list of block entities registered in Minecraft that can be blocked from use with the box.\s\
                 If a block entity does not show up on this list it is already black listed. The reasoning behind blocking block entities is to prevent crashes or unwanted\s\
@@ -105,7 +105,7 @@ public class ModHandler {
 
     }
 
-    private static void loadConfig(ForgeConfigSpec configuration) {
+    private static void loadConfig(ModConfigSpec configuration) {
         if (BLOCK_ENTITIES_REGISTRY != null) {
             for (ResourceLocation name : BLOCK_ENTITIES_REGISTRY.getKeys()) {
                 BlockEntityType<?> type = BLOCK_ENTITIES_REGISTRY.getValue(name);
