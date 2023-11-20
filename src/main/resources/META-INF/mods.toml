@@ -14,7 +14,7 @@ issueTrackerURL = "https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/issu
 [[dependencies.cardboardboxes]]
 	modId = "neoforge"
 	mandatory = true
-	versionRange = "[20.2,)"
+	versionRange = "[20.2.59-beta,)"
 	ordering = "NONE"
 	side = "BOTH"
 

@@ -7,12 +7,12 @@ import java.util.Map;
 
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 
 /**
  * Prefab for handling interaction for a mod or content package
@@ -24,7 +24,7 @@ public class ModHandler {
     public static HashMap<String, Class<? extends ModHandler>> modSupportHandlerMap = new HashMap<>();
     public static HashMap<String, ModHandler> modSupportHandlerMap_instances = new HashMap<>();
 
-    protected static IForgeRegistry<BlockEntityType<?>> BLOCK_ENTITIES_REGISTRY;
+    protected static Registry<BlockEntityType<?>> BLOCK_ENTITIES_REGISTRY;
     public static HashMap<String, ModConfigSpec.BooleanValue> blockEntityBanConfigMap = new HashMap<>();
 
     public void load(ModConfigSpec configuration) {
@@ -89,11 +89,11 @@ public class ModHandler {
                 If a block entity does not show up on this list it is already black listed. The reasoning behind blocking block entities is to prevent crashes or unwanted\s\
                 interaction. Such as picking up a piston which can both causes issues and doesn't really matter. Set value to 'true' to disable interaction.""";
         b.comment(comment).push("tile_ban_list"); //set the category
-        for (ResourceLocation name : BLOCK_ENTITIES_REGISTRY.getKeys()) {
-            BlockEntityType<?> type = BLOCK_ENTITIES_REGISTRY.getValue(name);
+        for (ResourceLocation name : BLOCK_ENTITIES_REGISTRY.keySet()) {
+            BlockEntityType<?> type = BLOCK_ENTITIES_REGISTRY.get(name);
             if (name != null && type != null) {
                 try {
-                    String typeString = ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(type).toString();
+                    String typeString = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type).toString();
                     boolean shouldBan = HandlerManager.blockEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
                     blockEntityBanConfigMap.put(typeString, b.define(typeString, shouldBan));
                 } catch (Exception e) {
@@ -107,11 +107,11 @@ public class ModHandler {
 
     private static void loadConfig(ModConfigSpec configuration) {
         if (BLOCK_ENTITIES_REGISTRY != null) {
-            for (ResourceLocation name : BLOCK_ENTITIES_REGISTRY.getKeys()) {
-                BlockEntityType<?> type = BLOCK_ENTITIES_REGISTRY.getValue(name);
+            for (ResourceLocation name : BLOCK_ENTITIES_REGISTRY.keySet()) {
+                BlockEntityType<?> type = BLOCK_ENTITIES_REGISTRY.get(name);
                 if (name != null && type != null) {
                     try {
-                        String typeString = ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(type).toString();
+                        String typeString = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type).toString();
                         boolean shouldBan = HandlerManager.blockEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
                         if (blockEntityBanConfigMap.containsKey(typeString) ? blockEntityBanConfigMap.get(typeString).get() : false) {
                             HandlerManager.INSTANCE.banBlockEntity(type);
@@ -128,6 +128,6 @@ public class ModHandler {
     }
 
     private static void loadBlockEntityRegistry() {
-        BLOCK_ENTITIES_REGISTRY = ForgeRegistries.BLOCK_ENTITY_TYPES;
+        BLOCK_ENTITIES_REGISTRY = BuiltInRegistries.BLOCK_ENTITY_TYPE;
     }
 }
