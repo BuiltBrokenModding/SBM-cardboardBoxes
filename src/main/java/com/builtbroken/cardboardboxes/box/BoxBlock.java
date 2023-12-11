@@ -3,6 +3,7 @@ package com.builtbroken.cardboardboxes.box;
 import javax.annotation.Nullable;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
+import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +15,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -110,7 +112,7 @@ public class BoxBlock extends BaseEntityBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
         return toItemStack(level, pos);
     }
 
@@ -119,4 +121,9 @@ public class BoxBlock extends BaseEntityBlock {
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BoxBlockEntity(pos, state);
     }
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return null;
+	}
 }
