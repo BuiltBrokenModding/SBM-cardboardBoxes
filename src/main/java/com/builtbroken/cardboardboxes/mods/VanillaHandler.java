@@ -27,8 +27,9 @@ public class VanillaHandler extends ModHandler {
     public void load(ModConfigSpec configuration) {
         if (spawnerVal.get()) {
             HandlerManager.INSTANCE.banBlock(Blocks.SPAWNER);
-
             HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.MOB_SPAWNER);
+            HandlerManager.INSTANCE.banBlock(Blocks.TRIAL_SPAWNER);
+            HandlerManager.INSTANCE.banBlockEntity(BlockEntityType.TRIAL_SPAWNER);
         }
 
         //Fix for chests being rotated in opposite direction

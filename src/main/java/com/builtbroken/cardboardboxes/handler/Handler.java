@@ -2,6 +2,7 @@ package com.builtbroken.cardboardboxes.handler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -33,8 +34,8 @@ public class Handler {
     /**
      * Called to load data into the tile
      */
-    public void loadData(BlockEntity blockEntity, CompoundTag tag) {
-        blockEntity.load(tag);
+    public void loadData(BlockEntity blockEntity, CompoundTag tag, HolderLookup.Provider lookupProvider) {
+        blockEntity.loadWithComponents(tag, lookupProvider);
     }
 
     /**

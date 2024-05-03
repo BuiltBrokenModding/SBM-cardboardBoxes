@@ -18,7 +18,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -59,11 +59,11 @@ public class Cardboardboxes {
     // Config
     private static ModConfigSpec config;
 
-    public Cardboardboxes(IEventBus modBus) {
+    public Cardboardboxes(IEventBus modBus, ModContainer modContainer) {
         modBus.addListener(this::setup);
         modBus.addListener(this::onCreativeModeTabBuildContents);
         ModHandler.modSupportHandlerMap.put("minecraft", VanillaHandler.class);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, config = ModHandler.buildHandlerData());
+        modContainer.registerConfig(ModConfig.Type.COMMON, config = ModHandler.buildHandlerData());
         LOGGER.info("Finished building the config -> " + config);
 
         BLOCKS.register(modBus);
@@ -86,7 +86,7 @@ public class Cardboardboxes {
         }
     }
 
-    private static enum TabSortedColors {
+    private enum TabSortedColors {
         WHITE(0),
         LIGHT_GRAY(8),
         GRAY(7),

@@ -12,6 +12,7 @@ import com.builtbroken.cardboardboxes.handler.HandlerManager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
@@ -23,6 +24,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -82,7 +84,7 @@ public class BoxBlockItem extends BlockItem {
                 //Get stack
                 final BlockState state = level.getBlockState(pos);
                 //Copy block entity data
-                CompoundTag tag = blockEntity.saveWithId();
+                CompoundTag tag = blockEntity.saveWithId(level.registryAccess());
 
                 //Remove block entity
                 level.removeBlockEntity(pos);
@@ -148,9 +150,9 @@ public class BoxBlockItem extends BlockItem {
                     BlockEntity blockEntity = context.getLevel().getBlockEntity(pos);
                     if (blockEntity != null) {
                         if (handler != null) {
-                            handler.loadData(blockEntity, storedBlockEntityData);
+                            handler.loadData(blockEntity, storedBlockEntityData, context.getLevel().registryAccess());
                         } else {
-                            blockEntity.load(storedBlockEntityData);
+                            blockEntity.loadWithComponents(storedBlockEntityData, context.getLevel().registryAccess());
                         }
                     }
                 }
@@ -177,22 +179,26 @@ public class BoxBlockItem extends BlockItem {
 
     @Override
     public int getMaxStackSize(ItemStack stack) {
-        return stack.hasTag() ? 1 : 64;
+        return stack.has(DataComponents.CUSTOM_DATA) ? 1 : 64;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        if (stack.getTag() != null && stack.getTag().contains(STORE_ITEM_TAG)) {
-            BlockState state = Block.stateById(stack.getTag().getInt(STORE_ITEM_TAG));
+    public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag flagIn) {
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+
+        if (data != null && data.contains(STORE_ITEM_TAG)) {
+            BlockState state = Block.stateById(data.getUnsafe().getInt(STORE_ITEM_TAG));
             tooltip.add(Component.translatable(state.getBlock().getDescriptionId()));
         }
     }
 
     public BlockState getStoredBlock(ItemStack stack) {
-        return stack.getTag() != null && stack.getTag().contains(STORE_ITEM_TAG) ? Block.stateById(stack.getTag().getInt(STORE_ITEM_TAG)) : Blocks.AIR.defaultBlockState();
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        return data != null && data.contains(STORE_ITEM_TAG) ? Block.stateById(data.getUnsafe().getInt(STORE_ITEM_TAG)) : Blocks.AIR.defaultBlockState();
     }
 
     public CompoundTag getStoredBlockEntityData(ItemStack stack) {
-        return stack.getTag() != null && stack.getTag().contains(BLOCK_ENTITY_DATA_TAG) ? stack.getTag().getCompound(BLOCK_ENTITY_DATA_TAG) : null;
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        return data != null && data.contains(BLOCK_ENTITY_DATA_TAG) ? data.getUnsafe().getCompound(BLOCK_ENTITY_DATA_TAG) : null;
     }
 }

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_slimeball": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:slimeballs"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cardboardboxes:cardboardbox"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_slimeball"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cardboardboxes:cardboardbox"
+    ]
+  }
+}

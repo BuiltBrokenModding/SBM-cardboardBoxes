@@ -6,13 +6,14 @@ import com.builtbroken.cardboardboxes.Cardboardboxes;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -56,7 +57,7 @@ public class BoxBlock extends BaseEntityBlock {
                     if (compound != null) {
                         BlockEntity blockEntity = level.getBlockEntity(pos);
                         if (blockEntity != null) {
-                            blockEntity.load(compound);
+                            blockEntity.loadWithComponents(compound, level.registryAccess());
                         }
                     }
                     if (!player.isCreative()) {
@@ -71,7 +72,7 @@ public class BoxBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (level.isClientSide) {
             return InteractionResult.PASS;
         }
@@ -98,12 +99,13 @@ public class BoxBlock extends BaseEntityBlock {
 
         if (level.getBlockEntity(pos) instanceof BoxBlockEntity blockEntity) {
             if (blockEntity.getStateForPlacement() != null) {
-                stack.setTag(new CompoundTag());
+                CompoundTag tag = new CompoundTag();
 
-                stack.getTag().putInt(STORE_ITEM_TAG, Block.getId(blockEntity.getStateForPlacement()));
+                tag.putInt(STORE_ITEM_TAG, Block.getId(blockEntity.getStateForPlacement()));
                 if (blockEntity.getDataForPlacement() != null) {
-                    stack.getTag().put(BLOCK_ENTITY_DATA_TAG, blockEntity.getDataForPlacement());
+                    tag.put(BLOCK_ENTITY_DATA_TAG, blockEntity.getDataForPlacement());
                 }
+                CustomData.set(DataComponents.CUSTOM_DATA, stack, tag);
             } else {
                 System.out.println("Error: block entity does not have an ItemStack");
             }
@@ -122,8 +124,8 @@ public class BoxBlock extends BaseEntityBlock {
         return new BoxBlockEntity(pos, state);
     }
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return null;
-	}
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
+    }
 }

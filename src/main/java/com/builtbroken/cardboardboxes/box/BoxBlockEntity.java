@@ -3,6 +3,7 @@ package com.builtbroken.cardboardboxes.box;
 import com.builtbroken.cardboardboxes.Cardboardboxes;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -23,8 +24,8 @@ public class BoxBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
+        super.loadAdditional(tag, lookupProvider);
         if (tag.contains("storedTile")) {
             setStateForPlacement(Block.stateById(tag.getInt("storedTile")));
             if (tag.contains("tileData")) {
@@ -34,13 +35,14 @@ public class BoxBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
         if (getStateForPlacement() != null) {
             tag.putInt("storedTile", Block.getId(placementState));
             if (getDataForPlacement() != null) {
                 tag.put("tileData", getDataForPlacement());
             }
         }
+        super.saveAdditional(tag, lookupProvider);
     }
 
     public BlockState getStateForPlacement() {

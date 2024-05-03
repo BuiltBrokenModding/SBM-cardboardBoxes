@@ -89,7 +89,7 @@ public class HandlerManager {
             if (blockEntity != null) {
                 if (!blockEntityBanList.contains(blockEntity.getType())) {
                     //Check if we even have data to store, no data no point in using a box
-                    return !blockEntity.saveWithoutMetadata().isEmpty() ? CanPickUpResult.CAN_PICK_UP : CanPickUpResult.NO_DATA;
+                    return !blockEntity.saveWithoutMetadata(world.registryAccess()).isEmpty() ? CanPickUpResult.CAN_PICK_UP : CanPickUpResult.NO_DATA;
                 }
                 return CanPickUpResult.BANNED_BLOCK_ENTITY;
             }

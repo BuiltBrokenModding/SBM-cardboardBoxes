@@ -1,0 +1,10 @@
+{
+  "pack": {
+    "description": "cardboard boxes resources & data",
+    "pack_format": 32,
+    "supported_formats": [
+      0,
+      2147483647
+    ]
+  }
+}

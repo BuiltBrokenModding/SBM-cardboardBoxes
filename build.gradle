@@ -2,18 +2,25 @@ plugins {
     id 'java-library'
     id 'eclipse'
     id 'idea'
-    id 'net.neoforged.gradle.userdev' version '[7.0,7.1)'
-//	id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'net.neoforged.gradle.userdev' version '7.0.105'
 }
 
-version = '1.20.2-0.1.1'
+version = '1.20.6-0.1.1'
 group = 'com.builtbroken.cardboardboxes'
 
 base {
 	archivesName = 'cardboardboxes'
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+processResources {
+	exclude ".cache"
+}
+
+sourceSets.main.resources {
+	srcDir 'src/generated/resources' //include generated files
+}
 
 runs {
     configureEach {
@@ -29,13 +36,19 @@ runs {
         workingDirectory project.file('run/server')
         programArgument '-nogui'
     }
+
+    data {
+		workingDirectory project.file('run/data')
+		programArguments.addAll '--mod', 'cardboardboxes', '--all', '--output', file('src/generated/resources/').getAbsolutePath()
+	}
 }
 
 dependencies {
-    implementation 'net.neoforged:neoforge:20.4.11-beta'
+    implementation 'net.neoforged:neoforge:20.6.22-beta'
 }
 
 tasks.named('jar', Jar).configure {
+	exclude('com/builtbroken/cardboardboxes/datagen/**') //exclude files from the built jar that are only used to generate the assets & data
     from('/') {
         include 'LICENSE.txt'
     }
@@ -51,4 +64,5 @@ tasks.named('jar', Jar).configure {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+	options.release = 21
 }
