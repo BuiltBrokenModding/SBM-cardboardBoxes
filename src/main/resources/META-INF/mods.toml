@@ -7,7 +7,7 @@ issueTrackerURL = "https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/issu
 	modId = "cardboardboxes"
 	version = "${file.jarVersion}"
 	displayName = "[SBM] Cardboard Boxes"
-	displayURL = "https://minecraft.curseforge.com/projects/sbm-cardboardboxes/"
+	displayURL = "https://curseforge.com/minecraft/mc-mods/sbm-cardboardboxes/"
 	authors = "BuiltBrokenModding"
 	description = '''Simplistic storage for moving block entities while maintaining inventories, and settings.'''
 

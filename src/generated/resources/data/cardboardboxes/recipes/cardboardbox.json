@@ -1,10 +1,6 @@
 {
-  "type": "crafting_shaped",
-  "pattern": [
-    "PPP",
-    "SWS",
-    "PPP"
-  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "P": {
       "item": "minecraft:paper"
@@ -16,7 +12,13 @@
       "tag": "minecraft:logs"
     }
   },
+  "pattern": [
+    "PPP",
+    "SWS",
+    "PPP"
+  ],
   "result": {
     "item": "cardboardboxes:cardboardbox"
-  }
+  },
+  "show_notification": true
 }

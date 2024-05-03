@@ -15,6 +15,14 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+processResources {
+	exclude ".cache"
+}
+
+sourceSets.main.resources {
+	srcDir 'src/generated/resources' //include generated files
+}
+
 minecraft {
 	mappings channel: 'parchment', version: '2023.09.03-1.20.1'
 	copyIdeResources = true
@@ -31,6 +39,12 @@ minecraft {
             workingDirectory project.file('run/server')
             source sourceSets.main
         }
+        data {
+            properties 'forge.logging.console.level': 'debug'
+			args '--mod', 'cardboardboxes', '--all', '--output', file('src/generated/resources/')
+            workingDirectory project.file('run/data')
+            source sourceSets.main
+        }
     }
 }
 
@@ -39,6 +53,7 @@ dependencies {
 }
 
 tasks.named('jar', Jar).configure {
+	exclude('com/builtbroken/cardboardboxes/datagen/**') //exclude files from the built jar that are only used to generate the assets & data
     from('/') {
         include 'LICENSE.txt'
     }
