@@ -91,7 +91,7 @@ public class Cardboardboxes {
         }
     }
 
-    private static enum TabSortedColors {
+    public enum TabSortedColors {
         WHITE(0),
         LIGHT_GRAY(8),
         GRAY(7),
