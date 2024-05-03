@@ -1,0 +1,64 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "cardboardboxes:colored_boxes",
+  "ingredients": [
+    {
+      "item": "minecraft:yellow_dye"
+    },
+    [
+      {
+        "item": "cardboardboxes:cardboardbox"
+      },
+      {
+        "item": "cardboardboxes:box_white"
+      },
+      {
+        "item": "cardboardboxes:box_light_gray"
+      },
+      {
+        "item": "cardboardboxes:box_gray"
+      },
+      {
+        "item": "cardboardboxes:box_black"
+      },
+      {
+        "item": "cardboardboxes:box_brown"
+      },
+      {
+        "item": "cardboardboxes:box_red"
+      },
+      {
+        "item": "cardboardboxes:box_orange"
+      },
+      {
+        "item": "cardboardboxes:box_lime"
+      },
+      {
+        "item": "cardboardboxes:box_green"
+      },
+      {
+        "item": "cardboardboxes:box_cyan"
+      },
+      {
+        "item": "cardboardboxes:box_light_blue"
+      },
+      {
+        "item": "cardboardboxes:box_blue"
+      },
+      {
+        "item": "cardboardboxes:box_purple"
+      },
+      {
+        "item": "cardboardboxes:box_magenta"
+      },
+      {
+        "item": "cardboardboxes:box_pink"
+      }
+    ]
+  ],
+  "result": {
+    "count": 1,
+    "id": "cardboardboxes:box_yellow"
+  }
+}
