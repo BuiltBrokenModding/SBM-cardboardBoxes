@@ -1,5 +1,6 @@
 package com.builtbroken.cardboardboxes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,7 +49,12 @@ public class Cardboardboxes {
 
     // Tiles
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, DOMAIN);
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BoxBlockEntity>> BOX_BLOCK_ENTITY_TYPE = BLOCK_ENTITY_TYPES.register("box", () -> BlockEntityType.Builder.of(BoxBlockEntity::new, BOX_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BoxBlockEntity>> BOX_BLOCK_ENTITY_TYPE = BLOCK_ENTITY_TYPES.register("box", () -> {
+        List<BoxBlock> boxList = new ArrayList<>(BOX_COLORS.stream().map(DeferredBlock::get).toList());
+
+        boxList.add(0, BOX_BLOCK.get());
+        return BlockEntityType.Builder.of(BoxBlockEntity::new, boxList.toArray(new BoxBlock[boxList.size()])).build(null);
+    });
 
     // Items
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(DOMAIN);
