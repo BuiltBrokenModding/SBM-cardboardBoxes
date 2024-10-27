@@ -90,16 +90,18 @@ public class ModHandler {
                 interaction. Such as picking up a piston which can both causes issues and doesn't really matter. Set value to 'true' to disable interaction.""";
         b.comment(comment).push("tile_ban_list"); //set the category
         for (ResourceLocation name : BLOCK_ENTITIES_REGISTRY.keySet()) {
-            BlockEntityType<?> type = BLOCK_ENTITIES_REGISTRY.get(name);
-            if (name != null && type != null) {
-                try {
-                    String typeString = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type).toString();
-                    boolean shouldBan = HandlerManager.blockEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
-                    blockEntityBanConfigMap.put(typeString, b.define(typeString, shouldBan));
-                } catch (Exception e) {
-                    LOGGER.error("ModHandler#buildConfig() -> Failed to add entry to config [" + name + " > " + type + "]", e);
+            BLOCK_ENTITIES_REGISTRY.get(name).ifPresent(ref -> {
+                BlockEntityType<?> type = ref.getDelegate().value();
+                if (name != null && type != null) {
+                    try {
+                        String typeString = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type).toString();
+                        boolean shouldBan = HandlerManager.blockEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
+                        blockEntityBanConfigMap.put(typeString, b.define(typeString, shouldBan));
+                    } catch (Exception e) {
+                        LOGGER.error("ModHandler#buildConfig() -> Failed to add entry to config [" + name + " > " + type + "]", e);
+                    }
                 }
-            }
+            });
         }
         b.pop(); //go back to top level category
 
@@ -108,21 +110,23 @@ public class ModHandler {
     private static void loadConfig(ModConfigSpec configuration) {
         if (BLOCK_ENTITIES_REGISTRY != null) {
             for (ResourceLocation name : BLOCK_ENTITIES_REGISTRY.keySet()) {
-                BlockEntityType<?> type = BLOCK_ENTITIES_REGISTRY.get(name);
-                if (name != null && type != null) {
-                    try {
-                        String typeString = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type).toString();
-                        boolean shouldBan = HandlerManager.blockEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
-                        if (blockEntityBanConfigMap.containsKey(typeString) ? blockEntityBanConfigMap.get(typeString).get() : false) {
-                            HandlerManager.INSTANCE.banBlockEntity(type);
-                        } else if (shouldBan) {
-                            //If original was banned but someone unbanned it in the config
-                            HandlerManager.blockEntityBanList.remove(type);
+                BLOCK_ENTITIES_REGISTRY.get(name).ifPresent(ref -> {
+                    BlockEntityType<?> type = ref.getDelegate().value();
+                    if (name != null && type != null) {
+                        try {
+                            String typeString = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type).toString();
+                            boolean shouldBan = HandlerManager.blockEntityBanList.contains(type) || typeString.contains("cable") || typeString.contains("wire") || typeString.contains("pipe") || typeString.contains("tube") || typeString.contains("conduit") || typeString.contains("channel");
+                            if (blockEntityBanConfigMap.containsKey(typeString) ? blockEntityBanConfigMap.get(typeString).get() : false) {
+                                HandlerManager.INSTANCE.banBlockEntity(type);
+                            } else if (shouldBan) {
+                                //If original was banned but someone unbanned it in the config
+                                HandlerManager.blockEntityBanList.remove(type);
+                            }
+                        } catch (Exception e) {
+                            LOGGER.error("ModHandler#loadHandlerData() -> Failed to add entry to config [" + name + " > " + type + "]", e);
                         }
-                    } catch (Exception e) {
-                        LOGGER.error("ModHandler#loadHandlerData() -> Failed to add entry to config [" + name + " > " + type + "]", e);
                     }
-                }
+                });
             }
         }
     }

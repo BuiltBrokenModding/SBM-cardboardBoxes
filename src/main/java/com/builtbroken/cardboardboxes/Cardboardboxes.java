@@ -17,7 +17,9 @@ import com.builtbroken.cardboardboxes.mods.VanillaHandler;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -43,9 +45,9 @@ public class Cardboardboxes {
 
     // Blocks
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(DOMAIN);
-    public static final DeferredBlock<BoxBlock> BOX_BLOCK = BLOCKS.register("cardboardbox", () -> new BoxBlock(null));
+    public static final DeferredBlock<BoxBlock> BOX_BLOCK = BLOCKS.registerBlock("cardboardbox", p -> new BoxBlock(null, p), BlockBehaviour.Properties.of());
     public static final List<DeferredBlock<BoxBlock>> BOX_COLORS = Arrays.stream(TabSortedColors.values()).map(TabSortedColors::toDyeColor).map(color ->
-    BLOCKS.register("box_" + color.getName(), () -> new BoxBlock(color))).toList();
+    BLOCKS.registerBlock("box_" + color.getName(), p -> new BoxBlock(color, p), BlockBehaviour.Properties.of())).toList();
 
     // Tiles
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, DOMAIN);
@@ -53,14 +55,14 @@ public class Cardboardboxes {
         List<BoxBlock> boxList = new ArrayList<>(BOX_COLORS.stream().map(DeferredBlock::get).toList());
 
         boxList.add(0, BOX_BLOCK.get());
-        return BlockEntityType.Builder.of(BoxBlockEntity::new, boxList.toArray(new BoxBlock[boxList.size()])).build(null);
+        return new BlockEntityType<>(BoxBlockEntity::new, boxList.toArray(new BoxBlock[boxList.size()]));
     });
 
     // Items
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(DOMAIN);
-    public static final DeferredItem<BoxBlockItem> BOX_ITEM = ITEMS.register("cardboardbox", () -> new BoxBlockItem(BOX_BLOCK.get(), null));
+    public static final DeferredItem<BoxBlockItem> BOX_ITEM = ITEMS.registerItem("cardboardbox", p -> new BoxBlockItem(BOX_BLOCK.get(), null, p), new Item.Properties().useBlockDescriptionPrefix());
     public static final List<DeferredItem<BoxBlockItem>> BOX_ITEM_COLORS = BOX_COLORS.stream().map(defBlock ->
-    ITEMS.register(defBlock.getId().getPath(), () -> new BoxBlockItem(defBlock.get(), defBlock.get().color))).toList();
+    ITEMS.registerItem(defBlock.getId().getPath(), p -> new BoxBlockItem(defBlock.get(), defBlock.get().color, p), new Item.Properties().useBlockDescriptionPrefix())).toList();
 
     // Config
     private static ModConfigSpec config;

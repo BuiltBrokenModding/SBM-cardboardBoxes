@@ -42,8 +42,8 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class BoxBlockItem extends BlockItem {
     public final DyeColor color;
-    public BoxBlockItem(Block block, DyeColor color) {
-        super(block, new Item.Properties());
+    public BoxBlockItem(Block block, DyeColor color, Item.Properties properties) {
+        super(block, properties);
         this.color = color;
     }
 
@@ -166,8 +166,8 @@ public class BoxBlockItem extends BlockItem {
                 heldItemStack.shrink(1);
 
                 //Return empty box
-                if (!context.getPlayer().isCreative() && !context.getPlayer().getInventory().add(new ItemStack(getBlock()))) {
-                    context.getPlayer().spawnAtLocation(new ItemStack(getBlock()), 0F);
+                if (!context.getPlayer().isCreative()) {
+                    context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(getBlock()));
                 }
             }
 

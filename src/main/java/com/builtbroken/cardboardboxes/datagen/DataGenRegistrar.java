@@ -26,7 +26,7 @@ public class DataGenRegistrar {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
 
-        generator.addProvider(event.includeServer(), new RecipeGenerator(output, event.getLookupProvider()));
+        generator.addProvider(event.includeServer(), new RecipeGenerator.Runner(output, event.getLookupProvider()));
         generator.addProvider(true, new PackMetadataGenerator(output)
                 .add(PackMetadataSection.TYPE, new PackMetadataSection(Component.literal("cardboard boxes resources & data"),
                         DetectedVersion.BUILT_IN.getPackVersion(PackType.CLIENT_RESOURCES),

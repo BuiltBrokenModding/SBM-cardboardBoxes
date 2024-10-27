@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
@@ -38,8 +40,8 @@ public class BoxBlock extends BaseEntityBlock {
 
     public final DyeColor color;
 
-    public BoxBlock(DyeColor color) {
-        super(Properties.of().mapColor(color == null ? MapColor.DIRT : color.getMapColor()).strength(2f, 2f));
+    public BoxBlock(DyeColor color, BlockBehaviour.Properties properties) {
+        super(properties.mapColor(color == null ? MapColor.DIRT : color.getMapColor()).strength(2f, 2f));
         this.color = color;
     }
 
@@ -63,7 +65,7 @@ public class BoxBlock extends BaseEntityBlock {
                     if (!player.isCreative()) {
                         ItemStack stack = new ItemStack(this);
                         if (player.getInventory().add(stack)) {
-                            player.spawnAtLocation(stack, 0F);
+                            player.spawnAtLocation((ServerLevel) level, stack, 0F);
                         }
                     }
                 }

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "minecraft:paper"
-    },
-    "S": {
-      "tag": "c:slimeballs"
-    },
-    "W": {
-      "tag": "minecraft:logs"
-    }
+    "P": "minecraft:paper",
+    "S": "#c:slime_balls",
+    "W": "#minecraft:logs"
   },
   "pattern": [
     "PPP",
