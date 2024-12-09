@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[1,)"
-license = "MIT https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/blob/1.21.3/LICENSE"
+license = "MIT https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/blob/1.21.4/LICENSE"
 issueTrackerURL = "https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/issues"
 
 [[mods]]
@@ -14,13 +14,13 @@ issueTrackerURL = "https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/issu
 [[dependencies.cardboardboxes]]
 	modId = "neoforge"
 	type = "required"
-	versionRange = "[21.3,)"
+	versionRange = "[21.4,)"
 	ordering = "NONE"
 	side = "BOTH"
 
 [[dependencies.cardboardboxes]]
 	modId = "minecraft"
 	type = "required"
-	versionRange = "[1.21.3,1.22)"
+	versionRange = "[1.21.4,1.22)"
 	ordering = "NONE"
 	side = "BOTH"

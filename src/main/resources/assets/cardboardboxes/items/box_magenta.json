@@ -1,0 +1,11 @@
+{
+	"model": {
+		"type": "minecraft:model",
+		"model": "cardboardboxes:block/box",
+		"tints": [
+			{
+				"type": "cardboardboxes:box_color"
+			}
+		]
+	}
+}
