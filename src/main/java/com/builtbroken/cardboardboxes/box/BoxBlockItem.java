@@ -3,7 +3,8 @@ package com.builtbroken.cardboardboxes.box;
 import static com.builtbroken.cardboardboxes.box.BoxBlock.BLOCK_ENTITY_DATA_TAG;
 import static com.builtbroken.cardboardboxes.box.BoxBlock.STORE_ITEM_TAG;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
 import com.builtbroken.cardboardboxes.handler.CanPickUpResult;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -96,7 +98,7 @@ public class BoxBlockItem extends BlockItem {
                 if (level.getBlockEntity(pos) instanceof BoxBlockEntity boxBlockEntity) {
                     //Move data into block entity
                     boxBlockEntity.setStateForPlacement(state);
-                    boxBlockEntity.setDataForPlacement(tag);
+                    boxBlockEntity.setDataForPlacement(Optional.of(tag));
 
                     //Consume item
                     player.getItemInHand(hand).shrink(1);
@@ -183,22 +185,24 @@ public class BoxBlockItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, TooltipContext ctx, TooltipDisplay display, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
 
         if (data != null && data.contains(STORE_ITEM_TAG)) {
-            BlockState state = Block.stateById(data.getUnsafe().getInt(STORE_ITEM_TAG));
-            tooltip.add(Component.translatable(state.getBlock().getDescriptionId()));
+            data.getUnsafe().getInt(STORE_ITEM_TAG).ifPresent(id -> {
+                BlockState state = Block.stateById(id);
+                tooltipAdder.accept(Component.translatable(state.getBlock().getDescriptionId()));
+            });
         }
     }
 
     public BlockState getStoredBlock(ItemStack stack) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-        return data != null && data.contains(STORE_ITEM_TAG) ? Block.stateById(data.getUnsafe().getInt(STORE_ITEM_TAG)) : Blocks.AIR.defaultBlockState();
+        return data != null ? data.getUnsafe().getInt(STORE_ITEM_TAG).map(Block::stateById).orElse(Blocks.AIR.defaultBlockState()):Blocks.AIR.defaultBlockState();
     }
 
     public CompoundTag getStoredBlockEntityData(ItemStack stack) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-        return data != null && data.contains(BLOCK_ENTITY_DATA_TAG) ? data.getUnsafe().getCompound(BLOCK_ENTITY_DATA_TAG) : null;
+        return data != null ? data.getUnsafe().getCompound(BLOCK_ENTITY_DATA_TAG).orElse(null) : null;
     }
 }

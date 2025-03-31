@@ -54,13 +54,12 @@ public class BoxBlock extends BaseEntityBlock {
         if (!level.isClientSide) {
             if (level.getBlockEntity(pos) instanceof BoxBlockEntity boxBlockEntity && boxBlockEntity.getStateForPlacement() != null) {
                 if (level.setBlock(pos, boxBlockEntity.getStateForPlacement(), 3)) {
-                    CompoundTag compound = boxBlockEntity.getDataForPlacement();
-                    if (compound != null) {
+                    boxBlockEntity.getDataForPlacement().ifPresent(compound -> {
                         BlockEntity blockEntity = level.getBlockEntity(pos);
                         if (blockEntity != null) {
                             blockEntity.loadWithComponents(compound, level.registryAccess());
                         }
-                    }
+                    });
                     if (!player.isCreative()) {
                         ItemStack stack = new ItemStack(this);
                         if (player.getInventory().add(stack)) {
@@ -103,9 +102,7 @@ public class BoxBlock extends BaseEntityBlock {
                 CompoundTag tag = new CompoundTag();
 
                 tag.putInt(STORE_ITEM_TAG, Block.getId(blockEntity.getStateForPlacement()));
-                if (blockEntity.getDataForPlacement() != null) {
-                    tag.put(BLOCK_ENTITY_DATA_TAG, blockEntity.getDataForPlacement());
-                }
+                blockEntity.getDataForPlacement().ifPresent(data -> tag.put(BLOCK_ENTITY_DATA_TAG, data));
                 CustomData.set(DataComponents.CUSTOM_DATA, stack, tag);
             } else {
                 System.out.println("Error: block entity does not have an ItemStack");

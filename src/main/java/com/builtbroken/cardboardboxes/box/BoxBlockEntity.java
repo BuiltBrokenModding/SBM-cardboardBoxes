@@ -1,5 +1,7 @@
 package com.builtbroken.cardboardboxes.box;
 
+import java.util.Optional;
+
 import com.builtbroken.cardboardboxes.Cardboardboxes;
 
 import net.minecraft.core.BlockPos;
@@ -17,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class BoxBlockEntity extends BlockEntity {
     private BlockState placementState;
-    private CompoundTag placementData;
+    private Optional<CompoundTag> placementData = Optional.empty();
 
     public BoxBlockEntity(BlockPos pos, BlockState state) {
         super(Cardboardboxes.BOX_BLOCK_ENTITY_TYPE.get(), pos, state);
@@ -26,21 +28,17 @@ public class BoxBlockEntity extends BlockEntity {
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
         super.loadAdditional(tag, lookupProvider);
-        if (tag.contains("storedTile")) {
-            setStateForPlacement(Block.stateById(tag.getInt("storedTile")));
-            if (tag.contains("tileData")) {
-                setDataForPlacement(tag.getCompound("tileData"));
-            }
-        }
+        tag.getInt("storedTile").ifPresent(id -> {
+            setStateForPlacement(Block.stateById(id));
+            setDataForPlacement(tag.getCompound("tileData"));
+        });
     }
 
     @Override
     public void saveAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
         if (getStateForPlacement() != null) {
             tag.putInt("storedTile", Block.getId(placementState));
-            if (getDataForPlacement() != null) {
-                tag.put("tileData", getDataForPlacement());
-            }
+            getDataForPlacement().ifPresent(data -> tag.put("tileData", data));
         }
         super.saveAdditional(tag, lookupProvider);
     }
@@ -53,11 +51,11 @@ public class BoxBlockEntity extends BlockEntity {
         this.placementState = state;
     }
 
-    public CompoundTag getDataForPlacement() {
+    public Optional<CompoundTag> getDataForPlacement() {
         return placementData;
     }
 
-    public void setDataForPlacement(CompoundTag placementData) {
+    public void setDataForPlacement(Optional<CompoundTag> placementData) {
         this.placementData = placementData;
     }
 }
