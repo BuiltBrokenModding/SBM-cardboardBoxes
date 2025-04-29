@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'eclipse'
     id 'idea'
-    id 'net.neoforged.gradle.userdev' version '7.0.+'
+	id 'net.neoforged.moddev' version '2.0.82'
 }
 
 version = '1.21.5-0.1.2'
@@ -22,29 +22,36 @@ sourceSets.main.resources {
 	srcDir 'src/generated/resources' //include generated files
 }
 
-runs {
-    configureEach {
-        systemProperty 'forge.logging.console.level', 'debug'
-        modSource project.sourceSets.main
-    }
+neoForge {
+	version = "21.5.62-beta"
 
-    client {
-        workingDirectory project.file('run/client')
-    }
+	runs {
+		configureEach {
+			logLevel = org.slf4j.event.Level.DEBUG
+			gameDirectory = project.file("run/" + name)
+			ideName = "SBMCardboardBoxes " + ideName.get()
+		}
 
-    server {
-        workingDirectory project.file('run/server')
-        argument '-nogui'
-    }
+		client {
+			client()
+		}
 
-    clientData {
-		workingDirectory project.file('run/data')
-		arguments.addAll '--mod', 'cardboardboxes', '--all', '--output', file('src/generated/resources/').getAbsolutePath()
+		server {
+			server()
+			programArgument('-nogui')
+		}
+
+		data {
+			clientData()
+			programArguments.addAll('--mod', 'cardboardboxes', '--all', '--output', file('src/generated/resources/').getAbsolutePath())
+		}
 	}
-}
 
-dependencies {
-	implementation 'net.neoforged:neoforge:21.5.14-beta'
+	mods {
+		cardboardboxes {
+			sourceSet(sourceSets.main)
+		}
+	}
 }
 
 tasks.named('jar', Jar).configure {
@@ -65,4 +72,11 @@ tasks.named('jar', Jar).configure {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 	options.release = 21
+}
+
+idea {
+	module {
+		downloadSources = true
+		downloadJavadoc = true
+	}
 }
