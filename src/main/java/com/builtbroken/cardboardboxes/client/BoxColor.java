@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -14,7 +15,7 @@ public record BoxColor() implements ItemTintSource {
     @Override
     public int calculate(ItemStack stack, ClientLevel level, LivingEntity entity) {
         if (stack.getItem() instanceof BoxBlockItem box && box.color != null) {
-            return box.color.getMapColor().col;
+            return ARGB.color(255, box.color.getMapColor().col);
         }
         return -1;
     }

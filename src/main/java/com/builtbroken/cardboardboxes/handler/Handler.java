@@ -2,13 +2,13 @@ package com.builtbroken.cardboardboxes.handler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 
 /**
  * Handles interaction between the box and a single tile. Allows for customizing save/load and placement.
@@ -34,8 +34,8 @@ public class Handler {
     /**
      * Called to load data into the tile
      */
-    public void loadData(BlockEntity blockEntity, CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        blockEntity.loadWithComponents(tag, lookupProvider);
+    public void loadData(BlockEntity blockEntity, ValueInput tag) {
+        blockEntity.loadWithComponents(tag);
     }
 
     /**

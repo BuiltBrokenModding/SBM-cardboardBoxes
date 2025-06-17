@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import com.builtbroken.cardboardboxes.box.BoxBlock;
 import com.builtbroken.cardboardboxes.box.BoxBlockEntity;
@@ -13,6 +12,7 @@ import com.builtbroken.cardboardboxes.box.BoxBlockItem;
 import com.builtbroken.cardboardboxes.handler.HandlerManager;
 import com.builtbroken.cardboardboxes.mods.ModHandler;
 import com.builtbroken.cardboardboxes.mods.VanillaHandler;
+import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -41,7 +41,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @Mod(Cardboardboxes.DOMAIN)
 public class Cardboardboxes {
     public static final String DOMAIN = "cardboardboxes";
-    public static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     // Blocks
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(DOMAIN);

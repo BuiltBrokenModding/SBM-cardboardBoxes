@@ -10,6 +10,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -25,6 +26,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
@@ -57,7 +60,10 @@ public class BoxBlock extends BaseEntityBlock {
                     boxBlockEntity.getDataForPlacement().ifPresent(compound -> {
                         BlockEntity blockEntity = level.getBlockEntity(pos);
                         if (blockEntity != null) {
-                            blockEntity.loadWithComponents(compound, level.registryAccess());
+                            try (ProblemReporter.ScopedCollector problemReporter = new ProblemReporter.ScopedCollector(blockEntity.problemPath(), Cardboardboxes.LOGGER)) {
+                                ValueInput valueInput = TagValueInput.create(problemReporter, level.registryAccess(), compound);
+                                blockEntity.loadWithComponents(valueInput);
+                            }
                         }
                     });
                     if (!player.isCreative()) {

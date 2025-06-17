@@ -1,8 +1,5 @@
 package com.builtbroken.cardboardboxes.box;
 
-import static com.builtbroken.cardboardboxes.box.BoxBlock.BLOCK_ENTITY_DATA_TAG;
-import static com.builtbroken.cardboardboxes.box.BoxBlock.STORE_ITEM_TAG;
-
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -17,6 +14,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +33,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
+
+import static com.builtbroken.cardboardboxes.box.BoxBlock.BLOCK_ENTITY_DATA_TAG;
+import static com.builtbroken.cardboardboxes.box.BoxBlock.STORE_ITEM_TAG;
 
 /**
  * ItemBlock for the box
@@ -86,7 +89,7 @@ public class BoxBlockItem extends BlockItem {
                 //Get stack
                 final BlockState state = level.getBlockState(pos);
                 //Copy block entity data
-                CompoundTag tag = blockEntity.saveWithId(level.registryAccess());
+                CompoundTag tag = blockEntity.saveWithFullMetadata(level.registryAccess());
 
                 //Remove block entity
                 level.removeBlockEntity(pos);
@@ -151,10 +154,15 @@ public class BoxBlockItem extends BlockItem {
                 if (storedBlockEntityData != null) {
                     BlockEntity blockEntity = context.getLevel().getBlockEntity(pos);
                     if (blockEntity != null) {
-                        if (handler != null) {
-                            handler.loadData(blockEntity, storedBlockEntityData, context.getLevel().registryAccess());
-                        } else {
-                            blockEntity.loadWithComponents(storedBlockEntityData, context.getLevel().registryAccess());
+                        try (ProblemReporter.ScopedCollector problemReporter = new ProblemReporter.ScopedCollector(blockEntity.problemPath(), Cardboardboxes.LOGGER)) {
+                            ValueInput valueInput = TagValueInput.create(problemReporter, context.getLevel().registryAccess(), storedBlockEntityData);
+
+                            if (handler != null) {
+                                handler.loadData(blockEntity, valueInput);
+                            }
+                            else {
+                                blockEntity.loadWithComponents(valueInput);
+                            }
                         }
                     }
                 }

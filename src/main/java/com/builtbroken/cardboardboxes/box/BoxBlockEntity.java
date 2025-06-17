@@ -5,11 +5,12 @@ import java.util.Optional;
 import com.builtbroken.cardboardboxes.Cardboardboxes;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * TileEntity for the box
@@ -26,21 +27,24 @@ public class BoxBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        super.loadAdditional(tag, lookupProvider);
+    public void loadAdditional(ValueInput tag) {
+        super.loadAdditional(tag);
         tag.getInt("storedTile").ifPresent(id -> {
             setStateForPlacement(Block.stateById(id));
-            setDataForPlacement(tag.getCompound("tileData"));
+            setDataForPlacement(tag.read("tileData", CompoundTag.CODEC));
         });
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
+    public void saveAdditional(ValueOutput tag) {
         if (getStateForPlacement() != null) {
             tag.putInt("storedTile", Block.getId(placementState));
-            getDataForPlacement().ifPresent(data -> tag.put("tileData", data));
+            getDataForPlacement().ifPresent(data -> {
+                ValueOutput child = tag.child("tileData");
+                child.store(data);
+            });
         }
-        super.saveAdditional(tag, lookupProvider);
+        super.saveAdditional(tag);
     }
 
     public BlockState getStateForPlacement() {
