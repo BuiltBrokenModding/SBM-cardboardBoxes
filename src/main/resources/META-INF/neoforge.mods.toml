@@ -12,7 +12,7 @@ issueTrackerURL = "https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/issu
 [[dependencies.cardboardboxes]]
 	modId = "neoforge"
 	type = "required"
-	versionRange = "[21,)"
+	versionRange = "[21.6.6-beta,)"
 	ordering = "NONE"
 	side = "BOTH"
 

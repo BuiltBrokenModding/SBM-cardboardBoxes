@@ -13,11 +13,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
-@EventBusSubscriber(bus = Bus.MOD, value = Dist.CLIENT, modid = Cardboardboxes.DOMAIN)
+@EventBusSubscriber(value = Dist.CLIENT, modid = Cardboardboxes.DOMAIN)
 public class ClientReg {
     @SubscribeEvent
     public static void registerItemTintSource(RegisterColorHandlersEvent.ItemTintSources event) {
