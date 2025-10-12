@@ -60,7 +60,7 @@ public class BoxBlockItem extends BlockItem {
     public InteractionResult useOn(UseOnContext context) {
         //Run all logic server side
         Level level = context.getLevel();
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
 
@@ -197,7 +197,7 @@ public class BoxBlockItem extends BlockItem {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
 
         if (data != null && data.contains(STORE_ITEM_TAG)) {
-            data.getUnsafe().getInt(STORE_ITEM_TAG).ifPresent(id -> {
+			data.copyTag().getInt(STORE_ITEM_TAG).ifPresent(id -> {
                 BlockState state = Block.stateById(id);
                 tooltipAdder.accept(Component.translatable(state.getBlock().getDescriptionId()));
             });
@@ -206,11 +206,11 @@ public class BoxBlockItem extends BlockItem {
 
     public BlockState getStoredBlock(ItemStack stack) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-        return data != null ? data.getUnsafe().getInt(STORE_ITEM_TAG).map(Block::stateById).orElse(Blocks.AIR.defaultBlockState()):Blocks.AIR.defaultBlockState();
+        return data != null ? data.copyTag().getInt(STORE_ITEM_TAG).map(Block::stateById).orElse(Blocks.AIR.defaultBlockState()):Blocks.AIR.defaultBlockState();
     }
 
     public CompoundTag getStoredBlockEntityData(ItemStack stack) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-        return data != null ? data.getUnsafe().getCompound(BLOCK_ENTITY_DATA_TAG).orElse(null) : null;
+        return data != null ? data.copyTag().getCompound(BLOCK_ENTITY_DATA_TAG).orElse(null) : null;
     }
 }

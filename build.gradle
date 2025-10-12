@@ -2,10 +2,10 @@ plugins {
     id 'java-library'
     id 'eclipse'
     id 'idea'
-	id 'net.neoforged.moddev' version '2.0.82'
+	id 'net.neoforged.moddev' version '2.0.115'
 }
 
-version = '1.21.6-0.1.3'
+version = '1.21.10-0.1.3'
 group = 'com.builtbroken.cardboardboxes'
 
 base {
@@ -23,7 +23,7 @@ sourceSets.main.resources {
 }
 
 neoForge {
-	version = "21.6.6-beta"
+	version = "21.10.11-beta"
 
 	runs {
 		configureEach {
@@ -60,10 +60,10 @@ tasks.named('jar', Jar).configure {
         include 'LICENSE.txt'
     }
     manifest.attributes([
-            "Specification-Title": archivesBaseName,
+            "Specification-Title": base.archivesName,
             "Specification-Vendor": "builtbroken",
             "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": archivesBaseName,
+            "Implementation-Title": base.archivesName,
             "Implementation-Version": version,
             "Implementation-Vendor": "builtbroken"
     ])
