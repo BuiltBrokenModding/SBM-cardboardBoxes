@@ -1,7 +1,5 @@
 package com.builtbroken.cardboardboxes.mods;
 
-import static com.builtbroken.cardboardboxes.Cardboardboxes.LOGGER;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,10 +7,12 @@ import com.builtbroken.cardboardboxes.handler.HandlerManager;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.ModConfigSpec;
+
+import static com.builtbroken.cardboardboxes.Cardboardboxes.LOGGER;
 
 /**
  * Prefab for handling interaction for a mod or content package
@@ -89,7 +89,7 @@ public class ModHandler {
                 If a block entity does not show up on this list it is already black listed. The reasoning behind blocking block entities is to prevent crashes or unwanted\s\
                 interaction. Such as picking up a piston which can both causes issues and doesn't really matter. Set value to 'true' to disable interaction.""";
         b.comment(comment).push("tile_ban_list"); //set the category
-        for (ResourceLocation name : BLOCK_ENTITIES_REGISTRY.keySet()) {
+        for (Identifier name : BLOCK_ENTITIES_REGISTRY.keySet()) {
             BLOCK_ENTITIES_REGISTRY.get(name).ifPresent(ref -> {
                 BlockEntityType<?> type = ref.getDelegate().value();
                 if (name != null && type != null) {
@@ -109,7 +109,7 @@ public class ModHandler {
 
     private static void loadConfig(ModConfigSpec configuration) {
         if (BLOCK_ENTITIES_REGISTRY != null) {
-            for (ResourceLocation name : BLOCK_ENTITIES_REGISTRY.keySet()) {
+            for (Identifier name : BLOCK_ENTITIES_REGISTRY.keySet()) {
                 BLOCK_ENTITIES_REGISTRY.get(name).ifPresent(ref -> {
                     BlockEntityType<?> type = ref.getDelegate().value();
                     if (name != null && type != null) {

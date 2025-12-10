@@ -6,7 +6,7 @@ import com.builtbroken.cardboardboxes.Cardboardboxes;
 import com.builtbroken.cardboardboxes.box.BoxBlock;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,7 +20,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 public class ClientReg {
     @SubscribeEvent
     public static void registerItemTintSource(RegisterColorHandlersEvent.ItemTintSources event) {
-        event.register(ResourceLocation.fromNamespaceAndPath(Cardboardboxes.DOMAIN, "box_color"), BoxColor.MAP_CODEC);
+        event.register(Identifier.fromNamespaceAndPath(Cardboardboxes.DOMAIN, "box_color"), BoxColor.MAP_CODEC);
     }
 
     @SubscribeEvent
