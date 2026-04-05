@@ -110,14 +110,14 @@ public class BoxBlockItem extends BlockItem {
                     return InteractionResult.SUCCESS;
                 }
             } else {
-                player.displayClientMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".noData"), true);
+                player.sendOverlayMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".noData"));
             }
         } else if (result == CanPickUpResult.BANNED_BLOCK_ENTITY) {
-            player.displayClientMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".banned.tile"), true);
+            player.sendOverlayMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".banned.tile"));
         } else if (result == CanPickUpResult.BANNED_BLOCK) {
-            player.displayClientMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".banned.block"), true);
+            player.sendOverlayMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".banned.block"));
         } else {
-            player.displayClientMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".noData"), true);
+            player.sendOverlayMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".noData"));
         }
         return InteractionResult.SUCCESS;
     }

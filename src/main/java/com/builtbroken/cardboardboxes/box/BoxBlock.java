@@ -90,11 +90,11 @@ public class BoxBlock extends BaseEntityBlock {
                     level.removeBlock(pos, false);
                     return InteractionResult.SUCCESS;
                 } else {
-                    player.displayClientMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".inventoryFull"), true);
+                    player.sendOverlayMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".inventoryFull"));
                     return InteractionResult.PASS;
                 }
             } else {
-                player.displayClientMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".error.stack.null"), true);
+                player.sendOverlayMessage(Component.translatable(Cardboardboxes.BOX_BLOCK.get().getDescriptionId() + ".error.stack.null"));
             }
         }
         return InteractionResult.PASS;

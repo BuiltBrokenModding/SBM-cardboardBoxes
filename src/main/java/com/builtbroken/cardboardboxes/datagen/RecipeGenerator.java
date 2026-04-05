@@ -1,12 +1,10 @@
 package com.builtbroken.cardboardboxes.datagen;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
-import com.builtbroken.cardboardboxes.Cardboardboxes.TabSortedColors;
 import com.builtbroken.cardboardboxes.box.BoxBlockItem;
 
 import net.minecraft.core.HolderGetter;
@@ -19,7 +17,6 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -48,7 +45,24 @@ public class RecipeGenerator extends RecipeProvider {
         .save(output);
         //@formatter:on
 
-        List<DyeItem> dyes = Arrays.stream(TabSortedColors.values()).map(TabSortedColors::toDyeColor).map(DyeItem::byColor).toList();
+        List<Item> dyes = List.of(
+            Items.WHITE_DYE,
+            Items.LIGHT_GRAY_DYE,
+            Items.GRAY_DYE,
+            Items.BLACK_DYE,
+            Items.BROWN_DYE,
+            Items.RED_DYE,
+            Items.ORANGE_DYE,
+            Items.YELLOW_DYE,
+            Items.LIME_DYE,
+            Items.GREEN_DYE,
+            Items.CYAN_DYE,
+            Items.LIGHT_BLUE_DYE,
+            Items.BLUE_DYE,
+            Items.PURPLE_DYE,
+            Items.MAGENTA_DYE,
+            Items.PINK_DYE
+        );
         List<BoxBlockItem> colorableBoxes = Cardboardboxes.BOX_ITEM_COLORS.stream().map(DeferredItem::get).toList();
 
         for (int i = 0; i < dyes.size(); i++) {
@@ -63,6 +77,7 @@ public class RecipeGenerator extends RecipeProvider {
             .save(output, "dye_" + getItemName(box));
         }
     }
+
     public static final class Runner extends RecipeProvider.Runner {
         public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
             super(output, lookupProvider);
@@ -75,7 +90,7 @@ public class RecipeGenerator extends RecipeProvider {
 
         @Override
         public String getName() {
-            return "SecurityCraft recipes";
+            return "Cardboardboxes recipes";
         }
     }
 }

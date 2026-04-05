@@ -1,13 +1,11 @@
 package com.builtbroken.cardboardboxes.client;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
 import com.builtbroken.cardboardboxes.box.BoxBlock;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
@@ -24,11 +22,11 @@ public class ClientReg {
     }
 
     @SubscribeEvent
-    public static void registerBlockColor(RegisterColorHandlersEvent.Block event) {
-        event.register(ClientReg::blockColor, Cardboardboxes.BOX_COLORS.stream().map(DeferredBlock::get).toArray(Block[]::new));
+    public static void registerBlockColor(RegisterColorHandlersEvent.BlockTintSources event) {
+        event.register(List.of(ClientReg::blockColor), Cardboardboxes.BOX_COLORS.stream().map(DeferredBlock::get).toArray(Block[]::new));
     }
 
-    private static int blockColor(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
+    private static int blockColor(BlockState state) {
         if (state.getBlock() instanceof BoxBlock box && box.color != null) {
             return box.color.getMapColor().col;
         }
