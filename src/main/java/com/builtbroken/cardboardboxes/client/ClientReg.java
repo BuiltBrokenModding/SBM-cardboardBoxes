@@ -23,7 +23,7 @@ public class ClientReg {
 
     @SubscribeEvent
     public static void registerBlockColor(RegisterColorHandlersEvent.BlockTintSources event) {
-        event.register(List.of(ClientReg::blockColor), Cardboardboxes.BOX_COLORS.stream().map(DeferredBlock::get).toArray(Block[]::new));
+        event.register(List.of(ClientReg::blockColor), Cardboardboxes.BOX_COLORS.asList().stream().map(DeferredBlock::get).toArray(Block[]::new));
     }
 
     private static int blockColor(BlockState state) {

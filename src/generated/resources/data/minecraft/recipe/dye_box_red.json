@@ -7,20 +7,20 @@
     [
       "cardboardboxes:cardboardbox",
       "cardboardboxes:box_white",
-      "cardboardboxes:box_light_gray",
-      "cardboardboxes:box_gray",
-      "cardboardboxes:box_black",
-      "cardboardboxes:box_brown",
       "cardboardboxes:box_orange",
+      "cardboardboxes:box_magenta",
+      "cardboardboxes:box_light_blue",
       "cardboardboxes:box_yellow",
       "cardboardboxes:box_lime",
-      "cardboardboxes:box_green",
+      "cardboardboxes:box_pink",
+      "cardboardboxes:box_gray",
+      "cardboardboxes:box_light_gray",
       "cardboardboxes:box_cyan",
-      "cardboardboxes:box_light_blue",
-      "cardboardboxes:box_blue",
       "cardboardboxes:box_purple",
-      "cardboardboxes:box_magenta",
-      "cardboardboxes:box_pink"
+      "cardboardboxes:box_blue",
+      "cardboardboxes:box_brown",
+      "cardboardboxes:box_green",
+      "cardboardboxes:box_black"
     ]
   ],
   "result": {

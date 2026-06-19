@@ -5,7 +5,7 @@ plugins {
 	id 'net.neoforged.moddev' version '2.0.141'
 }
 
-version = '26.1.1-0.1.3'
+version = '26.2-0.1.3'
 group = 'com.builtbroken.cardboardboxes'
 
 base {
@@ -23,7 +23,7 @@ sourceSets.main.resources {
 }
 
 neoForge {
-	version = "26.1.1.6-beta"
+	version = "26.2.0.6-beta"
 
 	runs {
 		configureEach {

@@ -1,7 +1,6 @@
 package com.builtbroken.cardboardboxes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -15,9 +14,12 @@ import com.builtbroken.cardboardboxes.mods.VanillaHandler;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.references.BlockItemId;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.ColorCollection;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -42,26 +44,40 @@ public class Cardboardboxes {
     public static final String DOMAIN = "cardboardboxes";
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    public static final ColorCollection<BlockItemId> IDS = ColorCollection.NAMES.map(color -> {
+        Identifier base = Identifier.fromNamespaceAndPath(DOMAIN, "box_" + color);
+        return BlockItemId.create(base, base);
+    });
+
     // Blocks
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(DOMAIN);
     public static final DeferredBlock<BoxBlock> BOX_BLOCK = BLOCKS.registerBlock("cardboardbox", p -> new BoxBlock(null, p));
-    public static final List<DeferredBlock<BoxBlock>> BOX_COLORS = Arrays.stream(TabSortedColors.values()).map(TabSortedColors::toDyeColor).map(color ->
-        BLOCKS.registerBlock("box_" + color.getName(), p -> new BoxBlock(color, p))).toList();
+    public static final ColorCollection<DeferredBlock<BoxBlock>> BOX_COLORS = ColorCollection.zipMap(IDS, ColorCollection.VALUES, (id, color) ->
+        BLOCKS.registerBlock(
+            id.block().identifier().getPath(),
+            p -> new BoxBlock(color, p)
+        )
+    );
 
     // Tiles
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, DOMAIN);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BoxBlockEntity>> BOX_BLOCK_ENTITY_TYPE = BLOCK_ENTITY_TYPES.register("box", () -> {
-        List<BoxBlock> boxList = new ArrayList<>(BOX_COLORS.stream().map(DeferredBlock::get).toList());
+        List<BoxBlock> boxList = new ArrayList<>(BOX_COLORS.map(DeferredBlock::get).asList());
 
-        boxList.add(0, BOX_BLOCK.get());
-        return new BlockEntityType<>(BoxBlockEntity::new, boxList.toArray(new BoxBlock[boxList.size()]));
+        boxList.addFirst(BOX_BLOCK.get());
+        return new BlockEntityType<>(BoxBlockEntity::new, boxList.toArray(new BoxBlock[0]));
     });
 
     // Items
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(DOMAIN);
     public static final DeferredItem<BoxBlockItem> BOX_ITEM = ITEMS.registerItem("cardboardbox", p -> new BoxBlockItem(BOX_BLOCK.get(), null, p), () -> new Item.Properties().useBlockDescriptionPrefix());
-    public static final List<DeferredItem<BoxBlockItem>> BOX_ITEM_COLORS = BOX_COLORS.stream().map(defBlock ->
-        ITEMS.registerItem(defBlock.getId().getPath(), p -> new BoxBlockItem(defBlock.get(), defBlock.get().color, p), () -> new Item.Properties().useBlockDescriptionPrefix())).toList();
+    public static final ColorCollection<DeferredItem<BoxBlockItem>> BOX_ITEM_COLORS = ColorCollection.zipMap(IDS, ColorCollection.VALUES, (id, color) ->
+        ITEMS.registerItem(
+            id.item().identifier().getPath(),
+            p -> new BoxBlockItem(BOX_COLORS.pick(color).get(), color, p),
+            () -> new Item.Properties().useBlockDescriptionPrefix()
+        )
+    );
 
     // Config
     private static ModConfigSpec config;
@@ -87,38 +103,28 @@ public class Cardboardboxes {
     }
 
     private void onCreativeModeTabBuildContents(BuildCreativeModeTabContentsEvent event) {
+        List<DyeColor> gameplayColorOrder = List.of(
+            DyeColor.WHITE,
+            DyeColor.LIGHT_GRAY,
+            DyeColor.GRAY,
+            DyeColor.BLACK,
+            DyeColor.BROWN,
+            DyeColor.RED,
+            DyeColor.ORANGE,
+            DyeColor.YELLOW,
+            DyeColor.LIME,
+            DyeColor.GREEN,
+            DyeColor.CYAN,
+            DyeColor.LIGHT_BLUE,
+            DyeColor.BLUE,
+            DyeColor.PURPLE,
+            DyeColor.MAGENTA,
+            DyeColor.PINK
+        );
+
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS || event.getTabKey() == CreativeModeTabs.COLORED_BLOCKS) {
             event.accept(BOX_ITEM.get());
-            BOX_COLORS.forEach((defBlock) -> event.accept(defBlock.get()));
-        }
-    }
-
-    public enum TabSortedColors {
-        WHITE(0),
-        LIGHT_GRAY(8),
-        GRAY(7),
-        BLACK(15),
-        BROWN(12),
-        RED(14),
-        ORANGE(1),
-        YELLOW(4),
-        LIME(5),
-        GREEN(13),
-        CYAN(9),
-        LIGHT_BLUE(3),
-        BLUE(11),
-        PURPLE(10),
-        MAGENTA(2),
-        PINK(6);
-
-        private int dyeColorId;
-
-        private TabSortedColors(int dyeColorId) {
-            this.dyeColorId = dyeColorId;
-        }
-
-        public DyeColor toDyeColor() {
-            return DyeColor.byId(dyeColorId);
+            gameplayColorOrder.forEach(dye -> event.accept(BOX_COLORS.pick(dye)));
         }
     }
 }

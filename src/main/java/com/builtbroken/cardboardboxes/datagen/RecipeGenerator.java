@@ -1,11 +1,9 @@
 package com.builtbroken.cardboardboxes.datagen;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
-import com.builtbroken.cardboardboxes.box.BoxBlockItem;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -20,8 +18,8 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.ColorCollection;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.registries.DeferredItem;
 
 public class RecipeGenerator extends RecipeProvider {
     private final HolderGetter<Item> items;
@@ -45,37 +43,16 @@ public class RecipeGenerator extends RecipeProvider {
         .save(output);
         //@formatter:on
 
-        List<Item> dyes = List.of(
-            Items.WHITE_DYE,
-            Items.LIGHT_GRAY_DYE,
-            Items.GRAY_DYE,
-            Items.BLACK_DYE,
-            Items.BROWN_DYE,
-            Items.RED_DYE,
-            Items.ORANGE_DYE,
-            Items.YELLOW_DYE,
-            Items.LIME_DYE,
-            Items.GREEN_DYE,
-            Items.CYAN_DYE,
-            Items.LIGHT_BLUE_DYE,
-            Items.BLUE_DYE,
-            Items.PURPLE_DYE,
-            Items.MAGENTA_DYE,
-            Items.PINK_DYE
-        );
-        List<BoxBlockItem> colorableBoxes = Cardboardboxes.BOX_ITEM_COLORS.stream().map(DeferredItem::get).toList();
-
-        for (int i = 0; i < dyes.size(); i++) {
-            Item dye = dyes.get(i);
-            Item box = colorableBoxes.get(i);
+        ColorCollection.zipApply(Items.DYE, Cardboardboxes.BOX_ITEM_COLORS, (dye, deferredItem) -> {
+            Item box = deferredItem.asItem();
 
             ShapelessRecipeBuilder.shapeless(items, RecipeCategory.BUILDING_BLOCKS, box)
-            .requires(dye)
-            .requires(Ingredient.of(Stream.concat(Stream.of(Cardboardboxes.BOX_ITEM.get()), colorableBoxes.stream().filter(item -> !item.equals(box)))))
-            .group("cardboardboxes:colored_boxes")
-            .unlockedBy("has_needed_dye", has(dye))
-            .save(output, "dye_" + getItemName(box));
-        }
+                .requires(dye)
+                .requires(Ingredient.of(Stream.concat(Stream.of(Cardboardboxes.BOX_ITEM.get()), Cardboardboxes.BOX_ITEM_COLORS.asList().stream().filter(item -> !item.get().equals(box)))))
+                .group("cardboardboxes:colored_boxes")
+                .unlockedBy("has_needed_dye", has(dye))
+                .save(output, "dye_" + getItemName(box));
+        });
     }
 
     public static final class Runner extends RecipeProvider.Runner {

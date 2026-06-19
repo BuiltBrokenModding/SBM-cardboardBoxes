@@ -1,4 +1,4 @@
-license = "MIT https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/blob/26.1.1/LICENSE"
+license = "MIT https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/blob/26.2/LICENSE"
 issueTrackerURL = "https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/issues"
 
 [[mods]]
@@ -12,13 +12,13 @@ issueTrackerURL = "https://github.com/BuiltBrokenModding/SBM-cardboardBoxes/issu
 [[dependencies.cardboardboxes]]
 	modId = "neoforge"
 	type = "required"
-	versionRange = "[26,)"
+	versionRange = "[26.2)"
 	ordering = "NONE"
 	side = "BOTH"
 
 [[dependencies.cardboardboxes]]
 	modId = "minecraft"
 	type = "required"
-	versionRange = "[26,)"
+	versionRange = "[26.2,)"
 	ordering = "NONE"
 	side = "BOTH"
