@@ -12,7 +12,12 @@ base {
 	archivesName = 'cardboardboxes'
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+		vendor = JvmVendorSpec.MICROSOFT
+	}
+}
 
 processResources {
 	exclude ".cache"
