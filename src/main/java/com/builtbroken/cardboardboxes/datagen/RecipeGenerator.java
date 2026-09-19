@@ -1,32 +1,31 @@
 package com.builtbroken.cardboardboxes.datagen;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
 
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.ColorCollection;
 import net.neoforged.neoforge.common.Tags;
 
 public class RecipeGenerator extends RecipeProvider {
     private final HolderGetter<Item> items;
 
-    public RecipeGenerator(HolderLookup.Provider lookupProvider, RecipeOutput output) {
-        super(lookupProvider, output);
-        items = lookupProvider.lookupOrThrow(Registries.ITEM);
+    public RecipeGenerator(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
+        items = recipeOutput.lookup(Registries.ITEM);
     }
 
     @Override
@@ -49,25 +48,9 @@ public class RecipeGenerator extends RecipeProvider {
             ShapelessRecipeBuilder.shapeless(items, RecipeCategory.BUILDING_BLOCKS, box)
                 .requires(dye)
                 .requires(Ingredient.of(Stream.concat(Stream.of(Cardboardboxes.BOX_ITEM.get()), Cardboardboxes.BOX_ITEM_COLORS.asList().stream().filter(item -> !item.get().equals(box)))))
-                .group("cardboardboxes:colored_boxes")
+                .group(Cardboardboxes.DOMAIN + ":colored_boxes")
                 .unlockedBy("has_needed_dye", has(dye))
-                .save(output, "dye_" + getItemName(box));
+                .save(output, Cardboardboxes.DOMAIN + ":dye_" + getItemName(box));
         });
-    }
-
-    public static final class Runner extends RecipeProvider.Runner {
-        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-            super(output, lookupProvider);
-        }
-
-        @Override
-        protected RecipeProvider createRecipeProvider(HolderLookup.Provider lookupProvider, RecipeOutput output) {
-            return new RecipeGenerator(lookupProvider, output);
-        }
-
-        @Override
-        public String getName() {
-            return "Cardboardboxes recipes";
-        }
     }
 }

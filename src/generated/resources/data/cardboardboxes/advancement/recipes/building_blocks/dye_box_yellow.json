@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "minecraft:pink_dye"
+            "items": "minecraft:yellow_dye"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:dye_box_pink"
+        "recipes": "cardboardboxes:dye_box_yellow"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:dye_box_pink"
+      "cardboardboxes:dye_box_yellow"
     ]
   }
 }

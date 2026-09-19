@@ -3,7 +3,6 @@ package com.builtbroken.cardboardboxes.box;
 import javax.annotation.Nullable;
 
 import com.builtbroken.cardboardboxes.Cardboardboxes;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -126,10 +125,5 @@ public class BoxBlock extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BoxBlockEntity(pos, state);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return null;
     }
 }

@@ -14,6 +14,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -177,7 +178,7 @@ public class BoxBlockItem extends BlockItem {
 
                 //Return empty box
                 if (!context.getPlayer().isCreative()) {
-                    context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(getBlock()));
+                    context.getPlayer().getInventory().placeItemBackInInventory(new ItemStack(getBlock()), Prediction.SERVER_ONLY);
                 }
             }
 

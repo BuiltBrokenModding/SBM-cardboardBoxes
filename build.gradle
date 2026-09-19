@@ -2,10 +2,10 @@ plugins {
     id 'java-library'
     id 'eclipse'
     id 'idea'
-	id 'net.neoforged.moddev' version '2.0.141'
+	id 'net.neoforged.moddev' version '2.0.147'
 }
 
-version = '26.2-0.1.3'
+version = '26.3-0.1.3'
 group = 'com.builtbroken.cardboardboxes'
 
 base {
@@ -28,7 +28,7 @@ sourceSets.main.resources {
 }
 
 neoForge {
-	version = "26.2.0.6-beta"
+	version = "26.3.0.7-beta"
 
 	runs {
 		configureEach {
