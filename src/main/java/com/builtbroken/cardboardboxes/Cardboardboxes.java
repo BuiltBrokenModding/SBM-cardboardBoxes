@@ -86,7 +86,7 @@ public class Cardboardboxes {
         modBus.addListener(this::setup);
         modBus.addListener(this::onCreativeModeTabBuildContents);
         ModHandler.modSupportHandlerMap.put("minecraft", VanillaHandler.class);
-        modContainer.registerConfig(ModConfig.Type.COMMON, config = ModHandler.buildHandlerData());
+        modContainer.registerConfig(ModConfig.Type.LOCAL, config = ModHandler.buildHandlerData());
         LOGGER.info("Finished building the config -> " + config);
 
         BLOCKS.register(modBus);
