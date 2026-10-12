@@ -17,6 +17,6 @@ public class BlockTagGenerator extends VanillaBlockTagsProvider {
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		tag(BlockTags.BLOCKS_MOTION_NO_LEAVES).add(Cardboardboxes.BOX_BLOCK.getKey()).addAll(Cardboardboxes.BOX_COLORS.map(DeferredBlock::getKey));
+		tag(BlockTags.BLOCKS_MOTION_NO_LEAVES).add(Cardboardboxes.BOX_BLOCK.key()).addAll(Cardboardboxes.BOX_COLORS.map(DeferredBlock::key));
 	}
 }

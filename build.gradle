@@ -28,7 +28,7 @@ sourceSets.main.resources {
 }
 
 neoForge {
-	version = "26.3.0.44-beta"
+	version = "26.3.0.76"
 
 	runs {
 		configureEach {
